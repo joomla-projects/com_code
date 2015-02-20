@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>admin@joomla.org</authorEmail>
 	<authorUrl>www.joomla.org</authorUrl>
-	<version>3.0.1</version>
+	<version>4.0.0-dev</version>
 	<description>COM_CODE_XML_DESCRIPTION</description>
 	<menu link="option=com_code">COM_CODE</menu>
 

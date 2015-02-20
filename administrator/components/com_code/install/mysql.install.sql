@@ -30,7 +30,6 @@ INSERT INTO `#__code_activity_types` (`activity_type`, `activity_title`, `activi
 
 CREATE TABLE IF NOT EXISTS `#__code_projects` (
   `project_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `asset_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `alias` varchar(255) NOT NULL,
   `state` int(11) NOT NULL,
@@ -54,13 +53,11 @@ CREATE TABLE IF NOT EXISTS `#__code_tags` (
 CREATE TABLE IF NOT EXISTS `#__code_trackers` (
   `tracker_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `project_id` int(10) unsigned NOT NULL,
-  `asset_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `alias` varchar(255) NOT NULL,
   `summary` varchar(512) NOT NULL,
   `description` text NOT NULL,
   `state` int(11) NOT NULL,
-  `access` int(11) NOT NULL,
   `options` text NOT NULL,
   `metadata` text NOT NULL,
   `item_count` int(11) NOT NULL,
