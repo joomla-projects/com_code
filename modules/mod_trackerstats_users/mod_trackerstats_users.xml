@@ -13,7 +13,6 @@
 		<filename module="mod_trackerstats_users">mod_trackerstats_users.php</filename>
 		<folder>tmpl</folder>
 		<filename>helper.php</filename>
-		<filename>index.html</filename>
 		<filename>mod_trackerstats_users.xml</filename>
 	</files>
 	<languages>
@@ -39,7 +38,7 @@
 					size="22"
 					filter="user_utc"
 				/>
-				
+
 				<field
 					name="toDate"
 					type="calendar"
@@ -49,7 +48,7 @@
 					size="22"
 					filter="user_utc"
 				/>
-				
+
 				<field name="minimum_points" type="text"
 					filter="integer"
 					default="20"
