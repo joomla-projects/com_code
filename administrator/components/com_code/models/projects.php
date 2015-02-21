@@ -84,9 +84,8 @@ class CodeModelProjects extends JModelList
 		$query->select(
 			$this->getState(
 				'list.select',
-				'a.project_id, a.title, a.alias' .
-				', a.state, a.access, a.created_date, a.created_by, a.modified_date, a.modified_by' .
-				', a.summary, a.jc_project_id'
+				'a.project_id, a.title, a.alias, a.state, a.access, a.created_date, a.created_by, a.modified_date,' .
+				', a.modified_by, a.summary, a.jc_project_id'
 			)
 		);
 

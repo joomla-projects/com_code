@@ -69,7 +69,7 @@ $listDirn	= $this->state->get('list.direction');
 							<?php echo JHtml::_('grid.sort', 'JDATE', 'a.created_date', $listDirn, $listOrder); ?>
 						</th>
 						<th width="1%" class="nowrap center hidden-phone">
-							<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
+							<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'a.project_id', $listDirn, $listOrder); ?>
 						</th>
 					</tr>
 				</thead>
@@ -87,7 +87,7 @@ $listDirn	= $this->state->get('list.direction');
 						<td class="nowrap has-context">
 							<div class="pull-left">
 								<a href="<?php echo JRoute::_('index.php?option=com_code&task=project.edit&id=' . (int) $item->project_id); ?>">
-									<?php echo $this->escape($item->name); ?>
+									<?php echo $this->escape($item->title); ?>
 								</a>
 								<span class="small">
 									<?php echo JText::sprintf('JGLOBAL_LIST_ALIAS', $this->escape($item->alias));?>
@@ -101,7 +101,7 @@ $listDirn	= $this->state->get('list.direction');
 							<?php echo JHtml::_('date', $item->created_date, JText::_('DATE_FORMAT_LC4')); ?>
 						</td>
 						<td class="nowrap center hidden-phone">
-							<?php echo $item->id; ?>
+							<?php echo $item->project_id; ?>
 						</td>
 					</tr>
 				<?php endforeach; ?>
