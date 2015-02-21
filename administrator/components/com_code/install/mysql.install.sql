@@ -33,7 +33,6 @@ CREATE TABLE IF NOT EXISTS `#__code_projects` (
   `title` varchar(255) NOT NULL,
   `alias` varchar(255) NOT NULL,
   `state` int(11) NOT NULL,
-  `access` int(11) NOT NULL,
   `summary` varchar(512) NOT NULL,
   `description` text NOT NULL,
   `created_date` datetime NOT NULL,

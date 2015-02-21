@@ -32,7 +32,6 @@
 		<filename>controller.php</filename>
 		<filename>metadata.xml</filename>
 		<filename>router.php</filename>
-		<folder>controllers</folder>
 		<folder>helpers</folder>
 		<folder>media</folder>
 		<folder>models</folder>

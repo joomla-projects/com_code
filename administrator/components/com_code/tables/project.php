@@ -1,21 +1,16 @@
 <?php
 /**
- * @version		$Id: project.php 417 2010-06-25 01:01:45Z louis $
- * @package		Joomla.Administrator
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
 /**
  * Code branch table object.
- *
- * @package		Joomla.Code
- * @subpackage	com_code
- * @since		1.0
  */
 class CodeTableProject extends JTable
 {
@@ -23,14 +18,10 @@ class CodeTableProject extends JTable
 	 * Class constructor.
 	 *
 	 * @param	JDatabaseDriver  $db  A database connector object.
-	 *
-	 * @since	1.0
 	 */
 	public function __construct($db)
 	{
 		parent::__construct('#__code_projects', 'project_id', $db);
-
-		$this->access = (int) JFactory::getConfig()->get('access');
 	}
 
 	/**
@@ -59,9 +50,7 @@ class CodeTableProject extends JTable
 		{
 			return $this->load($issueId);
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 }

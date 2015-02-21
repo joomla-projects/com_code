@@ -1,246 +1,25 @@
 <?php
 /**
- * @version		$Id: user.php 404 2010-06-17 01:48:45Z louis $
- * @package		Joomla.Administrator
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
+use Joomla\Registry\Registry;
+
 /**
- * Code tracker issue table object.
- *
- * @package		Joomla.Code
- * @subpackage	com_code
- * @since		1.0
+ * Code tracker user table object.
  */
 class CodeTableUser extends JTable
 {
 	/**
-	 * Primary key for the users table.
-	 *
-	 * @var		integer
-	 * @since	1.0
-	 */
-	public $id = 0;
-
-	/**
-	 * The users real name (or nickname).
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $name;
-
-	/**
-	 * The login name.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $username;
-
-	/**
-	 * The email.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $email;
-
-	/**
-	 * MD5 encrypted password
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $password;
-
-	/**
-	 * Description
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $usertype;
-
-	/**
-	 * Description
-	 *
-	 * @var		integer
-	 * @since	1.0
-	 */
-	public $block = 0;
-
-	/**
-	 * Description
-	 *
-	 * @var		integer
-	 * @since	1.0
-	 */
-	public $sendEmail;
-
-	/**
-	 * Date of user registration.
-	 *
-	 * @var		datetime
-	 * @since	1.0
-	 */
-	public $registerDate;
-
-	/**
-	 * Date of the last site visit.
-	 *
-	 * @var		datetime
-	 * @since	1.0
-	 */
-	public $lastvisitDate;
-
-	/**
-	 * Activation hash.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $activation;
-
-	/**
-	 * The user's settings.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $params;
-
-	/**
-	 * User's first name.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $first_name;
-
-	/**
-	 * User's last name.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $last_name;
-
-	/**
-	 * User's address - line 1.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $address;
-
-	/**
-	 * User's address - line 2.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $address2;
-
-	/**
-	 * User's city.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $city;
-
-	/**
-	 * User's region.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $region;
-
-	/**
-	 * User's country.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $country;
-
-	/**
-	 * User's postal code.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $postal_code;
-
-	/**
-	 * User's longitude.
-	 *
-	 * @var		float
-	 * @since	1.0
-	 */
-	public $longitude = 0.0;
-
-	/**
-	 * User's latitude.
-	 *
-	 * @var		float
-	 * @since	1.0
-	 */
-	public $latitude = 0.0;
-
-	/**
-	 * User's phone number.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $phone;
-
-	/**
-	 * User's agreed to terms of service flag.
-	 *
-	 * @var		integer
-	 * @since	1.0
-	 */
-	public $agreed_tos = 0;
-
-	/**
-	 * User's signed CLA flag.
-	 *
-	 * @var		integer
-	 * @since	1.0
-	 */
-	public $signed_jca = 0;
-
-	/**
-	 * User's signed CLA flag.
-	 *
-	 * @var		string
-	 * @since	1.0
-	 */
-	public $jca_document_id;
-
-	/**
-	 * JoomlaCode legacy user id.
-	 *
-	 * @var		integer
-	 * @since	1.0
-	 */
-	public $jc_user_id = 0;
-
-	/**
 	 * Constructor.
 	 *
-	 * @param	JDatabaseDriver  $db  A database connector object.
-	 *
-	 * @since	1.0
+	 * @param   JDatabaseDriver  $db  A database connector object.
 	 */
 	public function __construct($db)
 	{
@@ -248,21 +27,19 @@ class CodeTableUser extends JTable
 	}
 
 	/**
-	 * Method to bind an object or array to the object.
+	 * Method to bind an associative array or object to the JTable instance.
 	 *
-	 * @param	mixed	Object or associative array.
-	 * @param	mixed	Space delimited string or array of fields to ignore when binding.
+	 * @param   mixed  $src     An associative array or object to bind to the JTable instance.
+	 * @param   mixed  $ignore  An optional array or space separated list of properties to ignore while binding.
 	 *
-	 * @return	boolean	True on success.
-	 *
-	 * @since	1.0
+	 * @return  boolean  True on success.
 	 */
 	public function bind($source, $ignore = '')
 	{
 		// If the params field of the source array is an array, convert it to an INI string.
 		if (is_array($source) && array_key_exists('params', $source) && is_array($source['params']))
 		{
-			$registry = new JRegistry();
+			$registry = new Registry;
 			$registry->loadArray($source['params']);
 			$source['params'] = $registry->toString();
 		}
@@ -291,9 +68,9 @@ class CodeTableUser extends JTable
 	/**
 	 * Method to perform data validation and sanitization before storage.
 	 *
-	 * @return	boolean	True on success.
+	 * @return   boolean  True on success.
 	 *
-	 * @since	1.0
+	 * @since    1.0
 	 */
 	public function check()
 	{
@@ -301,6 +78,7 @@ class CodeTableUser extends JTable
 		if (trim($this->name) == '')
 		{
 			$this->setError(JText::_('Please enter your name.'));
+
 			return false;
 		}
 
@@ -308,20 +86,23 @@ class CodeTableUser extends JTable
 		if (trim($this->username) == '')
 		{
 			$this->setError(JText::_('Please enter a user name.'));
+
 			return false;
 		}
 
 		// Ensure the login name is valid.
-		if (eregi("[<>\"'%;()&]", $this->username) || (strlen(utf8_decode($this->username )) < 2))
+		if (preg_match("/[<>\"'%;()&]/", $this->username) || (strlen(utf8_decode($this->username)) < 2))
 		{
-			$this->setError(JText::sprintf('VALID_AZ09', JText::_( 'Username' ), 2));
+			$this->setError(JText::sprintf('VALID_AZ09', JText::_('Username'), 2));
+
 			return false;
 		}
 
 		// Ensure the email address is valid.
-		if ((trim($this->email) == "") || !JMailHelper::isEmailAddress($this->email))
+		if ((trim($this->email) == '') || !JMailHelper::isEmailAddress($this->email))
 		{
 			$this->setError(JText::_('WARNREG_MAIL'));
+
 			return false;
 		}
 
@@ -342,16 +123,14 @@ class CodeTableUser extends JTable
 				->where($db->quoteName('id') . ' <> ' . (int) $id)
 		);
 
-		$xid = intval($this->_db->loadResult());
+		$xid = intval($db->loadResult());
 
-		if ($xid && $xid != intval( $this->id ))
+		if ($xid && $xid != intval($this->id))
 		{
 			$this->setError(JText::_('WARNREG_INUSE'));
+
 			return false;
 		}
-
-		// Ensure the email is not already being used.
-		$db = $this->getDbo();
 
 		$db->setQuery(
 			$db->getQuery(true)
@@ -398,10 +177,8 @@ class CodeTableUser extends JTable
 		{
 			return $this->legacyLoad($userId);
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
@@ -409,7 +186,7 @@ class CodeTableUser extends JTable
 	 *
 	 * @param   string  $email  E-mail address to lookup
 	 *
-	 * @return  bool  True on success
+	 * @return  boolean  True on success
 	 */
 	public function loadByEmail($email)
 	{
@@ -417,7 +194,7 @@ class CodeTableUser extends JTable
 
 		// Look up the user id based on the email.
 		$db->setQuery(
-            $db->getQuery(true)
+			$db->getQuery(true)
 				->select($db->quoteName('id'))
 				->from($db->quoteName('#__users'))
 				->where($db->quoteName('email') . ' = ' . $db->quote($email))
@@ -429,10 +206,8 @@ class CodeTableUser extends JTable
 		{
 			return $this->legacyLoad($userId);
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
@@ -469,7 +244,7 @@ class CodeTableUser extends JTable
 		$db = $this->getDbo();
 
 		$db->setQuery(
-            $db->getQuery(true)
+			$db->getQuery(true)
 				->select('*')
 				->from($db->quoteName($this->getTableName()))
 				->where($db->quoteName($this->getKeyName()) . ' = ' . (int) $userId)
@@ -490,12 +265,11 @@ class CodeTableUser extends JTable
 		{
 			// Load the extended data fields.
 			$db->setQuery(
-	            $db->getQuery(true)
+				$db->getQuery(true)
 					->select('*')
 					->from($db->quoteName('#__code_users'))
 					->where($db->quoteName('user_id') . ' = ' . (int) $userId)
 			);
-
 
 			try
 			{
@@ -510,30 +284,25 @@ class CodeTableUser extends JTable
 				return false;
 			}
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
-	 * Method to store the object data to the database.
+	 * Method to store a row in the database from the JTable instance properties.
 	 *
-	 * @param	boolean	True to update null fields.
-	 * @return	boolean	True on success.
-	 * @since	1.0
+	 * @param   boolean  $updateNulls  True to update fields even if they are null.
+	 *
+	 * @return  boolean  True on success.
 	 */
 	public function store($updateNulls = false)
 	{
-		// Get an ACL object.
-		$acl = JFactory::getACL();
-
 		// Get the core and extended data objects.
 		$core = $this->_getCoreObject();
 		$extd = $this->_getExtendedObject($core);
 
 		$k = $this->_tbl_key;
-		$key =  $this->$k;
+		$key = $this->$k;
 
 		if ($key)
 		{
@@ -542,14 +311,17 @@ class CodeTableUser extends JTable
 			$this->_db->setQuery(
 				'SELECT user_id' .
 				' FROM #__code_users' .
-				' WHERE user_id = '.(int) $key
+				' WHERE user_id = ' . (int) $key
 			);
+
 			// If the extended record exists update it.
-			if ($this->_db->loadResult()) {
+			if ($this->_db->loadResult())
+			{
 				$ret = $this->_db->updateObject('#__code_users', $extd, 'user_id', $updateNulls);
 			}
 			// If the extended record does not exist insert it.
-			else {
+			else
+			{
 				$extd->user_id = 0;
 				$ret = $this->_db->insertObject('#__code_users', $extd, 'user_id');
 			}
@@ -558,131 +330,128 @@ class CodeTableUser extends JTable
 		else
 		{
 			$this->$k = 0;
+
 			// Only process the #__code_users table
 			// Set the primary key and insert the extended data record.
 			$extd->user_id = 0;
 			$ret = $this->_db->insertObject('#__code_users', $extd, 'user_id');
 		}
 
-		if(!$ret)
+		if (!$ret)
 		{
 			$this->setError($this->_db->getErrorMsg());
+
 			return false;
 		}
-		else {
-			return true;
-		}
+
+		return true;
 	}
 
 	/**
-	 * Method to delete the user data from the database.
+	 * Method to delete a row from the database table by primary key value.
 	 *
-	 * @param	integer	The primary key of the user record to delete.
-	 * @return	boolean	True on success.
-	 * @since	1.0
+	 * @param   mixed  $pk  An optional primary key value to delete.  If not set the instance property value is used.
+	 *
+	 * @return  boolean  True on success.
 	 */
-	function delete($userId = null)
+	public function delete($userId = null)
 	{
-		// Get an ACL object.
-		$acl = JFactory::getACL();
-
 		// Set the primary key if passed as an argument.
 		$k = $this->_tbl_key;
-		if ($userId) {
+
+		if ($userId)
+		{
 			$this->$k = (int) $userId;
 		}
 
+		$db = $this->getDbo();
+
 		// Remove the record from the users table.
-		$this->_db->setQuery(
-			'DELETE FROM '.$this->_tbl .
-			' WHERE '.$this->_tbl_key.' = '.(int) $this->$k
+		$db->setQuery(
+			$db->getQuery(true)
+				->delete($this->_tbl)
+				->where($this->_tbl_key . ' = ' . (int) $this->$k)
 		);
-		if ($this->_db->query())
+
+		try
 		{
-			// Remove the extended user data.
-			$this->_db->setQuery(
-				'DELETE FROM #__code_users' .
-				' WHERE user_id = '.(int) $this->$k
-			);
-			if (!$this->_db->query())
-			{
-				$this->setError($this->_db->getErrorMsg());
-				return false;
-			}
-
-			// Remove the user group mappings.
-			$this->_db->setQuery(
-				'DELETE FROM #__user_usergroup_map' .
-				' WHERE user_id = '.(int) $userId
-			);
-			if (!$this->_db->query())
-			{
-				$this->setError($this->_db->getErrorMsg());
-				return false;
-			}
-
-			// Remove any message information from the database for the user.
-			$this->_db->setQuery(
-				'DELETE FROM #__messages_cfg' .
-				' WHERE user_id = '.(int) $this->$k
-			);
-			if (!$this->_db->query())
-			{
-				$this->setError($this->_db->getErrorMsg());
-				return false;
-			}
-			$this->_db->setQuery(
-				'DELETE FROM #__messages' .
-				' WHERE user_id_to = '.(int) $this->$k
-			);
-			if (!$this->_db->query())
-			{
-				$this->setError($this->_db->getErrorMsg());
-				return false;
-			}
-
-			return true;
+			$db->execute();
 		}
-		else
+		catch (RuntimeException $exception)
 		{
-			$this->setError($this->_db->getErrorMsg());
+			$this->setError($exception->getMessage());
+
 			return false;
 		}
-	}
 
-	/**
-	 * Updates last visit time of a user record.
-	 *
-	 * @param	integer	The timestamp to set for the last visit date.
-	 * @param	integer	The primary key value of the user to update.
-	 * @return	boolean	True on success.
-	 * @since	1.0
-	 */
-	public function setLastVisit($time = null, $id = null)
-	{
-		// Get the primary key value to update.
-		if (is_null($id))
+		// Remove the extended user data.
+		$db->setQuery(
+			$db->getQuery(true)
+				->delete('#__code_users')
+				->where('user_id = ' . (int) $this->$k)
+		);
+
+		try
 		{
-			if (isset($this)) {
-				$id = $this->id;
-			}
-			else {
-				jexit('WARNMOSUSER');
-			}
+			$db->execute();
+		}
+		catch (RuntimeException $exception)
+		{
+			$this->setError($exception->getMessage());
+
+			return false;
 		}
 
-		// Get a JDate object from the time value (defaults to current time).
-		$date = JFactory::getDate($time);
-
-		// Update the last visit date for the user record.
-		$this->_db->setQuery(
-			'UPDATE '.$this->_tbl .
-			' SET lastvisitDate = '.$this->_db->quote($date->toMySQL()) .
-			' WHERE id = '.(int) $id
+		// Remove the user group mappings.
+		$db->setQuery(
+			$db->getQuery(true)
+				->delete('#__user_usergroup_map')
+				->where('user_id = ' . (int) $userId)
 		);
-		if (!$this->_db->query())
+
+		try
 		{
-			$this->setError($this->_db->getErrorMsg());
+			$db->execute();
+		}
+		catch (RuntimeException $exception)
+		{
+			$this->setError($exception->getMessage());
+
+			return false;
+		}
+
+		// Remove any message information from the database for the user.
+		$db->setQuery(
+			$db->getQuery(true)
+				->delete('#__messages_cfg')
+				->where('user_id = ' . (int) $this->$k)
+		);
+
+		try
+		{
+			$db->execute();
+		}
+		catch (RuntimeException $exception)
+		{
+			$this->setError($exception->getMessage());
+
+			return false;
+		}
+
+		$db->setQuery(
+			$db->getQuery(true)
+				->delete('#__messages')
+				->where('user_id_to = ' . (int) $this->$k)
+		);
+
+		try
+		{
+			$db->execute();
+		}
+		catch (RuntimeException $exception)
+		{
+			$this->setError($exception->getMessage());
+
 			return false;
 		}
 
@@ -692,24 +461,24 @@ class CodeTableUser extends JTable
 	/**
 	 * Method to get a data object for the core users table.
 	 *
-	 * @return	object	Data object for the core users table.
-	 * @since	1.0
+	 * @return    object    Data object for the core users table.
+	 * @since    1.0
 	 */
 	protected function _getCoreObject()
 	{
 		$obj = new stdClass;
-		$obj->id			= $this->id;
-		$obj->name			= $this->name;
-		$obj->username		= $this->username;
-		$obj->email			= $this->email;
-		$obj->password		= $this->password;
-		$obj->usertype		= $this->usertype;
-		$obj->block			= $this->block;
-		$obj->sendEmail		= $this->sendEmail;
-		$obj->registerDate	= $this->registerDate;
-		$obj->lastvisitDate	= $this->lastvisitDate;
-		$obj->activation	= $this->activation;
-		$obj->params		= $this->params;
+		$obj->id = $this->id;
+		$obj->name = $this->name;
+		$obj->username = $this->username;
+		$obj->email = $this->email;
+		$obj->password = $this->password;
+		$obj->usertype = $this->usertype;
+		$obj->block = $this->block;
+		$obj->sendEmail = $this->sendEmail;
+		$obj->registerDate = $this->registerDate;
+		$obj->lastvisitDate = $this->lastvisitDate;
+		$obj->activation = $this->activation;
+		$obj->params = $this->params;
 
 		return $obj;
 	}
@@ -717,8 +486,8 @@ class CodeTableUser extends JTable
 	/**
 	 * Method to get a data object for the extended users table.
 	 *
-	 * @return	object	Data object for the extended users table.
-	 * @since	1.0
+	 * @return    object    Data object for the extended users table.
+	 * @since    1.0
 	 */
 	protected function _getExtendedObject($core)
 	{

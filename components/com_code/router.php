@@ -1,10 +1,10 @@
 <?php
 /**
- * @version		$Id: router.php 414 2010-06-24 00:43:39Z louis $
- * @package		Joomla.Site
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Site
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -12,11 +12,11 @@ defined('_JEXEC') or die;
 /**
  * Function to build a Joomla Code URL route.
  *
- * @param	array	The array of query string values for which to build a route.
- * @return	array	The URL route with segments represented as an array.
- * @since	1.0
+ * @param   array  &$query  The array of query string values for which to build a route.
+ *
+ * @return  array  The URL route with segments represented as an array.
  */
-function CodeBuildRoute(& $query)
+function CodeBuildRoute(&$query)
 {
 	// Declare static variables.
 	static $items;
@@ -29,14 +29,15 @@ function CodeBuildRoute(& $query)
 	if (empty($items))
 	{
 		// Get all relevant menu items.
-		$menu	= JFactory::getApplication()->getMenu();
-		$items	= $menu->getItems('component', 'com_code');
+		$menu = JFactory::getApplication()->getMenu();
+		$items = $menu->getItems('component', 'com_code');
 
 		// Build an array of found menu item ids.
 		for ($i = 0, $n = count($items); $i < $n; $i++)
 		{
 			// Check to see if we have found the code status summary menu item.
-			if (empty($cache['summary']) && !empty($items[$i]->query['view']) && ($items[$i]->query['view'] == 'summary')) {
+			if (empty($cache['summary']) && !empty($items[$i]->query['view']) && ($items[$i]->query['view'] == 'summary'))
+			{
 				$cache['summary'] = $items[$i]->id;
 			}
 		}
@@ -50,13 +51,6 @@ function CodeBuildRoute(& $query)
 	{
 		switch ($query['view'])
 		{
-			case 'help':
-				if (!empty($cache['help']))
-				{
-					unset($query['view']);
-					$query['Itemid'] = $cache['help'];
-				}
-				break;
 			case 'issue':
 				if (!empty($cache['summary']))
 				{
@@ -72,6 +66,7 @@ function CodeBuildRoute(& $query)
 				}
 
 				break;
+
 			case 'tracker':
 				if (!empty($cache['summary']))
 				{
@@ -83,8 +78,11 @@ function CodeBuildRoute(& $query)
 					unset($query['tracker_alias']);
 					unset($query['tracker_id']);
 				}
+
 				break;
+
 			case 'trackers':
+			default:
 				if (!empty($cache['summary']))
 				{
 					unset($query['view']);
@@ -92,14 +90,7 @@ function CodeBuildRoute(& $query)
 
 					$segments[] = 'trackers';
 				}
-				break;
-			case 'summary':
-			default:
-				if (!empty($cache['summary']))
-				{
-					unset($query['view']);
-					$query['Itemid'] = $cache['summary'];
-				}
+
 				break;
 		}
 	}
@@ -118,9 +109,9 @@ function CodeBuildRoute(& $query)
 /**
  * Function to parse a Joomla Code URL route.
  *
- * @param	array	The URL route with segments represented as an array.
- * @return	array	The array of variables to set in the request.
- * @version	1.0
+ * @param   array  $segments  The URL route with segments represented as an array.
+ *
+ * @return  array  The array of variables to set in the request.
  */
 function CodeParseRoute($segments)
 {
@@ -128,7 +119,8 @@ function CodeParseRoute($segments)
 	$vars = array();
 
 	// If no segments exist then there is no defined project and we do not support that at this time.
-	if (empty($segments)) {
+	if (empty($segments))
+	{
 		JError::raiseError(404, 'Resource not found.');
 	}
 
@@ -136,14 +128,18 @@ function CodeParseRoute($segments)
 	$projectAlias = array_shift($segments);
 
 	// The only supported project for now is the Joomla! CMS.
-	if ($projectAlias != 'cms') {
+	if ($projectAlias != 'cms')
+	{
 		JError::raiseError(404, 'Resource not found.');
 	}
+
 	$vars['project_id'] = 1;
 
 	// If no further segments exist then we assume the project summary page was requested.
-	if (empty($segments)) {
+	if (empty($segments))
+	{
 		$vars['view'] = 'summary';
+
 		return $vars;
 	}
 
@@ -152,10 +148,11 @@ function CodeParseRoute($segments)
 	{
 		// View trackers and issues.
 		case 'trackers':
-
 			// If there is no given tracker name we default to viewing all trackers and return.
-			if (empty($segments)) {
+			if (empty($segments))
+			{
 				$vars['view'] = 'trackers';
+
 				return $vars;
 			}
 
@@ -163,17 +160,18 @@ function CodeParseRoute($segments)
 			$trackerAlias = str_replace(':', '-', array_shift($segments));
 
 			// Search the database for the appropriate tracker.
-			$db = JFactory::getDBO();
+			$db = JFactory::getDbo();
 			$db->setQuery(
-				'SELECT tracker_id' .
-				' FROM #__code_trackers' .
-				' WHERE alias = '.$db->quote($trackerAlias),
-				0, 1
-			);
+				$db->getQuery(true)
+					->select('tracker_id')
+					->from('#__code_trackers')
+					->where('alias = ' . $db->quote($trackerAlias))
+			, 0, 1);
 			$trackerId = (int) $db->loadResult();
 
 			// If the tracker isn't found throw a 404.
-			if (!$trackerId) {
+			if (!$trackerId)
+			{
 				JError::raiseError(404, 'Resource Not Found');
 			}
 
@@ -181,56 +179,17 @@ function CodeParseRoute($segments)
 			$vars['tracker_id'] = $trackerId;
 
 			// If we have an issue id in the next segment lets set that in the request.
-			if (!empty($segments) && is_numeric($segments[0])) {
+			if (!empty($segments) && is_numeric($segments[0]))
+			{
 				$vars['view'] = 'issue';
 				$vars['issue_id'] = (int) array_shift($segments);
 			}
 			// No issue id so we are looking at the tracker itself.
-			else {
+			else
+			{
 				$vars['view'] = 'tracker';
 			}
-			break;
 
-		// View available downloads.
-		case 'downloads':
-
-			// /release/package.html
-			break;
-
-		// Download the file.
-		case 'download':
-
-			// /file/path.ext
-			break;
-
-		// View historical build information.
-		case 'history':
-
-			$vars['view'] = 'nightly';
-
-			if (count($segments) == 3) {
-
-				// Get the sanitized date path from the request.
-				$date = JFilterInput::getInstance()->clean(array_shift($segments), 'int');
-				$date .= '-'.JFilterInput::getInstance()->clean(array_shift($segments), 'int');
-				$date .= '-'.JFilterInput::getInstance()->clean(array_shift($segments), 'int');
-
-				// Lookup the historical build by date.
-				$db = JFactory::getDBO();
-				$db->setQuery(
-					'SELECT build_id' .
-					' FROM #__code_nightly_builds' .
-					' WHERE build_date = '.$db->quote($date)
-				);
-				$buildId = (int) $db->loadResult();
-
-				// If the build isn't found throw a 404.
-				if (!$buildId) {
-					JError::raiseError(404, 'Resource Not Found');
-				}
-
-				$vars['build_id'] = $buildId;
-			}
 			break;
 	}
 

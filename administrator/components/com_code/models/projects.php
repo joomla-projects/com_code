@@ -1,25 +1,25 @@
 <?php
 /**
- * @version		$Id: projects.php 461 2010-10-30 15:58:47Z louis $
- * @package		Joomla.Administrator
- * @subpackage	com_code
- * @copyright	Copyright (C) 2005 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Administrator
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
-
 /**
  * Methods supporting a list of project records.
- *
- * @package		Joomla.Administrator
- * @subpackage	com_code
  */
 class CodeModelProjects extends JModelList
 {
 	/**
 	 * Method to auto-populate the model state.
+	 *
+	 * This method should only be called once per instantiation and is designed
+	 * to be called on the first call to the getState() method unless the model
+	 * configuration flag to ignore the request is set.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
 	 *
@@ -41,9 +41,6 @@ class CodeModelProjects extends JModelList
 
 		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
-
-		$access = $app->getUserStateFromRequest($this->context . '.filter.access', 'filter_access', 0, 'int');
-		$this->setState('filter.access', $access);
 
 		$published = $app->getUserStateFromRequest($this->context . '.filter.published', 'filter_published', '');
 		$this->setState('filter.published', $published);
@@ -67,7 +64,6 @@ class CodeModelProjects extends JModelList
 	{
 		// Compile the store id.
 		$id .= ':' . $this->getState('filter.search');
-		$id .= ':' . $this->getState('filter.access');
 		$id .= ':' . $this->getState('filter.published');
 
 		return parent::getStoreId($id);
@@ -76,7 +72,7 @@ class CodeModelProjects extends JModelList
 	/**
 	 * Method to get a JDatabaseQuery object for retrieving the data set from a database.
 	 *
-	 * @return  JDatabaseQuery   A JDatabaseQuery object to retrieve the data set.
+	 * @return  JDatabaseQuery  A JDatabaseQuery object to retrieve the data set.
 	 */
 	protected function getListQuery()
 	{
@@ -93,21 +89,12 @@ class CodeModelProjects extends JModelList
 				', a.summary, a.jc_project_id'
 			)
 		);
-		$query->from($db->quoteName('#__code_projects', 'a'));
 
-		// Join over the asset groups.
-		$query->select($db->quoteName('ag.title', 'access_level'));
-		$query->join('LEFT', $db->quoteName('#__viewlevels', 'ag') . ' ON ag.id = a.access');
+		$query->from($db->quoteName('#__code_projects', 'a'));
 
 		// Join over the users for the author.
 		$query->select($db->quoteName('ua.name', 'author_name'));
 		$query->join('LEFT', $db->quoteName('#__users', 'ua') . ' ON ua.id = a.created_by');
-
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			$query->where($db->quoteName('a.access') . ' = ' . (int) $access);
-		}
 
 		// Filter by published state
 		$published = $this->getState('filter.published');

@@ -1,20 +1,16 @@
 <?php
 /**
- * @version		$Id: trackers.php 410 2010-06-21 02:51:34Z louis $
- * @package		Joomla.Site
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Site
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
 /**
  * Trackers Model for Joomla Code
- *
- * @package		Joomla.Code
- * @subpackage	com_code
- * @since		1.0
  */
 class CodeModelTrackers extends JModelLegacy
 {

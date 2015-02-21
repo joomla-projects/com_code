@@ -1,10 +1,10 @@
 <?php
 /**
- * @version		$Id: trackersync.php 458 2010-10-07 18:06:31Z louis $
- * @package		Joomla.Site
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Site
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -18,229 +18,64 @@ require JPATH_COMPONENT . '/helpers/gforgelegacy.php';
 
 /**
  * Tracker Synchronization Model for Joomla Code
- *
- * @package		Joomla.Code
- * @subpackage	com_code
- * @since		1.0
  */
 class CodeModelTrackerSync extends JModelLegacy
 {
 	/**
-	 * @var    GForge  The GForge SOAP connector object.
-	 * @since  1.0
+	 * The GForge SOAP connector object.
+	 *
+	 * @var  GForge
 	 */
 	protected $gforge;
 
 	/**
-	 * @var    GForgeLegacy  The GForge legacy SOAP connector object.
-	 * @since  1.0
+	 * The GForge legacy SOAP connector object.
+	 *
+	 * @var  GForgeLegacy
 	 */
 	protected $gforgeLegacy;
 
 	/**
-	 * @var    array  Associative array of tracker issue status values.
-	 * @since  1.0
+	 * Associative array of tracker issue status values.
+	 *
+	 * @var  array
 	 */
 	protected $status = array();
 
 	/**
-	 * @var    array  Associative array of tracker fields.
-	 * @since  1.0
+	 * Associative array of tracker fields.
+	 *
+	 * @var  array
 	 */
 	protected $fields = array();
 
 	/**
-	 * @var    array  Associative array of tracker field data values.
-	 * @since  1.0
+	 * Associative array of tracker field data values.
+	 *
+	 * @var  array
 	 */
 	protected $fieldValues = array();
 
 	/**
-	 * @var    array  Associative array of processing statistics
-	 * @since  1.0
+	 * Associative array of processing statistics
+	 *
+	 * @var  array
 	 */
 	protected $processingTotals = array();
 
 	/**
-	 * @var    array  Array of trackers to snapshot
-	 * @since  1.0
+	 * Array of trackers to snapshot
+	 *
+	 * @var  array
 	 */
 	protected $syncTrackers = array();
 
 	/**
-	 * @var    JDate  Date object with the time the script started
-	 * @since  3.0
+	 * Date object with the time the script started
+	 *
+	 * @var  JDate
 	 */
 	protected $startTime;
-
-	/**
-	 * Fixes file data for issues
-	 *
-	 * @return  void
-	 */
-	public function filefix()
-	{
-		// Initialize variables.
-		$db = $this->getDbo();
-
-		$db->setQuery(
-		   $db->getQuery(true)
-				->select('DISTINCT issue_id')
-				->from($db->quoteName('#__code_tracker_issue_files'))
-		);
-
-		$issues = $db->loadColumn();
-
-		foreach ($issues as $issue)
-		{
-			$this->fixFilesForIssue($issue);
-		}
-
-		return true;
-	}
-
-	/**
-	 * Fixes file data for issues
-	 *
-	 * @param   string  $issueId  Issue ID
-	 *
-	 * @return  mixed  Boolean false on failure, void otherwise
-	 */
-	private function fixFilesForIssue($issueId)
-	{
-		// Initialize variables.
-		$db = $this->getDBO();
-
-		// Get some important issue data.
-		$db->setQuery(
-			$db->getQuery(true)
-				->select('DISTINCT issue_id, created_by, created_date, modified_date')
-				->from($db->quoteName('#__code_tracker_issues'))
-				->where($db->quoteName('issue_id') . ' = ' . (int) $issueId)
-		);
-		$issue = $db->loadObject();
-
-		// Get the list of comments for this issue.
-		$db->setQuery(
-		   $db->getQuery(true)
-				->select('created_date, created_by, body')
-				->from($db->quoteName('#__code_tracker_issue_responses'))
-				->where($db->quoteName('issue_id') . ' = ' . (int) $issue->issue_id)
-				->order('created_date DESC')
-		);
-		$comments = (array) $db->loadObjectList();
-
-		// Get the list of status changes for this issue.
-		$db->setQuery(
-		   $db->getQuery(true)
-				->select('change_date, change_by')
-				->from($db->quoteName('#__code_tracker_issue_changes'))
-				->where($db->quoteName('issue_id') . ' = ' . (int) $issue->issue_id)
-				->order('change_date DESC')
-		);
-		$changes = (array) $db->loadObjectList();
-
-		// Get the list of files for this issue.
-		$db->setQuery(
-		   $db->getQuery(true)
-				->select('file_id, created_by, name')
-				->from($db->quoteName('#__code_tracker_issue_files'))
-				->where($db->quoteName('issue_id') . ' = ' . (int) $issue->issue_id)
-				->order('jc_file_id DESC')
-		);
-		$files = (array) $db->loadObjectList();
-
-		foreach ($files as &$file)
-		{
-			$found = false;
-
-			// First we look for a comment.
-			foreach ($comments as & $comment)
-			{
-				if (empty($comment->used) && ($comment->created_by == $file->created_by))
-				{
-					$found              = true;
-					$comment->used      = true;
-					$file->created_date = $comment->created_date;
-					break;
-				}
-			}
-
-			// If not found, next we look for a change.
-			if (!$found)
-			{
-				foreach ($changes as & $change)
-				{
-					if (empty($change->used) && ($change->change_by == $file->created_by))
-					{
-						$found              = true;
-						$change->used       = true;
-						$file->created_date = $change->change_date;
-						break;
-					}
-				}
-			}
-
-			// Last we look to see if the issue was created by the person who posted the file
-			if (!$found)
-			{
-				if ($issue->created_by == $file->created_by)
-				{
-					$found              = true;
-					$file->created_date = $issue->created_date;
-				}
-			}
-
-			if ($found)
-			{
-				// Fix the row in the database.
-				$db->setQuery(
-					$db->getQuery(true)
-						->update($db->quoteName('#__code_tracker_issue_files'))
-						->set($db->quoteName('created_date') . ' = ' . $db->quote($file->created_date))
-						->where($db->quoteName('file_id') . ' = ' . (int) $file->file_id)
-				);
-
-				// Check for an error.
-				if (!$this->_db->query())
-				{
-					$this->setError($this->_db->getErrorMsg());
-
-					return false;
-				}
-			}
-			else
-			{
-				// Fix the row in the database.
-				$this->_db->setQuery(
-					$db->getQuery(true)
-						->update($db->quoteName('#__code_tracker_issue_files'))
-						->set($db->quoteName('created_date') . ' = ' . $db->quote($issue->modified_date))
-						->where($db->quoteName('file_id') . ' = ' . (int) $file->file_id)
-				);
-
-				// Check for an error.
-				if (!$this->_db->query())
-				{
-					$this->setError($this->_db->getErrorMsg());
-
-					return false;
-				}
-			}
-		}
-	}
-
-	public function test()
-	{
-		// Get a tracker issue change table object.
-		$table = $this->getTable('TrackerIssueChange', 'CodeTable');
-
-
-		$table->load(42);
-		var_dump(unserialize($table->data));
-		var_dump($table);
-
-	}
 
 	/**
 	 * Gets counts of issues in tracker by status code and store in #__code_tracker_snapshots table by date
@@ -375,6 +210,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			if (empty($trackers))
 			{
 				$this->setError('Unable to get trackers from the server.');
+
 				return false;
 			}
 
@@ -481,6 +317,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			if (!$table->store())
 			{
 				$this->setError($table->getError());
+
 				return false;
 			}
 		}
@@ -528,6 +365,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		if (!$table->store())
 		{
 			$this->setError($table->getError());
+
 			return false;
 		}
 
@@ -537,6 +375,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		if (empty($items))
 		{
 			$this->setError('Unable to get tracker items from the server for tracker: ' . $tracker->summary);
+
 			return false;
 		}
 
@@ -564,13 +403,13 @@ class CodeModelTrackerSync extends JModelLegacy
 			else
 			{
 				$this->syncTrackerItem($item, $tracker->tracker_id, $tracker->project_id, $table->tracker_id, $table->project_id);
+
 				$processedCount++;
 			}
 		}
 
 		JLog::add('Tracker: ' . $tracker->tracker_id . '; Skipped: ' . $skippedCount . ';  Processed issues: ' . $processedCount . ';  Total: ' . $total);
 		$logMessage = 'Issues: ' . $this->processingTotals['issues'] . ';  Changes: ' . $this->processingTotals['changes'] . ';';
-		$logMessage .= '  Files: ' . $this->processingTotals['files'] . ';  Messages: ' . $this->processingTotals['messages'] . ' ;';
 		$logMessage .= '  Users: ' . $this->processingTotals['users'] . ' ;';
 		JLog::add($logMessage);
 
@@ -594,13 +433,12 @@ class CodeModelTrackerSync extends JModelLegacy
 		$this->gforgeLegacy = new GForgeLegacy('http://joomlacode.org/gf');
 		$this->gforgeLegacy->login($username, $password);
 
-		/*
-		 * Get the tracker from the GForge server.
-		 */
+		// Get the tracker from the GForge server.
 		$tracker = $this->gforge->getTracker($trackerId);
 
 		// If a tracker wasn't found return false.
-		if (!is_object($tracker)) {
+		if (!is_object($tracker))
+		{
 			return false;
 		}
 
@@ -623,8 +461,10 @@ class CodeModelTrackerSync extends JModelLegacy
 		$table->bind($data);
 
 		// Attempt to store the tracker data.
-		if (!$table->store()) {
+		if (!$table->store())
+		{
 			$this->setError($table->getError());
+
 			return false;
 		}
 
@@ -676,7 +516,6 @@ class CodeModelTrackerSync extends JModelLegacy
 
 		// Get accessory data on the tracker item from the GForge server.
 		$changes = $this->gforge->getTrackerItemChanges($item->tracker_item_id);
-		$files   = $this->gforgeLegacy->getTrackerItemFiles($item->tracker_item_id, $legacyTrackerId, $legacyProjectId);
 
 		/*
 		 * Synchronize all users relevant to the tracker item.
@@ -701,12 +540,6 @@ class CodeModelTrackerSync extends JModelLegacy
 		foreach ($item->assignees as $assignee)
 		{
 			$usersToLookUp[] = $assignee->assignee;
-		}
-
-		// Add each user ID that submitted a file to the list.
-		foreach ($files as $file)
-		{
-			$usersToLookUp[] = $file->submitted_by;
 		}
 
 		// Add each user ID that made a change to the list.
@@ -803,15 +636,6 @@ class CodeModelTrackerSync extends JModelLegacy
 		if (is_array($item->assignees))
 		{
 			if (!$this->syncTrackerItemAssignments($item->assignees, $users, $table->issue_id, $table->jc_issue_id))
-			{
-				return false;
-			}
-		}
-
-		// Synchronize the files associated with the tracker item.
-		if (is_array($files))
-		{
-			if (!$this->syncTrackerItemFiles($files, $users, $table->issue_id, $table->tracker_id, $table->jc_issue_id, $table->jc_tracker_id))
 			{
 				return false;
 			}
@@ -1146,6 +970,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			if (!$table->store())
 			{
 				$this->setError($table->getError());
+
 				return false;
 			}
 		}
@@ -1208,6 +1033,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			if (!$table->store())
 			{
 				$this->setError($table->getError());
+
 				return false;
 			}
 
@@ -1281,73 +1107,6 @@ class CodeModelTrackerSync extends JModelLegacy
 			}
 
 			$this->processingTotals['messages']++;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Synchronize a tracker item's files
-	 *
-	 * @param   array    $files            Array of file data
-	 * @param   array    $users            Array of user IDs
-	 * @param   string   $issueId          Issue ID
-	 * @param   integer  $trackerId        Tracker ID
-	 * @param   integer  $legacyIssueId    Legacy issue ID
-	 * @param   integer  $legacyTrackerId  Legacy tracker ID
-	 *
-	 * @return  boolean  True on success
-	 */
-	private function syncTrackerItemFiles($files, $users, $issueId, $trackerId, $legacyIssueId, $legacyTrackerId)
-	{
-		// Synchronize each file.
-		foreach ($files as $file)
-		{
-			// Get a tracker issue file table object.
-			$table = $this->getTable('TrackerIssueFile', 'CodeTable');
-
-			// Load any existing data by legacy id.
-			$table->loadByLegacyId($file->id);
-
-			// Skip over rows that exist and haven't changed.
-			if ($table->file_id)
-			{
-				continue;
-			}
-
-			// Populate the appropriate fields from the server data object.
-			$data = array(
-				'issue_id'      => $issueId,
-				'tracker_id'    => $trackerId,
-				'created_date'  => $file->adddate ? $file->adddate : date('Y-m-d'),
-				'created_by'    => $users[$file->submitted_by],
-				'name'          => $file->name,
-				'description'   => $file->description,
-				'size'          => $file->filesize,
-				'type'          => $file->filetype,
-				'jc_file_id'    => $file->id,
-				'jc_issue_id'   => $legacyIssueId,
-				'jc_tracker_id' => $legacyTrackerId,
-				'jc_created_by' => $file->submitted_by
-			);
-
-			// Bind the data to the object.
-			$table->bind($data);
-
-			// Attempt to store the data.
-			if (!$table->store())
-			{
-				$this->setError($table->getError());
-
-				return false;
-			}
-
-			if (!$this->addFileActivity($data))
-			{
-				return false;
-			}
-
-			$this->processingTotals['files']++;
 		}
 
 		return true;
@@ -1479,6 +1238,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		if (empty($got))
 		{
 			$this->setError('Unable to get users from the server.');
+
 			return false;
 		}
 
@@ -1576,7 +1336,7 @@ class CodeModelTrackerSync extends JModelLegacy
 
 		foreach ($values as $value)
 		{
-			// Get a tracker issue file table object.
+			// Get a tracker status table object.
 			$table = $this->getTable('TrackerStatus', 'CodeTable');
 
 			// Load any existing data by legacy id.
@@ -1606,6 +1366,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			if (!$table->store())
 			{
 				$this->setError($table->getError());
+
 				return false;
 			}
 
@@ -1654,11 +1415,10 @@ class CodeModelTrackerSync extends JModelLegacy
 	{
 		$db = $this->getDbo();
 
-		$query = 'INSERT IGNORE INTO #__code_activity_detail SET activity_type = ' . (int) $type
-			. ', activity_xref_id = ' . (int) $xref
-			. ', jc_user_id = ' . (int) $userId
-			. ', jc_issue_id = ' . (int) $issueId
-			. ', activity_date = ' . $db->quote($date);
+		$query = $db->getQuery(true)
+			->insert('#__code_activity_detail')
+			->columns(array('activity_type', 'activity_xref_id', 'jc_user_id', 'jc_issue_id', 'activity_date'))
+			->values((int) $type . ', ' . (int) $xref . ', ' . (int) $userId . ', ' . (int) $issueId . ', ' . $db->quote($date));
 
 		$db->setQuery($query);
 
@@ -1693,26 +1453,6 @@ class CodeModelTrackerSync extends JModelLegacy
 		if (strpos($data['description'], "/pull/") !== false)
 		{
 			if (!$this->addActivity(7, $data['jc_issue_id'], $data['jc_created_by'], $data['jc_issue_id'], $data['created_date']))
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Proxy to addActivity() for file activities
-	 *
-	 * @param   array  $data  Data array to process
-	 *
-	 * @return  boolean  True on success
-	 */
-	private function addFileActivity($data)
-	{
-		if (strpos($data['name'], 'diff') !== false || strpos($data['name'], 'patch') !== false)
-		{
-			if (!$this->addActivity(5, $data['jc_file_id'], $data['jc_created_by'], $data['jc_issue_id'], $data['created_date']))
 			{
 				return false;
 			}

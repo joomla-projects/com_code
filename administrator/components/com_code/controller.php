@@ -1,29 +1,23 @@
 <?php
 /**
- * @version		$Id: controller.php 461 2010-10-30 15:58:47Z louis $
- * @package		Joomla.Administrator
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
- * @since		1.6
+ * @package     Joomla.Administrator
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
 /**
- * Code master display controller.
- *
- * @package		Joomla.Administrator
- * @subpackage	com_code
- * @since		1.6
+ * Code component base controller.
  */
 class CodeController extends JControllerLegacy
 {
 	/**
 	 * The default view.
 	 *
-	 * @var    string
-	 * @since  1.6
+	 * @var  string
 	 */
 	protected $default_view = 'about';
 
@@ -37,8 +31,6 @@ class CodeController extends JControllerLegacy
 	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
 	 *
 	 * @return  CodeController  This object to support chaining.
-	 *
-	 * @since   12.2
 	 */
 	public function display($cachable = false, $urlparams = array())
 	{
@@ -49,11 +41,11 @@ class CodeController extends JControllerLegacy
 		$id     = $this->input->getInt('id');
 
 		// Check for edit form.
-		if ($view == 'branch' && $layout == 'edit' && !$this->checkEditId('com_code.edit.branch', $id))
+		if ($view == 'project' && $layout == 'edit' && !$this->checkEditId('com_code.edit.project', $id))
 		{
 			// Somehow the person just went to the form - we don't allow that.
 			$this->setMessage(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id), 'error');
-			$this->setRedirect(JRoute::_('index.php?option=com_code&view=branches', false));
+			$this->setRedirect(JRoute::_('index.php?option=com_code&view=projects', false));
 
 			return false;
 		}

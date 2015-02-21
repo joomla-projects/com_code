@@ -1,20 +1,16 @@
 <?php
 /**
- * @version		$Id: issue.php 410 2010-06-21 02:51:34Z louis $
- * @package		Joomla.Site
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Site
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
 /**
  * Issue Model for Joomla Code
- *
- * @package		Joomla.Code
- * @subpackage	com_code
- * @since		1.0
  */
 class CodeModelIssue extends JModelLegacy
 {
@@ -22,7 +18,7 @@ class CodeModelIssue extends JModelLegacy
 	{
 		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;
 
-		$db = $this->getDBO();
+		$db = $this->getDbo();
 
 		$db->setQuery(
 			$db->getQuery(true)
@@ -33,21 +29,19 @@ class CodeModelIssue extends JModelLegacy
 
 		try
 		{
-			$item = $db->loadObject();
+			return $db->loadObject();
 		}
 		catch (RuntimeException $e)
 		{
 			JError::raiseError(500, 'Unable to access resource: ' . $e->getMessage());
 		}
-
-		return $item;
 	}
 
 	public function getTags($issueId = null)
 	{
 		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;
 
-		$db = $this->getDBO();
+		$db = $this->getDbo();
 
 		$db->setQuery(
 		   $db->getQuery(true)
@@ -59,13 +53,11 @@ class CodeModelIssue extends JModelLegacy
 
 		try
 		{
-			$items = $db->loadObjectList();
+			return $db->loadObjectList();
 		}
 		catch (RuntimeException $e)
 		{
 			JError::raiseError(500, 'Unable to access resource: ' . $e->getMessage());
 		}
-
-		return $items;
 	}
 }

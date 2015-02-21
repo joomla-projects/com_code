@@ -1,10 +1,10 @@
 <?php
 /**
- * @version		$Id: gforgelegacy.php 439 2010-06-29 21:12:25Z louis $
- * @package		Joomla.Site
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Site
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -12,33 +12,35 @@ defined('_JEXEC') or die;
 /**
  * Connector class to a GForge Advanced Server Legacy SOAP API.
  *
- * @package  Joomla.Code
- * @see      http://joomlacode.org/gf/xmlcompatibility/soap/
- * @since    1.0
+ * @see  http://joomlacode.org/gf/xmlcompatibility/soap/
  */
 class GForgeLegacy
 {
 	/**
-	 * @var    SoapClient  The client object connected to the GForge instance.
-	 * @since  1.0
+	 * The client object connected to the GForge instance.
+	 *
+	 * @var  SoapClient
 	 */
 	protected $client;
 
 	/**
-	 * @var    string  The session hash for the SOAP session.
-	 * @since  1.0
+	 * The session hash for the SOAP session.
+	 *
+	 * @var  string
 	 */
 	protected $sessionhash;
 
 	/**
-	 * @var    string  The username for the signed in session.
-	 * @since  1.0
+	 * The username for the signed in session.
+	 *
+	 * @var  string
 	 */
 	protected $username;
 
 	/**
-	 * @var    string  The URI for the API
-	 * @since  1.0
+	 * The URI for the API
+	 *
+	 * @var  string
 	 */
 	protected $apiUri = '/xmlcompatibility/soap/?wsdl';
 
@@ -48,7 +50,6 @@ class GForgeLegacy
 	 * @param   string  $site     The URL to the gforge instance.
 	 * @param   array   $options  The SOAP options for the connection.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function __construct($site, $options = array())
@@ -65,8 +66,6 @@ class GForgeLegacy
 
 	/**
 	 * Object destructor.  Signs out and closes the connection.
-	 *
-	 * @since   1.0
 	 */
 	public function __destruct()
 	{
@@ -92,7 +91,6 @@ class GForgeLegacy
 	 *
 	 * @return	boolean  True on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function login($username, $password)
@@ -119,7 +117,6 @@ class GForgeLegacy
 	 *
 	 * @return	boolean  True on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function logout()
@@ -147,7 +144,6 @@ class GForgeLegacy
 	 *
 	 * @return  object   User data object on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getUser($username = null)
@@ -155,9 +151,7 @@ class GForgeLegacy
 		try
 		{
 			// Attempt to get the user object by the username or "unix name" in GForge speak.
-			$user = $this->client->getUserByUnixName($this->sessionhash, $username ? $username : $this->username);
-
-			return $user;
+			return $this->client->getUserByUnixName($this->sessionhash, $username ? $username : $this->username);
 		}
 		catch (SoapFault $e)
 		{
@@ -174,7 +168,6 @@ class GForgeLegacy
 	 *
 	 * @return  array  Tracker item files data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getTrackerItemFiles($itemId, $trackerId, $projectId)
@@ -182,9 +175,7 @@ class GForgeLegacy
 		try
 		{
 			// Attempt to get the files data array by the tracker item id.
-			$changes = $this->client->getArtifactFiles($this->sessionhash, $projectId, $trackerId, $itemId);
-
-			return $changes;
+			return $this->client->getArtifactFiles($this->sessionhash, $projectId, $trackerId, $itemId);
 		}
 		catch (SoapFault $e)
 		{
@@ -202,7 +193,6 @@ class GForgeLegacy
 	 *
 	 * @return  array  Tracker item files data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getTrackerItemFile($fileId, $itemId, $trackerId, $projectId)
@@ -210,9 +200,7 @@ class GForgeLegacy
 		try
 		{
 			// Attempt to get the file data object by the file id.
-			$changes = $this->client->getArtifactFileData($this->sessionhash, $projectId, $trackerId, $itemId, $fileId);
-
-			return $changes;
+			return $this->client->getArtifactFileData($this->sessionhash, $projectId, $trackerId, $itemId, $fileId);
 		}
 		catch (SoapFault $e)
 		{
@@ -225,7 +213,6 @@ class GForgeLegacy
 	 *
 	 * @return  array  Functions array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	protected function getClientFunctions()
@@ -233,9 +220,7 @@ class GForgeLegacy
 		try
 		{
 			// Attempt to get the client functions.
-			$functions = $this->client->__getFunctions();
-
-			return $functions;
+			return $this->client->__getFunctions();
 		}
 		catch (SoapFault $e)
 		{
@@ -248,7 +233,6 @@ class GForgeLegacy
 	 *
 	 * @return  array  Array of types on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	protected function getClientTypes()
@@ -256,9 +240,7 @@ class GForgeLegacy
 		try
 		{
 			// Attempt to get the client types.
-			$functions = $this->client->__getTypes();
-
-			return $functions;
+			return $this->client->__getTypes();
 		}
 		catch (SoapFault $e)
 		{

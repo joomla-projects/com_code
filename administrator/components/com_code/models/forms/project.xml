@@ -9,10 +9,6 @@
 			size="10"
 		/>
 
-		<field name="asset_id" type="hidden"
-			filter="unset"
-		/>
-
 		<field name="title" type="text"
 			description="JFIELD_TITLE_DESC"
 			label="JGLOBAL_TITLE"
@@ -87,14 +83,6 @@
 			filter="integer"
 			description="COM_CODE_FIELD_CREATED_BY_DESC"
 			readonly="true"
-		/>
-
-		<field name="rules" type="rules"
-			component="com_code"
-			description="COM_CODE_FIELD_RULES_DESC"
-			filter="rules"
-			label="COM_CODE_FIELD_RULES_LABEL"
-			section="branch"
 		/>
 
 		<field name="jc_project_id" type="text"
