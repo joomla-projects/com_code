@@ -14,6 +14,31 @@ defined('_JEXEC') or die;
  */
 class CodeModelIssue extends JModelLegacy
 {
+	public function getComments($issueId = null)
+	{
+		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;
+
+		$db = $this->getDbo();
+
+		$db->setQuery(
+			$db->getQuery(true)
+				->select('a.*, cu.first_name, cu.last_name')
+				->from($db->quoteName('#__code_tracker_issue_responses') . ' AS a')
+				->join('LEFT', '#__code_users AS cu ON cu.user_id = a.created_by')
+				->where($db->quoteName('a.issue_id') . ' = ' . (int) $issueId)
+				->order('a.created_date ASC')
+		);
+
+		try
+		{
+			return $db->loadObjectList();
+		}
+		catch (RuntimeException $e)
+		{
+			JError::raiseError(500, 'Unable to access resource: ' . $e->getMessage());
+		}
+	}
+
 	public function getItem($issueId = null)
 	{
 		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;

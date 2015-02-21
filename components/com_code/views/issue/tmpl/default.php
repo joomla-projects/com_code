@@ -14,10 +14,7 @@ defined('_JEXEC') or die;
 	<?php echo $this->item->title; ?>
 </h1>
 
-<pre class="description" style="white-space: pre-line;">
-	<?php echo $this->item->description; ?>
-</pre>
-<div class="clr"></div>
+<?php echo nl2br($this->item->description); ?>
 
 <?php if (!empty($this->tags)) : ?>
 <span>Filed Under:</span>
@@ -28,4 +25,12 @@ defined('_JEXEC') or die;
 </ul>
 <?php endif; ?>
 
-<div class="clr"></div>
+<?php if (!empty($this->comments)) : ?>
+<span>Responses:</span>
+<?php foreach ($this->comments as $comment) : ?>
+	<div class="well">
+		Posted on <?php echo JHtml::_('date', $comment->created_date, 'j M Y, G:s'); ?> by <?php echo $comment->first_name . ' ' . $comment->last_name; ?>:<br />
+		<?php echo nl2br($comment->body); ?>
+	</div>
+<?php endforeach; ?>
+<?php endif; ?>
