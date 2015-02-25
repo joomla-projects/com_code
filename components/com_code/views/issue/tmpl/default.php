@@ -8,6 +8,10 @@
  */
 
 defined('_JEXEC') or die;
+
+// Load the CSS stylesheets
+JHtml::_('stylesheet', 'default.css', 'components/com_code/media/css/');
+
 ?>
 
 <h1>
