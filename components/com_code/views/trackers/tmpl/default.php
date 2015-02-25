@@ -8,6 +8,9 @@
  */
 
 defined('_JEXEC') or die;
+
+// Load the CSS Stylesheet
+JHtml::_('stylesheet', 'default.css', 'components/com_code/media/css/');
 ?>
 
 <div id="trackers">
@@ -16,7 +19,7 @@ defined('_JEXEC') or die;
 	</h1>
 
 	<?php foreach ($this->items as $tracker) : ?>
-		<div class="trackers branch-<?php echo $tracker->tracker_id; ?>">
+		<div class="trackers branch-<?php echo $tracker->tracker_id; ?> well">
 			<h3>
 				<a href="<?php echo JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $tracker->tracker_id); ?>" title="View <?php echo $tracker->title; ?>.">
 					<?php echo $tracker->title; ?></a>
