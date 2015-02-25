@@ -38,6 +38,11 @@
 		<folder>views</folder>
 	</files>
 
+	<media destination="com_code" folder="media">
+		<folder>css</folder>
+		<folder>js</folder>
+	</media>
+
 	<administration>
 		<files folder="admin">
 			<folder>controllers</folder>

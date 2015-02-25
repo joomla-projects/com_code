@@ -10,8 +10,7 @@
 defined('_JEXEC') or die;
 
 // Load the CSS stylesheets
-JHtml::_('stylesheet', 'default.css', 'components/com_code/media/css/');
-
+JHtml::_('stylesheet', 'com_patchtester/default.css', array(), true);
 ?>
 
 <h1>
@@ -43,7 +42,7 @@ JHtml::_('stylesheet', 'default.css', 'components/com_code/media/css/');
 						<span class="comment-owner">
 							Posted on <?php echo JHtml::_('date', $comment->created_date, 'j M Y, G:s'); ?> by <?php echo $comment->first_name . ' ' . $comment->last_name; ?>
 						</span>
-						<div class="issue-comment-details">			
+						<div class="issue-comment-details">
 							<?php echo nl2br($comment->body); ?>
 						</div>
 					</div>
