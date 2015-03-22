@@ -12,6 +12,8 @@ ALTER TABLE  `#__code_trackers` CHANGE  `tracker_id`  `tracker_id` INT( 10 ) UNS
 UPDATE `#__code_trackers` SET `tracker_id`= `jc_tracker_id`,`project_id`=`jc_project_id`;
 ALTER TABLE  `#__code_trackers` CHANGE  `tracker_id`  `tracker_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT;
 
+UPDATE `#__code_tracker_issues` SET `jc_close_by` = 0 WHERE `jc_close_by` IS NULL;
+
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issues_temp` (
   `issue_id` int(10) unsigned NOT NULL,
   `tracker_id` int(10) unsigned NOT NULL,
@@ -30,12 +32,12 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issues_temp` (
   `title` varchar(255) NOT NULL,
   `alias` varchar(255) NOT NULL,
   `description` mediumtext,
-  `jc_issue_id` int(10) DEFAULT NULL,
-  `jc_tracker_id` int(10) DEFAULT NULL,
-  `jc_project_id` int(10) DEFAULT NULL,
-  `jc_created_by` int(11) DEFAULT NULL,
-  `jc_modified_by` int(11) DEFAULT NULL,
-  `jc_close_by` int(11) DEFAULT NULL,
+  `jc_issue_id` int(10) unsigned NOT NULL,
+  `jc_tracker_id` int(10) unsigned NOT NULL,
+  `jc_project_id` int(10) unsigned NOT NULL,
+  `jc_created_by` int(11) NOT NULL,
+  `jc_modified_by` int(11) NOT NULL,
+  `jc_close_by` int(11) NOT NULL,
   PRIMARY KEY (`issue_id`),
   UNIQUE KEY `idx_tracker_issues_legacy` (`jc_issue_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
