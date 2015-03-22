@@ -27,89 +27,66 @@ class CodeRouter extends JComponentRouterBase
 	 */
 	public function build(&$query)
 	{
-		// Declare static variables.
-		static $items;
-		static $cache = array();
-
 		// Initialize variables.
 		$segments = array();
 
-		// Get the relevant menu items if not loaded.
-		if (empty($items))
+		// We need a menu item.  Either the one specified in the query, or the current active one if none specified
+		if (empty($query['Itemid']))
 		{
-			// Get all relevant menu items.
-			$menu = JFactory::getApplication()->getMenu();
-			$items = $menu->getItems('component', 'com_code');
-
-			// Build an array of found menu item ids.
-			for ($i = 0, $n = count($items); $i < $n; $i++)
-			{
-				// Check to see if we have found the code status summary menu item.
-				if (empty($cache['summary']) && !empty($items[$i]->query['view']) && ($items[$i]->query['view'] == 'summary'))
-				{
-					$cache['summary'] = $items[$i]->id;
-				}
-			}
+			$menuItem = $this->menu->getActive();
+			$menuItemGiven = false;
 		}
+		else
+		{
+			$menuItem = $this->menu->getItem($query['Itemid']);
+			$menuItemGiven = true;
+		}
+
+		// Check again
+		if ($menuItemGiven && isset($menuItem) && $menuItem->component != 'com_code')
+		{
+			$menuItemGiven = false;
+			unset($query['Itemid']);
+		}
+
+		if (!isset($query['view']))
+		{
+			// We need to have a view in the query or it is an invalid URL
+			return $segments;
+		}
+
+		$view = $query['view'];
+		unset($query['view']);
 
 		// Only one project for now.
 		$segments[] = 'cms';
 		unset($query['project_id']);
 
-		if (!empty($query['view']))
+		switch ($view)
 		{
-			switch ($query['view'])
-			{
-				case 'issue':
-					if (!empty($cache['summary']))
-					{
-						unset($query['view']);
-						$query['Itemid'] = $cache['summary'];
+			case 'issue':
+				$segments[] = 'trackers';
+				$segments[] = @$query['tracker_alias'];
+				$segments[] = @$query['issue_id'];
+				unset($query['tracker_alias']);
+				unset($query['tracker_id']);
+				unset($query['issue_id']);
 
-						$segments[] = 'trackers';
-						$segments[] = @$query['tracker_alias'];
-						$segments[] = @$query['issue_id'];
-						unset($query['tracker_alias']);
-						unset($query['tracker_id']);
-						unset($query['issue_id']);
-					}
+				break;
 
-					break;
+			case 'tracker':
+				$segments[] = 'trackers';
+				$segments[] = @$query['tracker_alias'];
+				unset($query['tracker_alias']);
+				unset($query['tracker_id']);
 
-				case 'tracker':
-					if (!empty($cache['summary']))
-					{
-						unset($query['view']);
-						$query['Itemid'] = $cache['summary'];
+				break;
 
-						$segments[] = 'trackers';
-						$segments[] = @$query['tracker_alias'];
-						unset($query['tracker_alias']);
-						unset($query['tracker_id']);
-					}
+			case 'trackers':
+			default:
+				$segments[] = 'trackers';
 
-					break;
-
-				case 'trackers':
-				default:
-					if (!empty($cache['summary']))
-					{
-						unset($query['view']);
-						$query['Itemid'] = $cache['summary'];
-
-						$segments[] = 'trackers';
-					}
-
-					break;
-			}
-		}
-		elseif (!empty($query['task']))
-		{
-			if (!empty($cache['summary']))
-			{
-				unset($query['view']);
-				$query['Itemid'] = $cache['summary'];
-			}
+				break;
 		}
 
 		return $segments;
@@ -146,14 +123,6 @@ class CodeRouter extends JComponentRouterBase
 
 		$vars['project_id'] = 1;
 
-		// If no further segments exist then we assume the project summary page was requested.
-		if (empty($segments))
-		{
-			$vars['view'] = 'summary';
-
-			return $vars;
-		}
-
 		// Get the view/task definition from the next segment.
 		switch (array_shift($segments))
 		{
@@ -181,24 +150,22 @@ class CodeRouter extends JComponentRouterBase
 				$trackerId = (int) $db->loadResult();
 
 				// If the tracker isn't found throw a 404.
-				if (!$trackerId)
+				if ($trackerId)
 				{
-					JError::raiseError(404, 'Resource Not Found');
-				}
+					// We found a valid tracker with that alias so set the id.
+					$vars['tracker_id'] = $trackerId;
 
-				// We found a valid tracker with that alias so set the id.
-				$vars['tracker_id'] = $trackerId;
-
-				// If we have an issue id in the next segment lets set that in the request.
-				if (!empty($segments) && is_numeric($segments[0]))
-				{
-					$vars['view'] = 'issue';
-					$vars['issue_id'] = (int) array_shift($segments);
-				}
-				// No issue id so we are looking at the tracker itself.
-				else
-				{
-					$vars['view'] = 'tracker';
+					// If we have an issue id in the next segment lets set that in the request.
+					if (!empty($segments) && is_numeric($segments[0]))
+					{
+						$vars['view'] = 'issue';
+						$vars['issue_id'] = (int) array_shift($segments);
+					}
+					// No issue id so we are looking at the tracker itself.
+					else
+					{
+						$vars['view'] = 'tracker';
+					}
 				}
 
 				break;
