@@ -188,8 +188,15 @@ class CodeModelIssues extends JModelList
 		}
 
 		/*
-		 * TODO: Search Filter
+		 * Search Filter
 		 */
+		$search = $this->getState('filter.search');
+
+		if ($search)
+		{
+			$search = '%' . trim($search) . '%';
+			$query->where($db->qn('a') . '.' . $db->qn('title') . ' LIKE ' . $db->q($search));
+		}
 
 		// Add the list ordering clause.
 		$query->order($this->getState('list.ordering', 'a.created_date') . ' ' . $this->getState('list.direction', 'ASC'));
@@ -218,7 +225,7 @@ class CodeModelIssues extends JModelList
 		//$this->setState('filter.state', 1);
 
 		// Set the optional filter search string text.
-		//$this->setState('filter.search', JRequest::getString('filter-search'));
+		$this->setState('filter.search', $app->input->getString('search'));
 
 		// Set the tracker filter.
 		//$this->setState('filter.tracker_id', 1);

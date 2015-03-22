@@ -123,6 +123,7 @@ class CodeModelTracker extends JModelItem
 
 			$model->setState('options', $this->getState('options'));
 			$model->setState('filter.tracker_id', $pk);
+			$model->setState('filter.search', $this->getState('filter.search'));
 			$model->setState('list.start', $this->getState('list.start'));
 			$model->setState('list.ordering', $this->getState('list.ordering'));
 			$model->setState('list.direction', $this->getState('list.direction'));
@@ -169,7 +170,7 @@ class CodeModelTracker extends JModelItem
 		//$this->setState('filter.state', 1);
 
 		// Set the optional filter search string text.
-		//$this->setState('filter.search', JRequest::getString('filter-search'));
+		$this->setState('filter.search', $app->getUserStateFromRequest('issue.search', 'search', null, 'string'));
 
 		// Set the tracker filter.
 		//$this->setState('filter.tracker_id', 1);
