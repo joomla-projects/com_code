@@ -1,7 +1,3 @@
-DROP TABLE IF EXISTS `#__code_activity_detail`;
-
-DROP TABLE IF EXISTS `#__code_activity_types`;
-
 DROP TABLE IF EXISTS `#__code_projects`;
 
 DROP TABLE IF EXISTS `#__code_tags`;
@@ -9,8 +5,6 @@ DROP TABLE IF EXISTS `#__code_tags`;
 DROP TABLE IF EXISTS `#__code_trackers`;
 
 DROP TABLE IF EXISTS `#__code_tracker_issues`;
-
-DROP TABLE IF EXISTS `#__code_tracker_issue_assignments`;
 
 DROP TABLE IF EXISTS `#__code_tracker_issue_changes`;
 

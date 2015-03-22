@@ -1,9 +1,3 @@
-DROP TABLE IF EXISTS `#__code_activity_detail`;
-
-DROP TABLE IF EXISTS `#__code_activity_types`;
-
-DROP TABLE IF EXISTS `#__code_tracker_issue_assignments`;
-
 CREATE TABLE IF NOT EXISTS `#__code_tags` (
   `tag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tag` varchar(512) DEFAULT NULL,
