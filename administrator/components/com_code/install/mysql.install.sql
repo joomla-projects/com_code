@@ -1,32 +1,6 @@
-CREATE TABLE IF NOT EXISTS `#__code_activity_detail` (
-  `activity_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '1-create; 2-comment; 3-change; 4-test; 5-patch; 6-pull in comment; 7-pull in description',
-  `activity_xref_id` int(10) unsigned NOT NULL COMMENT 'id for issue, response, change, or file',
-  `jc_user_id` int(11) DEFAULT NULL,
-  `jc_issue_id` int(11) DEFAULT NULL,
-  `activity_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`activity_type`,`activity_xref_id`),
-  KEY `idx_activity_date` (`activity_date`),
-  KEY `idx_user_id` (`jc_user_id`),
-  KEY `idx_jc_issue_id` (`jc_issue_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS `#__code_activity_detail`;
 
-CREATE TABLE IF NOT EXISTS `#__code_activity_types` (
-  `activity_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '1-create; 2-comment; 3-change; 4-test; 5-patch; 6-pull in comment; 7-pull in description',
-  `activity_title` varchar(255) DEFAULT NULL,
-  `activity_group` varchar(255) DEFAULT NULL,
-  `activity_description` varchar(500) DEFAULT NULL,
-  `activity_points` tinyint(4) DEFAULT NULL COMMENT 'Weighting for each type of activity',
-  PRIMARY KEY (`activity_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `#__code_activity_types` (`activity_type`, `activity_title`, `activity_group`, `activity_description`, `activity_points`) VALUES
-(1, 'Create Issue', 'Tracker', 'Create a new issue in tracker.', 3),
-(2, 'Comment Issue', 'Tracker', 'Add a comment to an issue.', 1),
-(3, 'Change Issue', 'Tracker', 'Change the status of an issue.', 1),
-(4, 'Test Issue', 'Test', 'Test an issue.', 5),
-(5, 'Patch Issue', 'Code', 'Create a patch or diff file for an issue.', 5),
-(6, 'Pull Request in Comment', 'Code', 'Add a pull request link in a comment.', 5),
-(7, 'Pull Request in Description', 'Code', 'Add a pull request link in the original issue description.', 5);
+DROP TABLE IF EXISTS `#__code_activity_types`;
 
 CREATE TABLE IF NOT EXISTS `#__code_projects` (
   `project_id` int(10) unsigned NOT NULL AUTO_INCREMENT,

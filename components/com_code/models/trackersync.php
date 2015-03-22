@@ -791,14 +791,6 @@ class CodeModelTrackerSync extends JModelLegacy
 
 		$this->processingTotals['issues']++;
 
-		if (!isset($exists->status))
-		{
-			if (!$this->addCreateActivities($data))
-			{
-				return false;
-			}
-		}
-
 		// Synchronize the assignees associated with the tracker item.
 		if (is_array($item->assignees))
 		{
@@ -1211,11 +1203,6 @@ class CodeModelTrackerSync extends JModelLegacy
 				return false;
 			}
 
-			if (!$this->addActivity(3, $data['jc_issue_id'], $data['jc_change_by'], $data['jc_issue_id'], $data['change_date']))
-			{
-				return false;
-			}
-
 			$this->processingTotals['changes']++;
 		}
 
@@ -1272,11 +1259,6 @@ class CodeModelTrackerSync extends JModelLegacy
 			{
 				$this->setError($table->getError());
 
-				return false;
-			}
-
-			if (!$this->addCommentActivity($data))
-			{
 				return false;
 			}
 
@@ -1339,11 +1321,6 @@ class CodeModelTrackerSync extends JModelLegacy
 			{
 				$this->setError($table->getError());
 
-				return false;
-			}
-
-			if (!$this->addFileActivity($data))
-			{
 				return false;
 			}
 
@@ -1637,120 +1614,5 @@ class CodeModelTrackerSync extends JModelLegacy
 				);
 			}
 		}
-	}
-
-	/**
-	 * Insert an activity record into the database
-	 *
-	 * @param   integer  $type     Activity ID
-	 * @param   integer  $xref     Reference ID
-	 * @param   integer  $userId   User ID
-	 * @param   integer  $issueId  Issue ID
-	 * @param   string   $date     Activity date
-	 *
-	 * @return  boolean
-	 */
-	private function addActivity($type, $xref, $userId, $issueId, $date)
-	{
-		$db = $this->getDbo();
-
-		$query = 'INSERT IGNORE INTO #__code_activity_detail SET activity_type = ' . (int) $type
-			. ', activity_xref_id = ' . (int) $xref
-			. ', jc_user_id = ' . (int) $userId
-			. ', jc_issue_id = ' . (int) $issueId
-			. ', activity_date = ' . $db->quote($date);
-
-		$db->setQuery($query);
-
-		try
-		{
-			$db->execute();
-		}
-		catch (RuntimeException $e)
-		{
-			$this->setError($e->getMessage());
-
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Proxy to addActivity() for create activities
-	 *
-	 * @param   array  $data  Data array to process
-	 *
-	 * @return  boolean  True on success
-	 */
-	private function addCreateActivities($data)
-	{
-		if (!$this->addActivity(1, $data['jc_issue_id'], $data['jc_created_by'], $data['jc_issue_id'], $data['created_date']))
-		{
-			return false;
-		}
-
-		if (strpos($data['description'], "/pull/") !== false)
-		{
-			if (!$this->addActivity(7, $data['jc_issue_id'], $data['jc_created_by'], $data['jc_issue_id'], $data['created_date']))
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Proxy to addActivity() for file activities
-	 *
-	 * @param   array  $data  Data array to process
-	 *
-	 * @return  boolean  True on success
-	 */
-	private function addFileActivity($data)
-	{
-		if (strpos($data['name'], 'diff') !== false || strpos($data['name'], 'patch') !== false)
-		{
-			if (!$this->addActivity(5, $data['jc_file_id'], $data['jc_created_by'], $data['jc_issue_id'], $data['created_date']))
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Proxy to addActivity() for comment activities
-	 *
-	 * @param   array  $data  Data array to process
-	 *
-	 * @return  boolean  True on success
-	 */
-	private function addCommentActivity($data)
-	{
-		if (!$this->addActivity(2, $data['jc_response_id'], $data['jc_created_by'], $data['jc_issue_id'], $data['created_date']))
-		{
-			return false;
-		}
-
-		if (strpos($data['body'], "/pull/") !== false || strpos($data['body'], "/compare/") !== false || strpos($data['body'], ".diff") !== false)
-		{
-			if (!$this->addActivity(6, $data['jc_response_id'], $data['jc_created_by'], $data['jc_issue_id'], $data['created_date']))
-			{
-				return false;
-			}
-		}
-
-		if (strpos($data['body'], "@test") !== false)
-		{
-			if (!$this->addActivity(4, $data['jc_response_id'], $data['jc_created_by'], $data['jc_issue_id'], $data['created_date']))
-			{
-				return false;
-			}
-		}
-
-		return true;
 	}
 }

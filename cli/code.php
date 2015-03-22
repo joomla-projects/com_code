@@ -240,25 +240,8 @@ class Code extends JApplicationCli
 		}
 
 		/*
-		 * Step 3 - Remove orphaned activity detail records
+		 * Step 3 - Remove orphaned activity detail records –– Obsolete after the removal of activity details
 		 */
-
-		$db->setQuery(
-			$db->getQuery(true)
-				->delete($db->quoteName('#__code_activity_detail'))
-				->where($db->quoteName('jc_issue_id') . ' IN (' . implode(',', $issueJcIds) . ')')
-		);
-
-		try
-		{
-			$db->execute();
-		}
-		catch (RuntimeException $e)
-		{
-			JLog::add('Error deleting detail records - ' . $e->getMessage(), JLog::ERROR, 'dbcleanup');
-			$this->out('Failed to complete cleanup properly, please review the log for details.', true);
-			$this->close($e->getCode());
-		}
 
 		/*
 		 * Step 4 - Remove orphaned issue assignment records
