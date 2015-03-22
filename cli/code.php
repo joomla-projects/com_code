@@ -244,25 +244,8 @@ class Code extends JApplicationCli
 		 */
 
 		/*
-		 * Step 4 - Remove orphaned issue assignment records
+		 * Step 4 - Remove orphaned issue assignment records –– Obsolete after the removal of issue assignments archiving
 		 */
-
-		$db->setQuery(
-			$db->getQuery(true)
-				->delete($db->quoteName('#__code_tracker_issue_assignments'))
-				->where($db->quoteName('issue_id') . ' IN (' . implode(',', $issueIds) . ')')
-		);
-
-		try
-		{
-			$db->execute();
-		}
-		catch (RuntimeException $e)
-		{
-			JLog::add('Error deleting assignment records - ' . $e->getMessage(), JLog::ERROR, 'dbcleanup');
-			$this->out('Failed to complete cleanup properly, please review the log for details.', true);
-			$this->close($e->getCode());
-		}
 
 		/*
 		 * Step 5 - Remove orphaned file records
