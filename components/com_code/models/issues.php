@@ -42,12 +42,12 @@ class CodeModelIssues extends JModelList
 		$query->join('LEFT', '#__code_trackers AS t on t.tracker_id = a.tracker_id');
 
 		// Join on user table for created by information.
-		$query->select('cu.name AS created_user_name, cu.username AS created_user_login_name');
-		$query->join('LEFT', '#__code_users AS cu on cu.id = a.created_by');
+		$query->select($query->concatenate(array('cu.first_name', $db->quote(' '), 'cu.last_name')) . ' AS created_user_name');
+		$query->join('LEFT', '#__code_users AS cu on cu.user_id = a.created_by');
 
 		// Join on user table for modified by information.
-		$query->select('mu.name AS modified_user_name, mu.username AS modified_user_login_name');
-		$query->join('LEFT', '#__code_users AS mu on mu.id = a.modified_by');
+		$query->select($query->concatenate(array('mu.first_name', $db->quote(' '), 'mu.last_name')) . ' AS modified_user_name');
+		$query->join('LEFT', '#__code_users AS mu on mu.user_id = a.modified_by');
 
 		// Filter by state.
 		$stateFilter = $this->getState('filter.state');
