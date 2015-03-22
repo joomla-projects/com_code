@@ -1,20 +1,18 @@
 <?php
 /**
- * @version		$Id: tracker.php 420 2010-06-25 01:56:28Z louis $
- * @package		Joomla.Site
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Site
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
+use Joomla\Registry\Registry;
+
 /**
  * Tracker Model for Joomla Code
- *
- * @package		Joomla.Code
- * @subpackage	com_code
- * @since		1.0
  */
 class CodeModelTracker extends JModelItem
 {
@@ -32,9 +30,9 @@ class CodeModelTracker extends JModelItem
 	/**
 	 * Method to get article data.
 	 *
-	 * @param	integer	 $pk  The id of the article.
+	 * @param   integer  $pk  The id of the tracker.
 	 *
-	 * @return	mixed	Menu item data object on success, false on failure.
+	 * @return  mixed  Menu item data object on success, false on failure.
 	 */
 	public function getItem($pk = null)
 	{
@@ -58,10 +56,6 @@ class CodeModelTracker extends JModelItem
 				// Select the fields from the main table.
 				$query->select($this->getState('item.select', 'a.*'));
 				$query->from('#__code_trackers AS a');
-
-				// Join on the project table.
-				$query->select('p.title AS project_title, p.alias AS project_alias, p.access AS project_access');
-				$query->join('LEFT', '#__code_projects AS p on p.project_id = a.project_id');
 
 				// Get only the row by primary key.
 				$query->where('a.tracker_id = ' . (int) $pk);
@@ -89,36 +83,13 @@ class CodeModelTracker extends JModelItem
 					JError::raiseError(404, JText::_('COM_CODE_ERROR_TRACKER_NOT_FOUND'));
 				}
 
-				// Setup the options registry object.
-				$options       = new JRegistry($data->options);
+				// Setup the options Registry object.
+				$options       = new Registry($data->options);
 				$data->options = clone $this->getState('options');
 				$data->options->merge($options);
 
-				// Setup the metadata registry object.
-				$metadata       = new JRegistry($data->metadata);
-				$data->metadata = $metadata;
-
-				// Compute access permissions.
-				if ($access = $this->getState('filter.access'))
-				{
-					// If the access filter has been set, we already know this user can view.
-					$data->options->set('access-view', true);
-				}
-				else
-				{
-					// If no access filter is set, the layout takes some responsibility for display of limited information.
-					$user   =& JFactory::getUser();
-					$groups = $user->authorisedLevels();
-
-					if ($data->project_id == 0 || $data->project_access === null)
-					{
-						$data->options->set('access-view', in_array($data->access, $groups));
-					}
-					else
-					{
-						$data->options->set('access-view', in_array($data->access, $groups) && in_array($data->project_access, $groups));
-					}
-				}
+				// Setup the metadata Registry object.
+				$data->metadata = new Registry($data->metadata);
 
 				$this->_item[$pk] = $data;
 			}
@@ -145,13 +116,13 @@ class CodeModelTracker extends JModelItem
 		// Initialise variables.
 		$pk = (!empty($pk)) ? $pk : (int) $this->getState('tracker.id');
 
-		if ($this->issues === null && $branch = $this->getItem())
+		if ($this->issues === null)
 		{
+			/** @var CodeModelIssues $model */
 			$model = JModelLegacy::getInstance('Issues', 'CodeModel', array('ignore_request' => true));
 
 			$model->setState('options', $this->getState('options'));
 			$model->setState('filter.tracker_id', $pk);
-			$model->setState('filter.access', $this->getState('filter.access'));
 			$model->setState('list.start', $this->getState('list.start'));
 			$model->setState('list.ordering', $this->getState('list.ordering'));
 			$model->setState('list.direction', $this->getState('list.direction'));
@@ -182,8 +153,6 @@ class CodeModelTracker extends JModelItem
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
-	 *
-	 * @since	1.6
 	 */
 	protected function populateState()
 	{
@@ -195,9 +164,6 @@ class CodeModelTracker extends JModelItem
 
 		// Load the component/page options from the application.
 		$this->setState('options', $app->getParams('com_code'));
-
-		// Set the access filter to true by default.
-		$this->setState('filter.access', 1);
 
 		// Set the state filter.
 		//$this->setState('filter.state', 1);
@@ -246,14 +212,11 @@ class CodeModelTracker extends JModelItem
 	 * @param	string  $id  A prefix for the store id.
 	 *
 	 * @return	string  A store id.
-	 *
-	 * @since   1.6
 	 */
 	protected function getStoreId($id = '')
 	{
 		// Compile the store id.
 		$id .= ':' . $this->getState('tracker.id');
-		$id .= ':' . $this->getState('filter.access');
 		$id .= ':' . $this->getState('filter.state');
 		$id .= ':' . $this->getState('filter.tag_id');
 		$id .= ':' . $this->getState('filter.tag_id.include');

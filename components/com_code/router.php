@@ -1,238 +1,175 @@
 <?php
 /**
- * @version		$Id: router.php 414 2010-06-24 00:43:39Z louis $
- * @package		Joomla.Site
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Site
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
 /**
- * Function to build a Joomla Code URL route.
+ * Routing class from com_code
  *
- * @param	array	The array of query string values for which to build a route.
- * @return	array	The URL route with segments represented as an array.
- * @since	1.0
+ * @since  4.0
  */
-function CodeBuildRoute(& $query)
+class CodeRouter extends JComponentRouterBase
 {
-	// Declare static variables.
-	static $items;
-	static $cache = array();
-
-	// Initialize variables.
-	$segments = array();
-
-	// Get the relevant menu items if not loaded.
-	if (empty($items))
+	/**
+	 * Build the route for the com_code component
+	 *
+	 * @param   array  &$query  An array of URL arguments
+	 *
+	 * @return  array  The URL arguments to use to assemble the subsequent URL.
+	 *
+	 * @since   4.0
+	 */
+	public function build(&$query)
 	{
-		// Get all relevant menu items.
-		$menu	= JFactory::getApplication()->getMenu();
-		$items	= $menu->getItems('component', 'com_code');
+		// Initialize variables.
+		$segments = array();
 
-		// Build an array of found menu item ids.
-		for ($i = 0, $n = count($items); $i < $n; $i++)
+		// We need a menu item.  Either the one specified in the query, or the current active one if none specified
+		if (empty($query['Itemid']))
 		{
-			// Check to see if we have found the code status summary menu item.
-			if (empty($cache['summary']) && !empty($items[$i]->query['view']) && ($items[$i]->query['view'] == 'summary')) {
-				$cache['summary'] = $items[$i]->id;
-			}
+			$menuItem = $this->menu->getActive();
+			$menuItemGiven = false;
 		}
-	}
-
-	// Only one project for now.
-	$segments[] = 'cms';
-	unset($query['project_id']);
-
-	if (!empty($query['view']))
-	{
-		switch ($query['view'])
+		else
 		{
-			case 'help':
-				if (!empty($cache['help']))
-				{
-					unset($query['view']);
-					$query['Itemid'] = $cache['help'];
-				}
-				break;
+			$menuItem = $this->menu->getItem($query['Itemid']);
+			$menuItemGiven = true;
+		}
+
+		// Check again
+		if ($menuItemGiven && isset($menuItem) && $menuItem->component != 'com_code')
+		{
+			$menuItemGiven = false;
+			unset($query['Itemid']);
+		}
+
+		if (!isset($query['view']))
+		{
+			// We need to have a view in the query or it is an invalid URL
+			return $segments;
+		}
+
+		$view = $query['view'];
+		unset($query['view']);
+
+		// Only one project for now.
+		$segments[] = 'cms';
+
+		switch ($view)
+		{
 			case 'issue':
-				if (!empty($cache['summary']))
-				{
-					unset($query['view']);
-					$query['Itemid'] = $cache['summary'];
-
-					$segments[] = 'trackers';
-					$segments[] = @$query['tracker_alias'];
-					$segments[] = @$query['issue_id'];
-					unset($query['tracker_alias']);
-					unset($query['tracker_id']);
-					unset($query['issue_id']);
-				}
+				$segments[] = 'trackers';
+				$segments[] = @$query['tracker_alias'];
+				$segments[] = @$query['issue_id'];
+				unset($query['tracker_alias']);
+				unset($query['tracker_id']);
+				unset($query['issue_id']);
 
 				break;
+
 			case 'tracker':
-				if (!empty($cache['summary']))
-				{
-					unset($query['view']);
-					$query['Itemid'] = $cache['summary'];
+				$segments[] = 'trackers';
+				$segments[] = @$query['tracker_alias'];
+				unset($query['tracker_alias']);
+				unset($query['tracker_id']);
 
-					$segments[] = 'trackers';
-					$segments[] = @$query['tracker_alias'];
-					unset($query['tracker_alias']);
-					unset($query['tracker_id']);
-				}
 				break;
+
 			case 'trackers':
-				if (!empty($cache['summary']))
-				{
-					unset($query['view']);
-					$query['Itemid'] = $cache['summary'];
-
-					$segments[] = 'trackers';
-				}
-				break;
-			case 'summary':
 			default:
-				if (!empty($cache['summary']))
-				{
-					unset($query['view']);
-					$query['Itemid'] = $cache['summary'];
-				}
+				$segments[] = 'trackers';
+
 				break;
 		}
+
+		return $segments;
 	}
-	elseif (!empty($query['task']))
+
+	/**
+	 * Parse the segments of a URL.
+	 *
+	 * @param   array &$segments The segments of the URL to parse.
+	 *
+	 * @return  array  The URL attributes to be used by the application.
+	 *
+	 * @since   4.0
+	 */
+	public function parse(&$segments)
 	{
-		if (!empty($cache['summary']))
+		// Initialize variables.
+		$vars = array();
+
+		// If no segments exist then there is no defined project and we do not support that at this time.
+		if (empty($segments))
 		{
-			unset($query['view']);
-			$query['Itemid'] = $cache['summary'];
+			JError::raiseError(404, 'Resource not found.');
 		}
-	}
 
-	return $segments;
-}
+		// Get the project from the first segment.
+		$projectAlias = array_shift($segments);
 
-/**
- * Function to parse a Joomla Code URL route.
- *
- * @param	array	The URL route with segments represented as an array.
- * @return	array	The array of variables to set in the request.
- * @version	1.0
- */
-function CodeParseRoute($segments)
-{
-	// Initialize variables.
-	$vars = array();
+		// The only supported project for now is the Joomla! CMS.
+		if ($projectAlias != 'cms')
+		{
+			JError::raiseError(404, 'Resource not found.');
+		}
 
-	// If no segments exist then there is no defined project and we do not support that at this time.
-	if (empty($segments)) {
-		JError::raiseError(404, 'Resource not found.');
-	}
+		// Get the view/task definition from the next segment.
+		switch (array_shift($segments))
+		{
+			// View trackers and issues.
+			case 'trackers':
+				// If there is no given tracker name we default to viewing all trackers and return.
+				if (empty($segments))
+				{
+					$vars['view'] = 'trackers';
 
-	// Get the project from the first segment.
-	$projectAlias = array_shift($segments);
+					return $vars;
+				}
 
-	// The only supported project for now is the Joomla! CMS.
-	if ($projectAlias != 'cms') {
-		JError::raiseError(404, 'Resource not found.');
-	}
-	$vars['project_id'] = 1;
+				// Get the tracker alias from the next segment.
+				$trackerAlias = str_replace(':', '-', array_shift($segments));
 
-	// If no further segments exist then we assume the project summary page was requested.
-	if (empty($segments)) {
-		$vars['view'] = 'summary';
+				// Search the database for the appropriate tracker.
+				$db = JFactory::getDbo();
+				$db->setQuery(
+					$db->getQuery(true)
+						->select('tracker_id')
+						->from('#__code_trackers')
+						->where('alias = ' . $db->quote($trackerAlias))
+				, 0, 1);
+				$trackerId = (int) $db->loadResult();
+
+				// If the tracker isn't found throw a 404.
+				if (!$trackerId)
+				{
+					JError::raiseError(404, 'Resource not found.');
+				}
+
+				// We found a valid tracker with that alias so set the id.
+				$vars['tracker_id'] = $trackerId;
+
+				// If we have an issue id in the next segment lets set that in the request.
+				if (!empty($segments) && is_numeric($segments[0]))
+				{
+					$vars['view'] = 'issue';
+					$vars['issue_id'] = (int) array_shift($segments);
+				}
+				// No issue id so we are looking at the tracker itself.
+				else
+				{
+					$vars['view'] = 'tracker';
+				}
+
+				break;
+		}
+
 		return $vars;
 	}
-
-	// Get the view/task definition from the next segment.
-	switch (array_shift($segments))
-	{
-		// View trackers and issues.
-		case 'trackers':
-
-			// If there is no given tracker name we default to viewing all trackers and return.
-			if (empty($segments)) {
-				$vars['view'] = 'trackers';
-				return $vars;
-			}
-
-			// Get the tracker alias from the next segment.
-			$trackerAlias = str_replace(':', '-', array_shift($segments));
-
-			// Search the database for the appropriate tracker.
-			$db = JFactory::getDBO();
-			$db->setQuery(
-				'SELECT tracker_id' .
-				' FROM #__code_trackers' .
-				' WHERE alias = '.$db->quote($trackerAlias),
-				0, 1
-			);
-			$trackerId = (int) $db->loadResult();
-
-			// If the tracker isn't found throw a 404.
-			if (!$trackerId) {
-				JError::raiseError(404, 'Resource Not Found');
-			}
-
-			// We found a valid tracker with that alias so set the id.
-			$vars['tracker_id'] = $trackerId;
-
-			// If we have an issue id in the next segment lets set that in the request.
-			if (!empty($segments) && is_numeric($segments[0])) {
-				$vars['view'] = 'issue';
-				$vars['issue_id'] = (int) array_shift($segments);
-			}
-			// No issue id so we are looking at the tracker itself.
-			else {
-				$vars['view'] = 'tracker';
-			}
-			break;
-
-		// View available downloads.
-		case 'downloads':
-
-			// /release/package.html
-			break;
-
-		// Download the file.
-		case 'download':
-
-			// /file/path.ext
-			break;
-
-		// View historical build information.
-		case 'history':
-
-			$vars['view'] = 'nightly';
-
-			if (count($segments) == 3) {
-
-				// Get the sanitized date path from the request.
-				$date = JFilterInput::getInstance()->clean(array_shift($segments), 'int');
-				$date .= '-'.JFilterInput::getInstance()->clean(array_shift($segments), 'int');
-				$date .= '-'.JFilterInput::getInstance()->clean(array_shift($segments), 'int');
-
-				// Lookup the historical build by date.
-				$db = JFactory::getDBO();
-				$db->setQuery(
-					'SELECT build_id' .
-					' FROM #__code_nightly_builds' .
-					' WHERE build_date = '.$db->quote($date)
-				);
-				$buildId = (int) $db->loadResult();
-
-				// If the build isn't found throw a 404.
-				if (!$buildId) {
-					JError::raiseError(404, 'Resource Not Found');
-				}
-
-				$vars['build_id'] = $buildId;
-			}
-			break;
-	}
-
-	return $vars;
 }

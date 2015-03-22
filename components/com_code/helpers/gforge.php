@@ -1,10 +1,10 @@
 <?php
 /**
- * @version		$Id: gforge.php 455 2010-10-07 17:51:44Z louis $
- * @package		Joomla.Site
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Site
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
@@ -12,33 +12,35 @@ defined('_JEXEC') or die;
 /**
  * Connector class to a GForge Advanced Server SOAP API.
  *
- * @package  Joomla.Code
- * @see      http://joomlacode.org/gf/xmlcompatibility/soap5/
- * @since    1.0
+ * @see  http://joomlacode.org/gf/xmlcompatibility/soap5/
  */
 class GForge
 {
 	/**
-	 * @var    SoapClient  The client object connected to the GForge instance.
-	 * @since  1.0
+	 * The client object connected to the GForge instance.
+	 *
+	 * @var  SoapClient
 	 */
 	protected $client;
 
 	/**
-	 * @var    string  The session hash for the SOAP session.
-	 * @since  1.0
+	 * The session hash for the SOAP session.
+	 *
+	 * @var  string
 	 */
 	protected $sessionhash;
 
 	/**
-	 * @var    string  The username for the signed in session.
-	 * @since  1.0
+	 * The username for the signed in session.
+	 *
+	 * @var  string
 	 */
 	protected $username;
 
 	/**
-	 * @var    string  The URI for the API
-	 * @since  1.0
+	 * The URI for the API
+	 *
+	 * @var  string
 	 */
 	protected $apiUri = '/xmlcompatibility/soap5/?wsdl';
 
@@ -48,7 +50,6 @@ class GForge
 	 * @param   string  $site     The URL to the gforge instance.
 	 * @param   array   $options  The SOAP options for the connection.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function __construct($site, $options = array())
@@ -65,8 +66,6 @@ class GForge
 
 	/**
 	 * Object destructor.  Signs out and closes the connection.
-	 *
-	 * @since   1.0
 	 */
 	public function __destruct()
 	{
@@ -92,7 +91,6 @@ class GForge
 	 *
 	 * @return	boolean  True on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function login($username, $password)
@@ -119,7 +117,6 @@ class GForge
 	 *
 	 * @return	boolean  True on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function logout()
@@ -147,7 +144,6 @@ class GForge
 	 *
 	 * @return  object   User data object on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getUser($username = null)
@@ -155,9 +151,7 @@ class GForge
 		try
 		{
 			// Attempt to get the user object by the username or "unix name" in GForge speak.
-			$user = $this->client->getUserByUnixName($this->sessionhash, $username ? $username : $this->username);
-
-			return $user;
+			return $this->client->getUserByUnixName($this->sessionhash, $username ? $username : $this->username);
 		}
 		catch (SoapFault $e)
 		{
@@ -173,7 +167,6 @@ class GForge
 	 *
 	 * @return  object  User data object on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getUsersById($ids = array())
@@ -181,9 +174,7 @@ class GForge
 		try
 		{
 			// Attempt to get the user object by the username or "unix name" in GForge speak.
-			$users = $this->client->getUserArray($this->sessionhash, $ids);
-
-			return $users;
+			return $this->client->getUserArray($this->sessionhash, $ids);
 		}
 		catch (SoapFault $e)
 		{
@@ -199,7 +190,6 @@ class GForge
 	 *
 	 * @return  object  Project data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getUserProjects($username = null)
@@ -207,9 +197,7 @@ class GForge
 		try
 		{
 			// Attempt to get the project data array by the username or "unix name" in GForge speak.
-			$projects = $this->client->getUserProjects($this->sessionhash, $username ? $username : $this->username);
-
-			return $projects;
+			return $this->client->getUserProjects($this->sessionhash, $username ? $username : $this->username);
 		}
 		catch (SoapFault $e)
 		{
@@ -224,7 +212,6 @@ class GForge
 	 *
 	 * @return  object  Project data object on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getProject($name)
@@ -232,9 +219,7 @@ class GForge
 		try
 		{
 			// Attempt to get the project data object by the name or "unix name" in GForge speak.
-			$project = $this->client->getProjectByUnixName($this->sessionhash, $name);
-
-			return $project;
+			return $this->client->getProjectByUnixName($this->sessionhash, $name);
 		}
 		catch (SoapFault $e)
 		{
@@ -247,25 +232,22 @@ class GForge
 	 *
 	 * @param   integer  $projectId  The project id.
 	 *
-	 * @return  array Project members data array on success.
+	 * @return  array  Project members data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getProjectMembers($projectId)
 	{
 		try
 		{
-			$members = $this->client->getProjectMembers($this->sessionhash, $projectId);
-
-			return $members;
+			return $this->client->getProjectMembers($this->sessionhash, $projectId);
 		}
 		catch (SoapFault $e)
 		{
 			throw new RuntimeException('Unable to get members : ' . $e->faultstring);
 		}
 	}
-	
+
 
 	/**
 	 * Method to get a project object by id.
@@ -274,7 +256,6 @@ class GForge
 	 *
 	 * @return  object  Project data object on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getProjectById($id)
@@ -282,9 +263,7 @@ class GForge
 		try
 		{
 			// Attempt to get the project data object by the ID.
-			$project = $this->client->getProject($this->sessionhash, $id);
-
-			return $project;
+			return $this->client->getProject($this->sessionhash, $id);
 		}
 		catch (SoapFault $e)
 		{
@@ -299,18 +278,15 @@ class GForge
 	 * @param   string   $section  The section name.
 	 * @param   integer  $fileId  The file id.
 	 *
-	 * @return  array File systems data array on success.
+	 * @return  array  File systems data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getFilesystems($section, $refId)
 	{
 		try
 		{
-			$systems = $this->client->getFilesystems($this->sessionhash, $section, $refId);
-
-			return $systems;
+			return $this->client->getFilesystems($this->sessionhash, $section, $refId);
 		}
 		catch (SoapFault $e)
 		{
@@ -321,12 +297,10 @@ class GForge
 	/**
 	 * Method to get the project trackers by project name or id.
 	 *
-	 * @param   mixed  $project  Either the project name or numeric id for the project to get a list
-	 *                           of tracker data objects.
+	 * @param   mixed  $project  Either the project name or numeric id for the project to get a list of tracker data objects.
 	 *
 	 * @return  object  Tracker data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getProjectTrackers($project)
@@ -338,14 +312,12 @@ class GForge
 			$project = $this->getProject($project);
 
 			// Assign the project id based on the returned project or return false if not found.
-			if ($project)
-			{
-				$projectId = $project->project_id;
-			}
-			else
+			if (!$project)
 			{
 				return false;
 			}
+
+			$projectId = $project->project_id;
 		}
 		// Easy peasy...
 		else
@@ -356,9 +328,7 @@ class GForge
 		try
 		{
 			// Attempt to get the project tracker array by the project id.
-			$trackers = $this->client->getTrackers($this->sessionhash, $projectId, true, -1);
-
-			return $trackers;
+			return $this->client->getTrackers($this->sessionhash, $projectId, true, -1);
 		}
 		catch (SoapFault $e)
 		{
@@ -373,7 +343,6 @@ class GForge
 	 *
 	 * @return  object  Tracker data object on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getTracker($trackerId)
@@ -381,9 +350,7 @@ class GForge
 		try
 		{
 			// Attempt to get the tracker data object by id.
-			$tracker = $this->client->getTracker($this->sessionhash, $trackerId);
-
-			return $tracker;
+			return $this->client->getTracker($this->sessionhash, $trackerId);
 		}
 		catch (SoapFault $e)
 		{
@@ -398,7 +365,6 @@ class GForge
 	 *
 	 * @return  array  Tracker field data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getTrackerFields($trackerId)
@@ -406,9 +372,7 @@ class GForge
 		try
 		{
 			// Attempt to get a list of tracker field data by tracker id.
-			$fields = $this->client->getTrackerExtraFields($this->sessionhash, $trackerId, -1);
-
-			return $fields;
+			return $this->client->getTrackerExtraFields($this->sessionhash, $trackerId, -1);
 		}
 		catch (SoapFault $e)
 		{
@@ -421,9 +385,8 @@ class GForge
 	 *
 	 * @param   integer  $fieldId  The numeric id of the field for which to get a list of values.
 	 *
-	 * @return  mixed  Boolean false on failure, tracker field value data array on success.
+	 * @return  array  Tracker field value data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getTrackerFieldValues($fieldId)
@@ -431,9 +394,7 @@ class GForge
 		try
 		{
 			// Attempt to get a list of tracker field values by field id.
-			$fields = $this->client->getTrackerExtraFieldElements($this->sessionhash, $fieldId, '', -1, -1);
-
-			return $fields;
+			return $this->client->getTrackerExtraFieldElements($this->sessionhash, $fieldId, '', -1, -1);
 		}
 		catch (SoapFault $e)
 		{
@@ -448,7 +409,6 @@ class GForge
 	 *
 	 * @return  array  Tracker item data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getTrackerItems($trackerId)
@@ -484,7 +444,6 @@ class GForge
 	 *
 	 * @return  object  Tracker item data object on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getTrackerItem($itemId)
@@ -492,9 +451,7 @@ class GForge
 		try
 		{
 			// Attempt to get the item data object by item id.
-			$item = $this->client->getTrackerItemFull($this->sessionhash, $itemId);
-
-			return $item;
+			return $this->client->getTrackerItemFull($this->sessionhash, $itemId);
 		}
 		catch (SoapFault $e)
 		{
@@ -509,7 +466,6 @@ class GForge
 	 *
 	 * @return  array  Tracker item changes data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getTrackerItemChanges($itemId)
@@ -517,9 +473,7 @@ class GForge
 		try
 		{
 			// Attempt to get the changes data array by the tracker item id.
-			$changes = $this->client->getAuditTrails($this->sessionhash, $itemId);
-
-			return $changes;
+			return $this->client->getAuditTrails($this->sessionhash, $itemId);
 		}
 		catch (SoapFault $e)
 		{
@@ -542,9 +496,7 @@ class GForge
 		try
 		{
 			// Attempt to get the messages data array by the tracker item id.
-			$messages = $this->client->getTrackerItemMessages($this->sessionhash, $itemId, -1);
-
-			return $messages;
+			return $this->client->getTrackerItemMessages($this->sessionhash, $itemId, -1);
 		}
 		catch (SoapFault $e)
 		{
@@ -557,18 +509,15 @@ class GForge
 	 *
 	 * @param   integer  $projectId  The project id.
 	 *
-	 * @return  array Docman folders data array on success.
+	 * @return  array  Docman folders data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getDocmanFolders($projectId)
 	{
 		try
 		{
-			$folders = $this->client->getDocmanFolders($this->sessionhash, $projectId);
-
-			return $folders;
+			return $this->client->getDocmanFolders($this->sessionhash, $projectId);
 		}
 		catch (SoapFault $e)
 		{
@@ -581,18 +530,15 @@ class GForge
 	 *
 	 * @param   integer  $folderId  The folder id.
 	 *
-	 * @return  array Folder files data array on success.
+	 * @return  array  Folder files data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getDocmanFiles($folderId)
 	{
 		try
 		{
-			$files = $this->client->getDocmanFiles($this->sessionhash, $folderId);
-
-			return $files;
+			return $this->client->getDocmanFiles($this->sessionhash, $folderId);
 		}
 		catch (SoapFault $e)
 		{
@@ -605,18 +551,15 @@ class GForge
 	 *
 	 * @param   integer  $fileId  The file id.
 	 *
-	 * @return  array File versions data array on success.
+	 * @return  array  File versions data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getDocmanFileVersions($fileId)
 	{
 		try
 		{
-			$versions = $this->client->getDocmanFileVersions($this->sessionhash, $fileId);
-
-			return $versions;
+			return $this->client->getDocmanFileVersions($this->sessionhash, $fileId);
 		}
 		catch (SoapFault $e)
 		{
@@ -631,16 +574,13 @@ class GForge
 	 *
 	 * @return  array  Forum threads data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getForumThreads($forumId)
 	{
 		try
 		{
-			$threads = $this->client->getForumThreads($this->sessionhash, $forumId);
-
-			return $threads;
+			return $this->client->getForumThreads($this->sessionhash, $forumId);
 		}
 		catch (SoapFault $e)
 		{
@@ -655,16 +595,13 @@ class GForge
 	 *
 	 * @return  array  Thread messages data array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	public function getForumMessages($threadId)
 	{
 		try
 		{
-			$messages = $this->client->getForumMessages($this->sessionhash, $threadId);
-
-			return $messages;
+			return $this->client->getForumMessages($this->sessionhash, $threadId);
 		}
 		catch (SoapFault $e)
 		{
@@ -677,7 +614,6 @@ class GForge
 	 *
 	 * @return  array  Functions array on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	protected function getClientFunctions()
@@ -685,9 +621,7 @@ class GForge
 		try
 		{
 			// Attempt to get the client functions.
-			$functions = $this->client->__getFunctions();
-
-			return $functions;
+			return $this->client->__getFunctions();
 		}
 		catch (SoapFault $e)
 		{
@@ -700,7 +634,6 @@ class GForge
 	 *
 	 * @return  array  Array of types on success.
 	 *
-	 * @since   1.0
 	 * @throws  RuntimeException
 	 */
 	protected function getClientTypes()
@@ -708,9 +641,7 @@ class GForge
 		try
 		{
 			// Attempt to get the client types.
-			$functions = $this->client->__getTypes();
-
-			return $functions;
+			return $this->client->__getTypes();
 		}
 		catch (SoapFault $e)
 		{

@@ -1,41 +1,32 @@
 <?php
 /**
- * @version		$Id: issues.php 423 2010-06-25 03:06:54Z louis $
- * @package		Joomla.Site
- * @subpackage	com_code
- * @copyright	Copyright (C) 2009 - 2010 Open Source Matters, Inc. All rights reserved.
- * @license		GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     Joomla.Site
+ * @subpackage  com_code
+ *
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die;
 
-// Include dependancies.
-jimport('joomla.application.component.modellist');
-
 /**
  * Tracker Model for Joomla Code
- *
- * @package		Joomla.Code
- * @subpackage	com_code
- * @since		1.0
  */
 class CodeModelIssues extends JModelList
 {
 	/**
-	 * Context string for the model type.  This is used to handle uniqueness
-	 * when dealing with the getStoreId() method and caching data structures.
+	 * Context string for the model type.
 	 *
-	 * @var		string
-	 * @since	1.6
+	 * This is used to handle uniqueness when dealing with the getStoreId() method and caching data structures.
+	 *
+	 * @var  string
 	 */
 	protected $context = 'com_code.issues';
 
 	/**
 	 * Method to get a JDatabaseQuery object for retrieving the data set from a database.
 	 *
-	 * @return  JDatabaseQuery   A JDatabaseQuery object to retrieve the data set.
-	 *
-	 * @since   1.6
+	 * @return  JDatabaseQuery  A JDatabaseQuery object to retrieve the data set.
 	 */
 	protected function getListQuery()
 	{
@@ -47,32 +38,16 @@ class CodeModelIssues extends JModelList
 		$query->from('#__code_tracker_issues AS a');
 
 		// Join on the tracker table.
-		$query->select('t.title AS tracker_title, t.alias AS tracker_alias, t.access AS tracker_access');
+		$query->select('t.title AS tracker_title, t.alias AS tracker_alias');
 		$query->join('LEFT', '#__code_trackers AS t on t.tracker_id = a.tracker_id');
 
-		// Join on the project table.
-		$query->select('p.title AS project_title, p.alias AS project_alias, p.access AS project_access');
-		$query->join('LEFT', '#__code_projects AS p on p.project_id = a.project_id');
-
 		// Join on user table for created by information.
-		$query->select('cu.name AS created_user_name, cu.username AS created_user_login_name');
-		$query->join('LEFT', '#__users AS cu on cu.id = a.created_by');
+		$query->select($query->concatenate(array('cu.first_name', $db->quote(' '), 'cu.last_name')) . ' AS created_user_name');
+		$query->join('LEFT', '#__code_users AS cu on cu.user_id = a.created_by');
 
 		// Join on user table for modified by information.
-		$query->select('mu.name AS modified_user_name, mu.username AS modified_user_login_name');
-		$query->join('LEFT', '#__users AS mu on mu.id = a.modified_by');
-
-		// Filter by access level.
-		if ($access = $this->getState('filter.access'))
-		{
-			// Get the current user and its authorised access levels.
-			$user   = JFactory::getUser();
-			$groups = $user->getAuthorisedViewLevels();
-
-			// Ensure we are only getting issues where we have access.
-			$query->where('t.access IN (' . implode(',', $groups) . ')');
-			$query->where('p.access IN (' . implode(',', $groups) . ')');
-		}
+		$query->select($query->concatenate(array('mu.first_name', $db->quote(' '), 'mu.last_name')) . ' AS modified_user_name');
+		$query->join('LEFT', '#__code_users AS mu on mu.user_id = a.modified_by');
 
 		// Filter by state.
 		$stateFilter = $this->getState('filter.state');
@@ -223,50 +198,6 @@ class CodeModelIssues extends JModelList
 	}
 
 	/**
-	 * Method to get a list of articles.
-	 *
-	 * Overriden to inject convert the attribs field into a JRegistry object.
-	 *
-	 * @return	mixed	An array of objects on success, false on failure.
-	 * @since	1.6
-	 */
-	public function &getItems()
-	{
-		// Get the list of items based on the list query.
-		$items = parent::getItems();
-
-		// Get the current user object and authorised access levels for the user.
-		$user   = JFactory::getUser();
-		$groups = $user->getAuthorisedViewLevels();
-
-		// Process each item in the list.
-		foreach ($items as & $item)
-		{
-			// Create the options object for the item.
-			$item->options = new JRegistry;
-
-			// TODO: Embed the access controls in here
-			$item->options->set('access-edit', false);
-
-			// Set the option for telling the layout whether or not the item can be viewed.
-			$access = $this->getState('filter.access');
-
-			if ($access)
-			{
-				// If the access filter has been set, we already have only the articles this user can view.
-				$item->options->set('access-view', true);
-			}
-			else
-			{
-				// If no access filter is set, the layout takes some responsibility for display of limited information.
-				$item->options->set('access-view', in_array($item->access, $groups) && in_array($item->tracker_access, $groups) && in_array($item->project_access, $groups));
-			}
-		}
-
-		return $items;
-	}
-
-	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * Note. Calling getState in this method will result in recursion.
@@ -275,22 +206,13 @@ class CodeModelIssues extends JModelList
 	 * @param   string  $direction  An optional direction (asc|desc).
 	 *
 	 * @return  void
-	 *
-	 * @since   1.6
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = JFactory::getApplication('site');
 
-		// Set the project id from the request.
-		$pk = $app->input->getInt('project_id');
-		$this->setState('project.id', $pk);
-
 		// Load the component/page options from the application.
 		$this->setState('options', $app->getParams('com_code'));
-
-		// Set the access filter to true by default.
-		$this->setState('filter.access', 1);
 
 		// Set the state filter.
 		//$this->setState('filter.state', 1);
@@ -340,15 +262,13 @@ class CodeModelIssues extends JModelList
 	 * different modules that might need different sets of data or different
 	 * ordering requirements.
 	 *
-	 * @param	string		$id	A prefix for the store id.
+	 * @param   string  $id  A prefix for the store id.
 	 *
-	 * @return	string		A store id.
-	 * @since	1.6
+	 * @return  string  A store id.
 	 */
 	protected function getStoreId($id = '')
 	{
 		// Compile the store id.
-		$id .= ':' . $this->getState('filter.access');
 		$id .= ':' . $this->getState('filter.state');
 		$id .= ':' . $this->getState('filter.tracker_id');
 		$id .= ':' . $this->getState('filter.tracker_id.include');
