@@ -4,7 +4,6 @@ UPDATE `#__code_tracker_snapshots` AS a LEFT JOIN `#__code_trackers` AS b ON b.`
 ALTER TABLE  `#__code_tracker_issue_tag_map` ADD  `jc_issue_id` INT NOT NULL;
 UPDATE `#__code_tracker_issue_tag_map` AS a LEFT JOIN `#__code_tracker_issues` AS b ON b.`issue_id` = a.`issue_id` SET a.`jc_issue_id`= b.`jc_issue_id`;
 
-
 ALTER TABLE  `#__code_projects` CHANGE  `project_id`  `project_id` INT( 10 ) UNSIGNED NOT NULL;
 UPDATE `#__code_projects` SET `project_id` = `jc_project_id`;
 ALTER TABLE  `#__code_projects` CHANGE  `project_id`  `project_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT;
@@ -71,7 +70,6 @@ INSERT INTO `#__code_tracker_issue_changes_temp`(`change_id`, `issue_id`, `track
 DROP TABLE `#__code_tracker_issue_changes`;
 RENAME TABLE `#__code_tracker_issue_changes_temp` TO `#__code_tracker_issue_changes` ;
 ALTER TABLE  `#__code_tracker_issue_changes` CHANGE  `change_id`  `change_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT;
-
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_commits_temp` (
   `commit_id` int(10) unsigned NOT NULL,
