@@ -201,9 +201,6 @@ class CodeModelTrackerSync extends JModelLegacy
 			$this->gforgeLegacy = new GForgeLegacy('http://joomlacode.org/gf');
 			$this->gforgeLegacy->login($username, $password);
 
-			// Ensure we have project data in the database
-			$this->checkProject($project);
-
 			// Get the tracker data from the SOAP interface.
 			$trackers = $this->gforge->getProjectTrackers($project);
 
@@ -284,46 +281,6 @@ class CodeModelTrackerSync extends JModelLegacy
 	}
 
 	/**
-	 * Check to verify the given project exists
-	 *
-	 * @param   integer  $id  Project ID
-	 *
-	 * @return  boolean
-	 */
-	private function checkProject($id)
-	{
-		// Get a tracker table object.
-		$table = $this->getTable('Project', 'CodeTable');
-
-		// Load any existing data by legacy id.
-		$table->loadByLegacyId($id);
-
-		// If the tracker ID is null, assume we're inserting a new record
-		if ($table->project_id === null)
-		{
-			// Retrieve the project data
-			$project = $this->gforge->getProjectById($id);
-
-			$data = array(
-				'title' => $project->project_name,
-				'description' => $project->description,
-				'jc_project_id' => $project->project_id
-			);
-
-			// Bind the data to the project object.
-			$table->bind($data);
-
-			// Attempt to store the project data.
-			if (!$table->store())
-			{
-				$this->setError($table->getError());
-
-				return false;
-			}
-		}
-	}
-
-	/**
 	 * Synchronize the given tracker
 	 *
 	 * @param   object  $tracker  Tracker data object
@@ -348,7 +305,6 @@ class CodeModelTrackerSync extends JModelLegacy
 		{
 			$data = array(
 				'jc_tracker_id' => $tracker->tracker_id,
-				'jc_project_id' => $tracker->project_id,
 				'title' => $tracker->tracker_name,
 				'description' => $tracker->description
 			);
@@ -402,7 +358,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			}
 			else
 			{
-				$this->syncTrackerItem($item, $tracker->tracker_id, $tracker->project_id, $table->tracker_id, $table->project_id);
+				$this->syncTrackerItem($item, $tracker->tracker_id, $table->tracker_id);
 
 				$processedCount++;
 			}
@@ -471,19 +427,17 @@ class CodeModelTrackerSync extends JModelLegacy
 		// Create the mock item object for use in the
 		$item = (object) array('tracker_item_id' => $issueId);
 
-		return $this->syncTrackerItem($item, $trackerId, $tracker->project_id, $table->tracker_id, $table->project_id);
+		return $this->syncTrackerItem($item, $trackerId, $table->tracker_id);
 	}
 
 	/**
 	 * @param   object   $item             The tracker item to update
 	 * @param   integer  $legacyTrackerId  The legacy tracker ID
-	 * @param   integer  $legacyProjectId  The legacy project ID
 	 * @param   integer  $trackerId        The system's tracker ID
-	 * @param   integer  $projectId        The system's project ID
 	 *
 	 * @return  bool
 	 */
-	private function syncTrackerItem($item, $legacyTrackerId, $legacyProjectId, $trackerId, $projectId)
+	private function syncTrackerItem($item, $legacyTrackerId, $trackerId)
 	{
 		// Get the database object
 		$db = $this->getDbo();
@@ -580,7 +534,6 @@ class CodeModelTrackerSync extends JModelLegacy
 		// Populate the appropriate fields from the server data object.
 		$data = array(
 			'tracker_id'     => $trackerId,
-			'project_id'     => $projectId,
 			'build_id'       => 0,
 			'state'          => $item->status_id,
 			'priority'       => $item->priority,
@@ -594,7 +547,6 @@ class CodeModelTrackerSync extends JModelLegacy
 			'description'    => $item->details,
 			'jc_issue_id'    => $item->tracker_item_id,
 			'jc_tracker_id'  => $legacyTrackerId,
-			'jc_project_id'  => $legacyProjectId,
 			'jc_created_by'  => $item->submitted_by,
 			'jc_modified_by' => $item->last_modified_by
 		);

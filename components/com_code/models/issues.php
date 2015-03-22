@@ -41,10 +41,6 @@ class CodeModelIssues extends JModelList
 		$query->select('t.title AS tracker_title, t.alias AS tracker_alias');
 		$query->join('LEFT', '#__code_trackers AS t on t.tracker_id = a.tracker_id');
 
-		// Join on the project table.
-		$query->select('p.title AS project_title, p.alias AS project_alias');
-		$query->join('LEFT', '#__code_projects AS p on p.project_id = a.project_id');
-
 		// Join on user table for created by information.
 		$query->select('cu.name AS created_user_name, cu.username AS created_user_login_name');
 		$query->join('LEFT', '#__code_users AS cu on cu.id = a.created_by');
@@ -233,10 +229,6 @@ class CodeModelIssues extends JModelList
 	protected function populateState($ordering = null, $direction = null)
 	{
 		$app = JFactory::getApplication('site');
-
-		// Set the project id from the request.
-		$pk = $app->input->getInt('project_id');
-		$this->setState('project.id', $pk);
 
 		// Load the component/page options from the application.
 		$this->setState('options', $app->getParams('com_code'));

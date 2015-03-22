@@ -45,7 +45,7 @@ class CodeViewAbout extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		$canDo = CodeHelper::getActions();
+		$canDo = CodeHelper::getActions('com_code');
 
 		JToolBarHelper::title(JText::_('Joomla! Code Component - About'), 'code');
 

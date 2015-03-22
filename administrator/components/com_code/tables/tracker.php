@@ -53,35 +53,4 @@ class CodeTableTracker extends JTable
 
 		return false;
 	}
-
-	/**
-	 * Method to store a row in the database from the JTable instance properties.
-	 *
-	 * @param   boolean  $updateNulls  True to update fields even if they are null.
-	 *
-	 * @return  boolean  True on success.
-	 */
-	public function store($updateNulls = false)
-	{
-		// Verify that a project ID is set, set it if able
-		if ($this->project_id === null && $this->jc_project_id !== null)
-		{
-			$db = $this->getDbo();
-
-			$db->setQuery(
-				$db->getQuery(true)
-					->select($db->quoteName('project_id'))
-					->from($db->quoteName('#__code_projects'))
-					->where($db->quoteName('jc_project_id') . ' = ' . $this->jc_project_id)
-			);
-
-			if ($result = $db->loadResult())
-			{
-				$this->project_id = (int) $result;
-			}
-		}
-
-		// Finish processing
-		return parent::store($updateNulls);
-	}
 }

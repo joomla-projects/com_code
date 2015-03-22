@@ -57,10 +57,6 @@ class CodeModelTracker extends JModelItem
 				$query->select($this->getState('item.select', 'a.*'));
 				$query->from('#__code_trackers AS a');
 
-				// Join on the project table.
-				$query->select('p.title AS project_title, p.alias AS project_alias');
-				$query->join('LEFT', '#__code_projects AS p on p.project_id = a.project_id');
-
 				// Get only the row by primary key.
 				$query->where('a.tracker_id = ' . (int) $pk);
 

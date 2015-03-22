@@ -28,21 +28,6 @@ INSERT INTO `#__code_activity_types` (`activity_type`, `activity_title`, `activi
 (6, 'Pull Request in Comment', 'Code', 'Add a pull request link in a comment.', 5),
 (7, 'Pull Request in Description', 'Code', 'Add a pull request link in the original issue description.', 5);
 
-CREATE TABLE IF NOT EXISTS `#__code_projects` (
-  `project_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `alias` varchar(255) NOT NULL,
-  `state` int(11) NOT NULL,
-  `summary` varchar(512) NOT NULL,
-  `description` text NOT NULL,
-  `created_date` datetime NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `modified_date` datetime NOT NULL,
-  `modified_by` int(11) NOT NULL,
-  `jc_project_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`project_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `#__code_tags` (
   `tag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tag` varchar(512) DEFAULT NULL,
@@ -51,7 +36,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tags` (
 
 CREATE TABLE IF NOT EXISTS `#__code_trackers` (
   `tracker_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `project_id` int(10) unsigned NOT NULL,
   `title` varchar(255) NOT NULL,
   `alias` varchar(255) NOT NULL,
   `summary` varchar(512) NOT NULL,
@@ -66,14 +50,12 @@ CREATE TABLE IF NOT EXISTS `#__code_trackers` (
   `modified_date` datetime NOT NULL,
   `modified_by` int(11) NOT NULL,
   `jc_tracker_id` int(10) unsigned NOT NULL,
-  `jc_project_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`tracker_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issues` (
   `issue_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tracker_id` int(10) unsigned NOT NULL,
-  `project_id` int(10) unsigned NOT NULL,
   `build_id` int(10) unsigned DEFAULT NULL,
   `state` int(11) NOT NULL,
   `status` int(10) unsigned NOT NULL,
@@ -90,7 +72,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issues` (
   `description` mediumtext,
   `jc_issue_id` int(10) unsigned NOT NULL,
   `jc_tracker_id` int(10) unsigned NOT NULL,
-  `jc_project_id` int(10) unsigned NOT NULL,
   `jc_created_by` int(11) NOT NULL,
   `jc_modified_by` int(11) NOT NULL,
   `jc_close_by` int(11) NOT NULL,

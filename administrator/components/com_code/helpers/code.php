@@ -11,10 +11,6 @@ defined('_JEXEC') or die;
 
 /**
  * Code component helper.
- *
- * @package		Joomla.Administrator
- * @subpackage	com_code
- * @since		1.6
  */
 class CodeHelper extends JHelperContent
 {
@@ -31,12 +27,6 @@ class CodeHelper extends JHelperContent
 			'About',
 			'index.php?option=com_code&view=about',
 			$vName == 'about'
-		);
-
-		JHtmlSidebar::addEntry(
-			'Projects',
-			'index.php?option=com_code&view=projects',
-			$vName == 'projects'
 		);
 	}
 }

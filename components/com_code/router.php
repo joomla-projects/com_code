@@ -60,7 +60,6 @@ class CodeRouter extends JComponentRouterBase
 
 		// Only one project for now.
 		$segments[] = 'cms';
-		unset($query['project_id']);
 
 		switch ($view)
 		{
@@ -121,8 +120,6 @@ class CodeRouter extends JComponentRouterBase
 			JError::raiseError(404, 'Resource not found.');
 		}
 
-		$vars['project_id'] = 1;
-
 		// Get the view/task definition from the next segment.
 		switch (array_shift($segments))
 		{
@@ -150,22 +147,24 @@ class CodeRouter extends JComponentRouterBase
 				$trackerId = (int) $db->loadResult();
 
 				// If the tracker isn't found throw a 404.
-				if ($trackerId)
+				if (!$trackerId)
 				{
-					// We found a valid tracker with that alias so set the id.
-					$vars['tracker_id'] = $trackerId;
+					JError::raiseError(404, 'Resource not found.');
+				}
 
-					// If we have an issue id in the next segment lets set that in the request.
-					if (!empty($segments) && is_numeric($segments[0]))
-					{
-						$vars['view'] = 'issue';
-						$vars['issue_id'] = (int) array_shift($segments);
-					}
-					// No issue id so we are looking at the tracker itself.
-					else
-					{
-						$vars['view'] = 'tracker';
-					}
+				// We found a valid tracker with that alias so set the id.
+				$vars['tracker_id'] = $trackerId;
+
+				// If we have an issue id in the next segment lets set that in the request.
+				if (!empty($segments) && is_numeric($segments[0]))
+				{
+					$vars['view'] = 'issue';
+					$vars['issue_id'] = (int) array_shift($segments);
+				}
+				// No issue id so we are looking at the tracker itself.
+				else
+				{
+					$vars['view'] = 'tracker';
 				}
 
 				break;
