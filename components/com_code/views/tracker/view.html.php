@@ -30,6 +30,14 @@ class CodeViewTracker extends JViewLegacy
 		$this->user   = JFactory::getUser();
 		$this->params = JFactory::getApplication()->getParams('com_code');
 
+		$this->priorities = array(
+			'1' => JText::_('High'),
+			'2' => JText::_('Medium High'),
+			'3' => JText::_('Medium'),
+			'4' => JText::_('Low'),
+			'5' => JText::_('Very Low'),
+		);
+
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{

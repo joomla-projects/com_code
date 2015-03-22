@@ -56,7 +56,9 @@ defined('_JEXEC') or die;
 					</a>
 				</td>
 				<td>
-					<?php echo $issue->priority; ?>
+					<span class="priority-<?php echo (int) $issue->priority ?>">
+					<?php echo $this->priorities[$issue->priority]; ?>
+					</span>
 				</td>
 				<td>
 					<?php echo JHtml::_('date', $issue->created_date, 'j M Y, G:s'); ?>
