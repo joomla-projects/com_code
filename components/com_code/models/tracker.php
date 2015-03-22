@@ -221,10 +221,6 @@ class CodeModelTracker extends JModelItem
 		//$this->setState('filter.closer_id', 1);
 		//$this->setState('filter.closer_id.include', 1);
 
-		// Set the assignee filter.
-		//$this->setState('filter.assignee_id', 1);
-		//$this->setState('filter.assignee_id.include', 1);
-
 		// Set the date filters.
 		//$this->setState('filter.date_filtering', null);
 		//$this->setState('filter.date_field', null);
@@ -265,8 +261,6 @@ class CodeModelTracker extends JModelItem
 		$id .= ':' . $this->getState('filter.submitter_id.include');
 		$id .= ':' . $this->getState('filter.closer_id');
 		$id .= ':' . $this->getState('filter.closer_id.include');
-		$id .= ':' . $this->getState('filter.assignee_id');
-		$id .= ':' . $this->getState('filter.assignee_id.include');
 		$id .= ':' . $this->getState('filter.date_filtering');
 		$id .= ':' . $this->getState('filter.date_field');
 		$id .= ':' . $this->getState('filter.start_date_range');

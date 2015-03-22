@@ -166,25 +166,6 @@ class CodeModelIssues extends JModelList
 			$query->where('a.closed_by' . $op . '(' . implode(',', $closerId) . ')');
 		}
 
-		// Filter by a single or group of assignees.
-		$assigneeId = $this->getState('filter.assignee_id');
-
-		if (is_numeric($assigneeId))
-		{
-			$op = $this->getState('filter.assignee_id.include', true) ? ' = ' : ' <> ';
-			$query->where('ass.user_id' . $op . (int) $assigneeId);
-			$query->join('LEFT', '#__code_tracker_issue_assignments AS ass on ass.issue_id = a.issue_id');
-			$query->group('a.issue_id');
-		}
-		elseif (is_array($assigneeId))
-		{
-			JArrayHelper::toInteger($assigneeId);
-			$op = $this->getState('filter.assignee_id.include', true) ? ' IN ' : ' NOT IN ';
-			$query->where('ass.user_id' . $op . '(' . implode(',', $assigneeId) . ')');
-			$query->join('LEFT', '#__code_tracker_issue_assignments AS ass on ass.issue_id = a.issue_id');
-			$query->group('a.issue_id');
-		}
-
 		/*
 		 * Filter by date range or relative date.
 		 */
@@ -337,10 +318,6 @@ class CodeModelIssues extends JModelList
 		//$this->setState('filter.closer_id', 1);
 		//$this->setState('filter.closer_id.include', 1);
 
-		// Set the assignee filter.
-		//$this->setState('filter.assignee_id', 1);
-		//$this->setState('filter.assignee_id.include', 1);
-
 		// Set the date filters.
 		//$this->setState('filter.date_filtering', null);
 		//$this->setState('filter.date_field', null);
@@ -383,8 +360,6 @@ class CodeModelIssues extends JModelList
 		$id .= ':' . $this->getState('filter.submitter_id.include');
 		$id .= ':' . $this->getState('filter.closer_id');
 		$id .= ':' . $this->getState('filter.closer_id.include');
-		$id .= ':' . $this->getState('filter.assignee_id');
-		$id .= ':' . $this->getState('filter.assignee_id.include');
 		$id .= ':' . $this->getState('filter.date_filtering');
 		$id .= ':' . $this->getState('filter.date_field');
 		$id .= ':' . $this->getState('filter.start_date_range');
