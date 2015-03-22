@@ -1,7 +1,7 @@
-ALTER TABLE  `#__code_tracker_snapshots` ADD  `jc_tracker_id` INT NOT NULL;
+ALTER TABLE  `#__code_tracker_snapshots` ADD `jc_tracker_id` int(10) unsigned NOT NULL;
 UPDATE `#__code_tracker_snapshots` AS a LEFT JOIN `#__code_trackers` AS b ON b.`tracker_id` = a.`tracker_id` SET a.`jc_tracker_id`= b.`jc_tracker_id`;
 
-ALTER TABLE  `#__code_tracker_issue_tag_map` ADD  `jc_issue_id` INT NOT NULL;
+ALTER TABLE  `#__code_tracker_issue_tag_map` ADD `jc_issue_id` int(10) unsigned DEFAULT NULL;
 UPDATE `#__code_tracker_issue_tag_map` AS a LEFT JOIN `#__code_tracker_issues` AS b ON b.`issue_id` = a.`issue_id` SET a.`jc_issue_id`= b.`jc_issue_id`;
 
 ALTER TABLE  `#__code_projects` CHANGE  `project_id`  `project_id` INT( 10 ) UNSIGNED NOT NULL;
@@ -30,9 +30,9 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issues_temp` (
   `title` varchar(255) NOT NULL,
   `alias` varchar(255) NOT NULL,
   `description` mediumtext,
-  `jc_issue_id` int(11) DEFAULT NULL,
-  `jc_tracker_id` int(11) DEFAULT NULL,
-  `jc_project_id` int(11) DEFAULT NULL,
+  `jc_issue_id` int(10) DEFAULT NULL,
+  `jc_tracker_id` int(10) DEFAULT NULL,
+  `jc_project_id` int(10) DEFAULT NULL,
   `jc_created_by` int(11) DEFAULT NULL,
   `jc_modified_by` int(11) DEFAULT NULL,
   `jc_close_by` int(11) DEFAULT NULL,
@@ -56,10 +56,10 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_changes_temp` (
   `change_date` datetime NOT NULL,
   `change_by` int(11) NOT NULL,
   `data` text NOT NULL,
-  `jc_change_id` int(11) DEFAULT NULL,
-  `jc_issue_id` int(11) DEFAULT NULL,
-  `jc_tracker_id` int(11) DEFAULT NULL,
-  `jc_change_by` int(11) DEFAULT NULL,
+  `jc_change_id` int(10) DEFAULT NULL,
+  `jc_issue_id` int(10) DEFAULT NULL,
+  `jc_tracker_id` int(10) DEFAULT NULL,
+  `jc_change_by` int(10) DEFAULT NULL,
   PRIMARY KEY (`change_id`),
   UNIQUE KEY `jc_change_id` (`jc_change_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -78,10 +78,10 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_commits_temp` (
   `created_date` datetime NOT NULL,
   `created_by` int(11) NOT NULL,
   `message` text NOT NULL,
-  `jc_commit_id` int(11) DEFAULT NULL,
-  `jc_issue_id` int(11) DEFAULT NULL,
-  `jc_tracker_id` int(11) DEFAULT NULL,
-  `jc_created_by` int(11) DEFAULT NULL,
+  `jc_commit_id` int(10) DEFAULT NULL,
+  `jc_issue_id` int(10) DEFAULT NULL,
+  `jc_tracker_id` int(10) DEFAULT NULL,
+  `jc_created_by` int(10) DEFAULT NULL,
   PRIMARY KEY (`commit_id`),
   UNIQUE KEY `jc_commit_id` (`jc_commit_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -103,10 +103,10 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_files_temp` (
   `description` varchar(512) NOT NULL,
   `size` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
-  `jc_file_id` int(11) DEFAULT NULL,
-  `jc_issue_id` int(11) DEFAULT NULL,
-  `jc_tracker_id` int(11) DEFAULT NULL,
-  `jc_created_by` int(11) DEFAULT NULL,
+  `jc_file_id` int(10) DEFAULT NULL,
+  `jc_issue_id` int(10) DEFAULT NULL,
+  `jc_tracker_id` int(10) DEFAULT NULL,
+  `jc_created_by` int(10) DEFAULT NULL,
   PRIMARY KEY (`file_id`),
   UNIQUE KEY `idx_issue_files_legacy` (`jc_file_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -125,10 +125,10 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_responses_temp` (
   `created_date` datetime NOT NULL,
   `created_by` int(11) NOT NULL,
   `body` text NOT NULL,
-  `jc_response_id` int(11) DEFAULT NULL,
-  `jc_issue_id` int(11) DEFAULT NULL,
-  `jc_tracker_id` int(11) DEFAULT NULL,
-  `jc_created_by` int(11) DEFAULT NULL,
+  `jc_response_id` int(10) DEFAULT NULL,
+  `jc_issue_id` int(10) DEFAULT NULL,
+  `jc_tracker_id` int(10) DEFAULT NULL,
+  `jc_created_by` int(10) DEFAULT NULL,
   PRIMARY KEY (`response_id`),
   UNIQUE KEY `idx_tracker_responses_legacy` (`jc_response_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
@@ -161,8 +161,8 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_status_temp` (
   `state_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `instructions` text,
-  `jc_tracker_id` int(11) DEFAULT NULL,
-  `jc_status_id` int(11) DEFAULT NULL,
+  `jc_tracker_id` int(10) DEFAULT NULL,
+  `jc_status_id` int(10) DEFAULT NULL,
   PRIMARY KEY (`status_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
