@@ -2,6 +2,8 @@ DROP TABLE IF EXISTS `#__code_activity_detail`;
 
 DROP TABLE IF EXISTS `#__code_activity_types`;
 
+DROP TABLE IF EXISTS `#__code_tracker_issue_assignments`;
+
 CREATE TABLE IF NOT EXISTS `#__code_projects` (
   `project_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `asset_id` int(11) NOT NULL,
@@ -75,15 +77,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issues` (
   PRIMARY KEY (`issue_id`),
   UNIQUE KEY `idx_tracker_issues_legacy` (`jc_issue_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_assignments` (
-  `issue_id` int(10) unsigned NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `jc_user_id` int(11) DEFAULT NULL,
-  `jc_issue_id` int(11) DEFAULT NULL,
-  KEY `issue_id` (`issue_id`,`user_id`),
-  KEY `jc_issue_id` (`jc_issue_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_changes` (
   `change_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
