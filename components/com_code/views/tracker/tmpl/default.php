@@ -23,6 +23,9 @@ defined('_JEXEC') or die;
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
 			<tr>
+				<th>
+					<?php echo JText::_('ID'); ?>
+				</th>
 				<th width="50%" class="list-title">
 					<?php echo JText::_('Title'); ?>
 				</th>
@@ -40,6 +43,12 @@ defined('_JEXEC') or die;
 		<tbody>
 		<?php foreach ($this->items as $i => $issue) : ?>
 			<tr class="<?php echo 'row', ($i % 2); ?>" title="<?php echo $this->escape($issue->title); ?>">
+				<td>
+					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&tracker_alias=' . $this->item->alias . '&issue_id=' . $issue->issue_id); ?>"
+					   title="View issue <?php echo $issue->issue_id; ?> report.">
+						<?php echo $issue->issue_id; ?>
+					</a>
+				</td>
 				<td width="50%">
 					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&tracker_alias=' . $this->item->alias . '&issue_id=' . $issue->issue_id); ?>"
 					   title="View issue <?php echo $issue->issue_id; ?> report.">
