@@ -39,3 +39,11 @@ $model = $this->getModel();
 		<?php echo $this->page->getLimitBox(); ?>
 	</div>
 </div>
+<div class="clearfix">
+	<label for="filter_state" class="element-invisible">
+		<?php echo JText::_('State') ?>
+	</label>
+	<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getStatusOptions(), 'filter_state', array(
+		'onchange' => 'document.forms.trackerForm.submit();'
+	), 'value', 'text', $model->getState('issue.state')) ?>
+</div>

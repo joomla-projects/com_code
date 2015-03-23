@@ -33,12 +33,14 @@ class CodeHelperSelect
 	/**
 	 * Return the priorities as JHtml select options
 	 *
+	 * @param   string  $defaultOptionKey  The translation key for the default selection option
+	 *
 	 * @return  array
 	 */
-	public static function getPrioritiesOptions()
+	public static function getPrioritiesOptions($defaultOptionKey = null)
 	{
 		$array = self::getPrioritiesRaw();
-		return self::arrayToOptions($array);
+		return self::arrayToOptions($array, $defaultOptionKey);
 	}
 
 	/**
@@ -49,10 +51,8 @@ class CodeHelperSelect
 	public static function getStatusRaw()
 	{
 		return array(
-			0 => '',
 			1 => 'Duplicate Report',
 			2 => 'Not Joomla! Core',
-			3 => 'Fixed in SVN',
 			3 => 'Fixed in SVN/GitHub',
 			4 => 'Unable to Confirm',
 			5 => 'Open',
@@ -62,7 +62,6 @@ class CodeHelperSelect
 			10 => 'Needs Review',
 			11 => 'Information Required',
 			12 => 'Known Issue',
-			13 => 'Fixed in SVN/GitHub',
 			13 => 'Ready to commit',
 			14 => 'Not a bug',
 			16 => 'Not accepted',
@@ -88,8 +87,7 @@ class CodeHelperSelect
 			51 => 'Pending',
 			55 => 'Expected Behavior',
 			56 => 'Closed-No Reply',
-			59 => 'Referred to Frmework',
-			59 => 'Referred to Platform',
+			59 => 'Referred to Framework / Platform',
 			61 => 'Confirmed',
 			62 => 'Pending',
 			66 => 'Fixed in SVN/GitHub',
@@ -124,21 +122,37 @@ class CodeHelperSelect
 	/**
 	 * Returns the statuses as JHtml select options
 	 *
+	 * @param   string  $defaultOptionKey  The translation key for the default selection option
+	 *
 	 * @return  array
 	 */
-	public static function getStatusOptions()
+	public static function getStatusOptions($defaultOptionKey = null)
 	{
 		$array = self::getStatusRaw();
-		return self::arrayToOptions($array);
+		return self::arrayToOptions($array, $defaultOptionKey);
 	}
 
-	protected static function arrayToOptions($array)
+	/**
+	 * Convert an array of options to a JHtmlSelect-compatible options array
+	 *
+	 * @param   string  $defaultOptionKey  The translation key for the default selection option
+	 *
+	 * @return  array
+	 */
+	protected static function arrayToOptions($array, $defaultOptionKey = null)
 	{
 		$options = array();
 
+		if (empty($defaultOptionKey))
+		{
+			$defaultOptionKey = 'JGLOBAL_SELECT_AN_OPTION';
+		}
+
+		$options[] = JHtml::_('select.option', 0, JText::_($defaultOptionKey));
+
 		foreach ($array as $k => $v)
 		{
-			$options = JHtml::_('select.option', $k, $v);
+			$options[] = JHtml::_('select.option', $k, $v);
 		}
 
 		return $options;
