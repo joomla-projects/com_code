@@ -113,6 +113,29 @@ class CodeModelIssues extends JModelList
 
 		// Filter by a single or group of submitters.
 		$submitterId = $this->getState('filter.submitter_id');
+		$submitterName = $this->getState('filter.submitter_name');
+
+		// If there is no user ID but we have a user name use a separate query to find the user IDs. The separate query
+		// is much faster than joining against the users array and using LIKE to search it.
+		if (empty($submitterId) && !empty($submitterName))
+		{
+			$submitterName = '%' . trim($submitterName) . '%';
+
+			$nameQuery = $db->getQuery(true)
+				->select($db->qn('user_id'))
+				->from($db->qn('#__code_users'))
+				->where(
+					'(' . $db->qn('first_name') . ' LIKE ' . $db->q($submitterName) . ') OR' .
+					'(' . $db->qn('last_name') . ' LIKE ' . $db->q($submitterName) . ')'
+				);
+			$db->setQuery($nameQuery);
+			$submitterId = $db->loadColumn(0);
+
+			if (empty($submitterId))
+			{
+				$submitterId = -1;
+			}
+		}
 
 		if (is_numeric($submitterId))
 		{
@@ -128,6 +151,29 @@ class CodeModelIssues extends JModelList
 
 		// Filter by a single or group of closers.
 		$closerId = $this->getState('filter.closer_id');
+		$closerName = $this->getState('filter.submitter_name');
+
+		// If there is no user ID but we have a user name use a separate query to find the user IDs. The separate query
+		// is much faster than joining against the users array and using LIKE to search it.
+		if (empty($closerId) && !empty($closerName))
+		{
+			$closerName = '%' . trim($closerName) . '%';
+
+			$nameQuery = $db->getQuery(true)
+				->select($db->qn('user_id'))
+				->from($db->qn('#__code_users'))
+				->where(
+					'(' . $db->qn('first_name') . ' LIKE ' . $db->q($closerName) . ') OR' .
+					'(' . $db->qn('last_name') . ' LIKE ' . $db->q($closerName) . ')'
+				);
+			$db->setQuery($nameQuery);
+			$closerId = $db->loadColumn(0);
+
+			if (empty($closerId))
+			{
+				$closerId = -1;
+			}
+		}
 
 		if (is_numeric($closerId))
 		{
