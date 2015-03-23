@@ -20,7 +20,7 @@ defined('_JEXEC') or die;
 		<div class="clr"></div>
 	</div>
 
-	<?php require_once 'default_filters.php'; ?>
+	<?php echo $this->loadTemplate('filters'); ?>
 
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
