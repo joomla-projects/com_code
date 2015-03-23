@@ -48,6 +48,9 @@ class CodeViewTracker extends JViewLegacy
 			'&tracker_alias=' . $this->item->alias . $itemid
 		);
 
+		// Ordering
+		$this->order = $this->getModel()->getState('list.ordering', 'issue_id');
+		$this->order_Dir = $this->getModel()->getState('list.direction', 'desc');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))

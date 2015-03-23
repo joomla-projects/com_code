@@ -125,8 +125,8 @@ class CodeModelTracker extends JModelItem
 			$model->setState('filter.tracker_id', $pk);
 			$model->setState('filter.search', $this->getState('filter.search'));
 			$model->setState('list.start', $this->getState('list.start'));
-			$model->setState('list.ordering', $this->getState('list.ordering'));
-			$model->setState('list.direction', $this->getState('list.direction'));
+			$model->setState('list.ordering', $this->getState('list.ordering', 'issue_id'));
+			$model->setState('list.direction', $this->getState('list.direction', 'DESC'));
 			$model->setState('list.limit', $this->getState('list.limit'));
 			$model->setState('list.filter', $this->getState('list.filter'));
 
@@ -163,6 +163,9 @@ class CodeModelTracker extends JModelItem
 		$pk = $app->input->getInt('tracker_id');
 		$this->setState('tracker.id', $pk);
 
+		// Get the list ID for use with getUserStateFromRequest
+		$listId = $pk . ':' . $app->input->getInt('Itemid', 0);
+
 		// Load the component/page options from the application.
 		$this->setState('options', $app->getParams('com_code'));
 
@@ -170,7 +173,7 @@ class CodeModelTracker extends JModelItem
 		//$this->setState('filter.state', 1);
 
 		// Set the optional filter search string text.
-		$this->setState('filter.search', $app->getUserStateFromRequest('issue.search', 'search', null, 'string'));
+		$this->setState('filter.search', $app->getUserStateFromRequest('com_code.tracker.' . $listId . '.issue.search', 'search', null, 'string'));
 
 		// Set the tracker filter.
 		//$this->setState('filter.tracker_id', 1);
@@ -196,7 +199,6 @@ class CodeModelTracker extends JModelItem
 		//$this->setState('filter.relative_date', null);
 
 		// Load the list options from the request.
-		$listId = $pk . ':' . $app->input->getInt('Itemid', 0);
 		$this->setState('list.start', $app->input->getInt('limitstart', 0));
 		$this->setState('list.ordering', $app->getUserStateFromRequest('com_code.tracker.' . $listId . '.filter_order', 'filter_order', 'a.modified_date', 'string'));
 		$this->setState('list.direction', $app->getUserStateFromRequest('com_code.tracker.' . $listId . '.filter_order_Dir', 'filter_order_Dir', 'DESC', 'cmd'));

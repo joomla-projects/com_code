@@ -8,6 +8,15 @@
  */
 
 defined('_JEXEC') or die;
+
+// Required to get the ordering working
+$orderingJavascript = <<< JS
+	Joomla.orderTable = function() {
+		Joomla.tableOrdering(order, dirn);
+	};
+JS;
+
+JFactory::getApplication()->getDocument()->addScriptDeclaration($orderingJavascript, 'text/javascript');
 ?>
 
 <div id="tracker">
@@ -20,27 +29,30 @@ defined('_JEXEC') or die;
 		<div class="clr"></div>
 	</div>
 
-	<form action="<?php echo $this->formURL ?>" method="post" name="trackerForm">
+	<form action="<?php echo $this->formURL ?>" method="post" name="trackerForm" id="adminForm">
+		<input type="hidden" name="filter_order" value="<?php echo $this->getModel()->getState('list.ordering', 'issue_id') ?>">
+		<input type="hidden" name="filter_order_Dir" value="<?php echo $this->getModel()->getState('list.direction', 'DESC') ?>">
+		<input type="hidden" name="task" value="tracker">
 
 	<?php echo $this->loadTemplate('filters'); ?>
 
-	<table class="table table-striped table-bordered table-hover">
+	<table class="table table-striped table-bordered table-hover" id="sortTable">
 		<thead>
 			<tr>
 				<th>
-					<?php echo JText::_('ID'); ?>
+					<?php echo JHtml::_('grid.sort', JText::_('ID'), 'issue_id', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th width="50%" class="list-title">
-					<?php echo JText::_('Title'); ?>
+					<?php echo JHtml::_('grid.sort', JText::_('Title'), 'title', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th>
-					<?php echo JText::_('Priority'); ?>
+					<?php echo JHtml::_('grid.sort', JText::_('Priority'), 'priority', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th>
-					<?php echo JText::_('Created'); ?>
+					<?php echo JHtml::_('grid.sort', JText::_('Created'), 'created_date', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th>
-					<?php echo JText::_('Modified'); ?>
+					<?php echo JHtml::_('grid.sort', JText::_('Modified'), 'modified_date', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 			</tr>
 		</thead>
