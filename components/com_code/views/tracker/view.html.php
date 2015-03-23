@@ -23,6 +23,10 @@ class CodeViewTracker extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
+		// Load the necessary helper class
+		$this->loadHelper('Select');
+
+		// Populate basic variables
 		$this->state  = $this->get('State');
 		$this->item   = $this->get('Item');
 		$this->items  = $this->get('Items');
@@ -31,13 +35,7 @@ class CodeViewTracker extends JViewLegacy
 		$this->params = JFactory::getApplication()->getParams('com_code');
 
 		// Priorities map, from integer to string
-		$this->priorities = array(
-			'1' => JText::_('High'),
-			'2' => JText::_('Medium High'),
-			'3' => JText::_('Medium'),
-			'4' => JText::_('Low'),
-			'5' => JText::_('Very Low'),
-		);
+		$this->priorities = CodeHelperSelect::getPrioritiesRaw();
 
 		// URL to submit the form to
 		$id = JFactory::getApplication()->input->getInt('Itemid', 0);
