@@ -155,7 +155,7 @@ class CodeModelIssues extends JModelList
 
 		// Filter by a single or group of closers.
 		$closerId = $this->getState('filter.closer_id');
-		$closerName = $this->getState('filter.submitter_name');
+		$closerName = $this->getState('filter.closer_name');
 
 		// If there is no user ID but we have a user name use a separate query to find the user IDs. The separate query
 		// is much faster than joining against the users array and using LIKE to search it.

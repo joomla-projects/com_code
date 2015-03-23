@@ -294,8 +294,8 @@ class CodeHelperSelect
 	public static function getComparatorOptions()
 	{
 		return array(
-			JHtml::_('select.option', '=', JText::_('Is')),
-			JHtml::_('select.option', '<>', JText::_('Is Not')),
+			JHtml::_('select.option', '1', JText::_('Is')),
+			JHtml::_('select.option', '0', JText::_('Is Not')),
 		);
 	}
 

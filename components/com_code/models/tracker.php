@@ -198,17 +198,17 @@ class CodeModelTracker extends JModelItem
 		$this->setState('issue.state', $app->getUserStateFromRequest($issueStatePrefix . 'state', 'filter_state', null, 'int'));
 
 		$this->setState('issue.status_id', $app->getUserStateFromRequest($issueStatePrefix . 'status_id', 'filter_status_id', null, 'int'));
-		$this->setState('issue.status_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'status_id_include', 'filter_status_id_include', '=', 'string'));
+		$this->setState('issue.status_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'status_id_include', 'filter_status_id_include', '=', 'int'));
 
 		$this->setState('issue.tag_id', $app->getUserStateFromRequest($issueStatePrefix . 'tag_id', 'filter_tag_id', null, 'array'));
-		$this->setState('issue.tag_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'tag_id_include', 'filter_tag_id_include', '=', 'string'));
+		$this->setState('issue.tag_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'tag_id_include', 'filter_tag_id_include', '=', 'int'));
 
 		$this->setState('issue.submitter_name', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_name', 'filter_submitter_name', null, 'string'));
 		$this->setState('issue.submitter_id', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_id', 'filter_submitter_id', null, 'int'));
-		$this->setState('issue.submitter_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_id_include', 'filter_submitter_id_include', null, 'string'));
+		$this->setState('issue.submitter_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_id_include', 'filter_submitter_id_include', null, 'int'));
 
 		$this->setState('issue.closer_id', $app->getUserStateFromRequest($issueStatePrefix . 'closer_id', 'filter_closer_id', null, 'int'));
-		$this->setState('issue.closer_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'closer_id_include', 'filter_closer_id_include', null, 'string'));
+		$this->setState('issue.closer_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'closer_id_include', 'filter_closer_id_include', null, 'int'));
 
 		$this->setState('issue.date_field', $app->getUserStateFromRequest($issueStatePrefix . 'date_field', 'filter_date_field', null, 'cmd'));
 		$this->setState('issue.date_filtering', $app->getUserStateFromRequest($issueStatePrefix . 'date_filtering', 'filter_date_filtering', null, 'cmd'));

@@ -36,7 +36,7 @@ $model = $this->getModel();
 <div class="clearfix">
 	<div class="form-horizontal">
 		<div class="control-group">
-			<label class="control-label" for="filter_status">
+			<label class="control-label" for="filter_status_id">
 				<?php echo JText::_('Status') ?>
 			</label>
 			<div class="controls">
@@ -51,7 +51,7 @@ $model = $this->getModel();
 		</div>
 
 		<div class="control-group">
-			<label class="control-label" for="filter_status">
+			<label class="control-label" for="filter_tag_id">
 				<?php echo JText::_('Tag') ?>
 			</label>
 			<div class="controls">
@@ -63,6 +63,23 @@ $model = $this->getModel();
 					'multiple' => 'multiple',
 					'class' => 'advancedSelect'
 				), 'value', 'text', $model->getState('issue.tag_id')) ?>
+				<button type="submit" class="btn hasTooltip"
+						title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
+					<i class="icon-search"></i>
+				</button>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="filter_submitter_name">
+				<?php echo JText::_('Submitter') ?>
+			</label>
+			<div class="controls">
+				<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getComparatorOptions(), 'filter_submitter_id_include', array(
+					'onchange' => 'document.forms.trackerForm.submit();',
+					'class' => 'input-small'
+				), 'value', 'text', $model->getState('issue.submitter_id_include')) ?>
+				<input type="text" name="filter_submitter_name" id="filter_submitter_name" value="<?php echo $this->escape($model->getState('issue.submitter_name')) ?>"/>
 				<button type="submit" class="btn hasTooltip"
 						title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
 					<i class="icon-search"></i>
