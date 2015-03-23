@@ -67,28 +67,28 @@ class CodeModelIssues extends JModelList
 
 		if (is_numeric($trackerId))
 		{
-			$op = $this->getState('filter.tracker_id.include', true) ? ' = ' : ' <> ';
+			$op = $this->getState('filter.tracker_id_include', true) ? ' = ' : ' <> ';
 			$query->where('a.tracker_id' . $op . (int) $trackerId);
 		}
 		elseif (is_array($trackerId))
 		{
 			JArrayHelper::toInteger($trackerId);
-			$op = $this->getState('filter.tracker_id.include', true) ? ' IN ' : ' NOT IN ';
+			$op = $this->getState('filter.tracker_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.tracker_id' . $op . '(' . implode(',', $trackerId) . ')');
 		}
 
 		// Filter by a single or group of status.
 		$status = $this->getState('filter.status_id');
 
-		if (is_numeric($status))
+		if (is_numeric($status) && !empty($status))
 		{
-			$op = $this->getState('filter.status_id.include', true) ? ' = ' : ' <> ';
+			$op = $this->getState('filter.status_id_include', true) ? ' = ' : ' <> ';
 			$query->where('a.status' . $op . (int) $status);
 		}
 		elseif (is_array($status))
 		{
 			JArrayHelper::toInteger($status);
-			$op = $this->getState('filter.status_id.include', true) ? ' IN ' : ' NOT IN ';
+			$op = $this->getState('filter.status_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.status' . $op . '(' . implode(',', $status) . ')');
 		}
 
@@ -97,7 +97,7 @@ class CodeModelIssues extends JModelList
 
 		if (is_numeric($tagId))
 		{
-			$op = $this->getState('filter.tag_id.include', true) ? ' = ' : ' <> ';
+			$op = $this->getState('filter.tag_id_include', true) ? ' = ' : ' <> ';
 			$query->where('tag.tag_id' . $op . (int) $tagId);
 			$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.issue_id');
 			$query->group('a.issue_id');
@@ -105,7 +105,7 @@ class CodeModelIssues extends JModelList
 		elseif (is_array($tagId))
 		{
 			JArrayHelper::toInteger($tagId);
-			$op = $this->getState('filter.tag_id.include', true) ? ' IN ' : ' NOT IN ';
+			$op = $this->getState('filter.tag_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('tag.tag_id' . $op . '(' . implode(',', $tagId) . ')');
 			$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.issue_id');
 			$query->group('a.issue_id');
@@ -139,13 +139,13 @@ class CodeModelIssues extends JModelList
 
 		if (is_numeric($submitterId))
 		{
-			$op = $this->getState('filter.submitter_id.include', true) ? ' = ' : ' <> ';
+			$op = $this->getState('filter.submitter_id_include', true) ? ' = ' : ' <> ';
 			$query->where('a.created_by' . $op . (int) $submitterId);
 		}
 		elseif (is_array($submitterId))
 		{
 			JArrayHelper::toInteger($submitterId);
-			$op = $this->getState('filter.submitter_id.include', true) ? ' IN ' : ' NOT IN ';
+			$op = $this->getState('filter.submitter_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.created_by' . $op . '(' . implode(',', $submitterId) . ')');
 		}
 
@@ -177,13 +177,13 @@ class CodeModelIssues extends JModelList
 
 		if (is_numeric($closerId))
 		{
-			$op = $this->getState('filter.closer_id.include', true) ? ' = ' : ' <> ';
+			$op = $this->getState('filter.closer_id_include', true) ? ' = ' : ' <> ';
 			$query->where('a.closed_by' . $op . (int) $closerId);
 		}
 		elseif (is_array($closerId))
 		{
 			JArrayHelper::toInteger($closerId);
-			$op = $this->getState('filter.closer_id.include', true) ? ' IN ' : ' NOT IN ';
+			$op = $this->getState('filter.closer_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.closed_by' . $op . '(' . implode(',', $closerId) . ')');
 		}
 
@@ -275,23 +275,23 @@ class CodeModelIssues extends JModelList
 
 		// Set the tracker filter.
 		//$this->setState('filter.tracker_id', 1);
-		//$this->setState('filter.tracker_id.include', 1);
+		//$this->setState('filter.tracker_id_include', 1);
 
 		// Set the status filter.
 		//$this->setState('filter.status_id', 1);
-		//$this->setState('filter.status_id.include', 1);
+		//$this->setState('filter.status_id_include', 1);
 
 		// Set the tag filter.
 		//$this->setState('filter.tag_id', 1);
-		//$this->setState('filter.tag_id.include', 1);
+		//$this->setState('filter.tag_id_include', 1);
 
 		// Set the submitter filter.
 		//$this->setState('filter.submitter_id', 1);
-		//$this->setState('filter.submitter_id.include', 1);
+		//$this->setState('filter.submitter_id_include', 1);
 
 		// Set the closer filter.
 		//$this->setState('filter.closer_id', 1);
-		//$this->setState('filter.closer_id.include', 1);
+		//$this->setState('filter.closer_id_include', 1);
 
 		// Set the date filters.
 		//$this->setState('filter.date_filtering', null);
@@ -324,15 +324,15 @@ class CodeModelIssues extends JModelList
 		// Compile the store id.
 		$id .= ':' . $this->getState('filter.state');
 		$id .= ':' . $this->getState('filter.tracker_id');
-		$id .= ':' . $this->getState('filter.tracker_id.include');
+		$id .= ':' . $this->getState('filter.tracker_id_include');
 		$id .= ':' . $this->getState('filter.status_id');
-		$id .= ':' . $this->getState('filter.status_id.include');
+		$id .= ':' . $this->getState('filter.status_id_include');
 		$id .= ':' . $this->getState('filter.tag_id');
-		$id .= ':' . $this->getState('filter.tag_id.include');
+		$id .= ':' . $this->getState('filter.tag_id_include');
 		$id .= ':' . $this->getState('filter.submitter_id');
-		$id .= ':' . $this->getState('filter.submitter_id.include');
+		$id .= ':' . $this->getState('filter.submitter_id_include');
 		$id .= ':' . $this->getState('filter.closer_id');
-		$id .= ':' . $this->getState('filter.closer_id.include');
+		$id .= ':' . $this->getState('filter.closer_id_include');
 		$id .= ':' . $this->getState('filter.date_filtering');
 		$id .= ':' . $this->getState('filter.date_field');
 		$id .= ':' . $this->getState('filter.start_date_range');

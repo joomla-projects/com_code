@@ -133,6 +133,19 @@ class CodeHelperSelect
 	}
 
 	/**
+	 * Returns the comparison operator options
+	 *
+	 * @return  array
+	 */
+	public static function getComparatorOptions()
+	{
+		return array(
+			JHtml::_('select.option', '=', JText::_('Is')),
+			JHtml::_('select.option', '=', JText::_('Is Not')),
+		);
+	}
+
+	/**
 	 * Convert an array of options to a JHtmlSelect-compatible options array
 	 *
 	 * @param   string  $defaultOptionKey  The translation key for the default selection option
