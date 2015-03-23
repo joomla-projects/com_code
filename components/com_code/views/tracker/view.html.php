@@ -30,6 +30,7 @@ class CodeViewTracker extends JViewLegacy
 		$this->user   = JFactory::getUser();
 		$this->params = JFactory::getApplication()->getParams('com_code');
 
+		// Priorities map, from integer to string
 		$this->priorities = array(
 			'1' => JText::_('High'),
 			'2' => JText::_('Medium High'),
@@ -37,6 +38,16 @@ class CodeViewTracker extends JViewLegacy
 			'4' => JText::_('Low'),
 			'5' => JText::_('Very Low'),
 		);
+
+		// URL to submit the form to
+		$id = JFactory::getApplication()->input->getInt('Itemid', 0);
+		$itemid = $id ? '&Itemid=' . (int) $id : '';
+
+		$this->formURL = JRoute::_(
+			'index.php?option=com_code&view=tracker&tracker_id=' . $this->item->tracker_id .
+			'&tracker_alias=' . $this->item->alias . $itemid
+		);
+
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))

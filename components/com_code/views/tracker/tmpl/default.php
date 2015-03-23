@@ -20,6 +20,8 @@ defined('_JEXEC') or die;
 		<div class="clr"></div>
 	</div>
 
+	<form action="<?php echo $this->formURL ?>" method="post" name="trackerForm">
+
 	<?php echo $this->loadTemplate('filters'); ?>
 
 	<table class="table table-striped table-bordered table-hover">
@@ -76,6 +78,8 @@ defined('_JEXEC') or die;
 		<?php endforeach; ?>
 		</tbody>
 	</table>
+
+	</form>
 
 	<?php if (!empty($this->items)) : ?>
 		<?php if (($this->params->def('show_pagination', 2) == 1  || ($this->params->get('show_pagination') == 2)) && ($this->page->pagesTotal > 1)) : ?>
