@@ -200,7 +200,7 @@ class CodeModelTracker extends JModelItem
 		$this->setState('issue.status_id', $app->getUserStateFromRequest($issueStatePrefix . 'status_id', 'filter_status_id', null, 'int'));
 		$this->setState('issue.status_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'status_id_include', 'filter_status_id_include', '=', 'string'));
 
-		$this->setState('issue.tag_id', $app->getUserStateFromRequest($issueStatePrefix . 'tag_id', 'filter_tag_id', null, 'int'));
+		$this->setState('issue.tag_id', $app->getUserStateFromRequest($issueStatePrefix . 'tag_id', 'filter_tag_id', null, 'array'));
 		$this->setState('issue.tag_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'tag_id_include', 'filter_tag_id_include', '=', 'string'));
 
 		$this->setState('issue.submitter_name', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_name', 'filter_submitter_name', null, 'string'));

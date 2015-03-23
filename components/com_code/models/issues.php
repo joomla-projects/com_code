@@ -98,17 +98,21 @@ class CodeModelIssues extends JModelList
 		if (is_numeric($tagId))
 		{
 			$op = $this->getState('filter.tag_id_include', true) ? ' = ' : ' <> ';
-			$query->where('tag.tag_id' . $op . (int) $tagId);
+			$query->where('tags.tag_id' . $op . (int) $tagId);
 			$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.issue_id');
 			$query->group('a.issue_id');
 		}
 		elseif (is_array($tagId))
 		{
-			JArrayHelper::toInteger($tagId);
-			$op = $this->getState('filter.tag_id_include', true) ? ' IN ' : ' NOT IN ';
-			$query->where('tag.tag_id' . $op . '(' . implode(',', $tagId) . ')');
-			$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.issue_id');
-			$query->group('a.issue_id');
+			if (!in_array(-1, $tagId))
+			{
+				JArrayHelper::toInteger($tagId);
+				$tagId = array_map(array($db, 'q'), $tagId);
+				$op = $this->getState('filter.tag_id_include', true) ? ' IN ' : ' NOT IN ';
+				$query->where('tags.tag_id' . $op . '(' . implode(',', $tagId) . ')');
+				$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.issue_id');
+				$query->group('a.issue_id');
+			}
 		}
 
 		// Filter by a single or group of submitters.
@@ -327,7 +331,7 @@ class CodeModelIssues extends JModelList
 		$id .= ':' . $this->getState('filter.tracker_id_include');
 		$id .= ':' . $this->getState('filter.status_id');
 		$id .= ':' . $this->getState('filter.status_id_include');
-		$id .= ':' . $this->getState('filter.tag_id');
+		$id .= ':' . implode(',', $this->getState('filter.tag_id'));
 		$id .= ':' . $this->getState('filter.tag_id_include');
 		$id .= ':' . $this->getState('filter.submitter_id');
 		$id .= ':' . $this->getState('filter.submitter_id_include');

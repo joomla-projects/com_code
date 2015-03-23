@@ -26,6 +26,9 @@ class CodeViewTracker extends JViewLegacy
 		// Load the necessary helper class
 		$this->loadHelper('Select');
 
+		// Enable Chosen
+		JHtml::_('formbehavior.chosen');
+
 		// Populate basic variables
 		$this->state  = $this->get('State');
 		$this->item   = $this->get('Item');
