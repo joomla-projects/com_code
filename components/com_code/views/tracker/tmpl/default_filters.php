@@ -15,16 +15,7 @@ $model = $this->getModel();
 
 <div class="clearfix">
 	<div class="pull-left form-search">
-		<label for="filter_search" class="element-invisible">
-			<?php echo JText::_('JSEARCH_FILTER'); ?>
-		</label>
-		<div class="btn-wrapper input-append">
-			<input type="text" class="search-query" name="search" id="filter_search" value="<?php echo $this->escape($model->getState('filter.search')) ?>"/>
-			<button type="submit" class="btn hasTooltip"
-					title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
-				<i class="icon-search"></i>
-			</button>
-		</div>
+
 	</div>
 	<div class="hidden-phone hidden-tablet pull-right">
 		<label for="limit" class="element-invisible">
@@ -35,6 +26,21 @@ $model = $this->getModel();
 </div>
 <div class="clearfix">
 	<div class="form-horizontal">
+		<div class="control-group">
+			<label for="filter_search" class="control-label">
+				<?php echo JText::_('JSEARCH_FILTER'); ?>
+			</label>
+			<div class="controls">
+				<div class="input-append">
+					<input type="text" name="search" id="filter_search" value="<?php echo $this->escape($model->getState('filter.search')) ?>"/>
+					<button type="submit" class="btn hasTooltip"
+							title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
+						<i class="icon-search"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+
 		<div class="control-group">
 			<label class="control-label" for="filter_status_id">
 				<?php echo JText::_('Status') ?>
