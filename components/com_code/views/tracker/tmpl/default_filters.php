@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+JHtml::_('behavior.calendar');
+
 /** @var CodeModelTracker $model */
 $model = $this->getModel();
 ?>
@@ -103,6 +105,27 @@ $model = $this->getModel();
 					'class' => 'input-small'
 				), 'value', 'text', $model->getState('issue.closer_id_include')) ?>
 				<input type="text" name="filter_closer_name" id="filter_closer_name" value="<?php echo $this->escape($model->getState('issue.closer_name')) ?>"/>
+				<button type="submit" class="btn hasTooltip"
+						title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
+					<i class="icon-search"></i>
+				</button>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="filter_date_field">
+				<?php echo JText::_('Date Filter') ?>
+			</label>
+			<div class="controls">
+				<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getDateOptions(), 'filter_date_field', array(
+					'onchange' => 'document.forms.trackerForm.submit();',
+					'class' => 'input-small'
+				), 'value', 'text', $model->getState('issue.date_field')) ?>
+				<input type="hidden" name="filter_date_filtering" value="range" />
+
+				<?php echo JHtml::_('calendar', $model->getState('issue.start_date_range'), 'filter_start_date_range', 'filter_start_date_range', '%Y-%m-%d', array('class' => 'input-small')); ?>
+				<?php echo JHtml::_('calendar', $model->getState('issue.end_date_range'), 'filter_end_date_range', 'filter_end_date_range', '%Y-%m-%d', array('class' => 'input-small')); ?>
+
 				<button type="submit" class="btn hasTooltip"
 						title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
 					<i class="icon-search"></i>

@@ -195,6 +195,9 @@ class CodeModelIssues extends JModelList
 		 * Filter by date range or relative date.
 		 */
 
+		// Get the date filtering type.
+		$dateFiltering = $this->getState('filter.date_filtering', 'off');
+
 		// Get the field to filter the date based on.
 		$dateField = $this->getState('filter.date_field', 'created');
 
@@ -205,7 +208,12 @@ class CodeModelIssues extends JModelList
 				break;
 
 			case 'closed':
-				$dateField = 'a.closed_date';
+				$dateField = 'a.close_date';
+				break;
+
+			case 'none':
+				$dateField = 'a.created_date';
+				$dateFiltering = 'off';
 				break;
 
 			default:
@@ -213,9 +221,6 @@ class CodeModelIssues extends JModelList
 				$dateField = 'a.created_date';
 				break;
 		}
-
-		// Get the date filtering type.
-		$dateFiltering = $this->getState('filter.date_filtering', 'off');
 
 		switch ($dateFiltering)
 		{

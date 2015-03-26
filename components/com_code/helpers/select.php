@@ -299,6 +299,16 @@ class CodeHelperSelect
 		);
 	}
 
+	public static function getDateOptions()
+	{
+		return array(
+			JHtml::_('select.option', 'none', JText::_('None')),
+			JHtml::_('select.option', 'created', JText::_('Created')),
+			JHtml::_('select.option', 'modified', JText::_('Last Modified')),
+			JHtml::_('select.option', 'closed', JText::_('Closed')),
+		);
+	}
+
 	/**
 	 * Convert an array of options to a JHtmlSelect-compatible options array
 	 *
