@@ -92,5 +92,22 @@ $model = $this->getModel();
 				</button>
 			</div>
 		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="filter_closer_name">
+				<?php echo JText::_('Closer') ?>
+			</label>
+			<div class="controls">
+				<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getComparatorOptions(), 'filter_closer_id_include', array(
+					'onchange' => 'document.forms.trackerForm.submit();',
+					'class' => 'input-small'
+				), 'value', 'text', $model->getState('issue.closer_id_include')) ?>
+				<input type="text" name="filter_closer_name" id="filter_closer_name" value="<?php echo $this->escape($model->getState('issue.closer_name')) ?>"/>
+				<button type="submit" class="btn hasTooltip"
+						title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
+					<i class="icon-search"></i>
+				</button>
+			</div>
+		</div>
 	</div>
 </div>

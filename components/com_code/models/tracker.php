@@ -138,6 +138,7 @@ class CodeModelTracker extends JModelItem
 			$model->setState('filter.submitter_name', $this->getState('issue.submitter_name'));
 			$model->setState('filter.submitter_id', $this->getState('issue.submitter_id'));
 			$model->setState('filter.submitter_id_include', $this->getState('issue.submitter_id_include'));
+			$model->setState('filter.closer_name', $this->getState('issue.closer_name'));
 			$model->setState('filter.closer_id', $this->getState('issue.closer_id'));
 			$model->setState('filter.closer_id_include', $this->getState('issue.closer_id_include'));
 			$model->setState('filter.date_field', $this->getState('issue.date_field'));
@@ -207,6 +208,7 @@ class CodeModelTracker extends JModelItem
 		$this->setState('issue.submitter_id', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_id', 'filter_submitter_id', null, 'int'));
 		$this->setState('issue.submitter_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_id_include', 'filter_submitter_id_include', null, 'int'));
 
+		$this->setState('issue.closer_name', $app->getUserStateFromRequest($issueStatePrefix . 'closer_name', 'filter_closer_name', null, 'string'));
 		$this->setState('issue.closer_id', $app->getUserStateFromRequest($issueStatePrefix . 'closer_id', 'filter_closer_id', null, 'int'));
 		$this->setState('issue.closer_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'closer_id_include', 'filter_closer_id_include', null, 'int'));
 

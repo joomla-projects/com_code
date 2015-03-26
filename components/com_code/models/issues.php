@@ -182,13 +182,13 @@ class CodeModelIssues extends JModelList
 		if (is_numeric($closerId))
 		{
 			$op = $this->getState('filter.closer_id_include', true) ? ' = ' : ' <> ';
-			$query->where('a.closed_by' . $op . (int) $closerId);
+			$query->where('a.close_by' . $op . (int) $closerId);
 		}
 		elseif (is_array($closerId))
 		{
 			JArrayHelper::toInteger($closerId);
 			$op = $this->getState('filter.closer_id_include', true) ? ' IN ' : ' NOT IN ';
-			$query->where('a.closed_by' . $op . '(' . implode(',', $closerId) . ')');
+			$query->where('a.close_by' . $op . '(' . implode(',', $closerId) . ')');
 		}
 
 		/*
@@ -325,13 +325,24 @@ class CodeModelIssues extends JModelList
 	 */
 	protected function getStoreId($id = '')
 	{
+		$tagId = $this->getState('filter.tag_id', null);
+
+		if (is_null($tagId))
+		{
+			$tagId = array();
+		}
+		elseif (!is_array($tagId))
+		{
+			$tagId = array($tagId);
+		}
+
 		// Compile the store id.
 		$id .= ':' . $this->getState('filter.state');
 		$id .= ':' . $this->getState('filter.tracker_id');
 		$id .= ':' . $this->getState('filter.tracker_id_include');
 		$id .= ':' . $this->getState('filter.status_id');
 		$id .= ':' . $this->getState('filter.status_id_include');
-		$id .= ':' . implode(',', $this->getState('filter.tag_id'));
+		$id .= ':' . implode(',', $tagId);
 		$id .= ':' . $this->getState('filter.tag_id_include');
 		$id .= ':' . $this->getState('filter.submitter_id');
 		$id .= ':' . $this->getState('filter.submitter_id_include');
