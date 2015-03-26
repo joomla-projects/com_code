@@ -67,28 +67,28 @@ class CodeModelIssues extends JModelList
 
 		if (is_numeric($trackerId))
 		{
-			$op = $this->getState('filter.tracker_id.include', true) ? ' = ' : ' <> ';
+			$op = $this->getState('filter.tracker_id_include', true) ? ' = ' : ' <> ';
 			$query->where('a.tracker_id' . $op . (int) $trackerId);
 		}
 		elseif (is_array($trackerId))
 		{
 			JArrayHelper::toInteger($trackerId);
-			$op = $this->getState('filter.tracker_id.include', true) ? ' IN ' : ' NOT IN ';
+			$op = $this->getState('filter.tracker_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.tracker_id' . $op . '(' . implode(',', $trackerId) . ')');
 		}
 
 		// Filter by a single or group of status.
 		$status = $this->getState('filter.status_id');
 
-		if (is_numeric($status))
+		if (is_numeric($status) && !empty($status))
 		{
-			$op = $this->getState('filter.status_id.include', true) ? ' = ' : ' <> ';
+			$op = $this->getState('filter.status_id_include', true) ? ' = ' : ' <> ';
 			$query->where('a.status' . $op . (int) $status);
 		}
 		elseif (is_array($status))
 		{
 			JArrayHelper::toInteger($status);
-			$op = $this->getState('filter.status_id.include', true) ? ' IN ' : ' NOT IN ';
+			$op = $this->getState('filter.status_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.status' . $op . '(' . implode(',', $status) . ')');
 		}
 
@@ -97,53 +97,106 @@ class CodeModelIssues extends JModelList
 
 		if (is_numeric($tagId))
 		{
-			$op = $this->getState('filter.tag_id.include', true) ? ' = ' : ' <> ';
-			$query->where('tag.tag_id' . $op . (int) $tagId);
+			$op = $this->getState('filter.tag_id_include', true) ? ' = ' : ' <> ';
+			$query->where('tags.tag_id' . $op . (int) $tagId);
 			$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.issue_id');
 			$query->group('a.issue_id');
 		}
 		elseif (is_array($tagId))
 		{
-			JArrayHelper::toInteger($tagId);
-			$op = $this->getState('filter.tag_id.include', true) ? ' IN ' : ' NOT IN ';
-			$query->where('tag.tag_id' . $op . '(' . implode(',', $tagId) . ')');
-			$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.issue_id');
-			$query->group('a.issue_id');
+			if (!in_array(-1, $tagId))
+			{
+				JArrayHelper::toInteger($tagId);
+				$tagId = array_map(array($db, 'q'), $tagId);
+				$op = $this->getState('filter.tag_id_include', true) ? ' IN ' : ' NOT IN ';
+				$query->where('tags.tag_id' . $op . '(' . implode(',', $tagId) . ')');
+				$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.issue_id');
+				$query->group('a.issue_id');
+			}
 		}
 
 		// Filter by a single or group of submitters.
 		$submitterId = $this->getState('filter.submitter_id');
+		$submitterName = $this->getState('filter.submitter_name');
+
+		// If there is no user ID but we have a user name use a separate query to find the user IDs. The separate query
+		// is much faster than joining against the users array and using LIKE to search it.
+		if (empty($submitterId) && !empty($submitterName))
+		{
+			$submitterName = '%' . trim($submitterName) . '%';
+
+			$nameQuery = $db->getQuery(true)
+				->select($db->qn('user_id'))
+				->from($db->qn('#__code_users'))
+				->where(
+					'(' . $db->qn('first_name') . ' LIKE ' . $db->q($submitterName) . ') OR' .
+					'(' . $db->qn('last_name') . ' LIKE ' . $db->q($submitterName) . ')'
+				);
+			$db->setQuery($nameQuery);
+			$submitterId = $db->loadColumn(0);
+
+			if (empty($submitterId))
+			{
+				$submitterId = -1;
+			}
+		}
 
 		if (is_numeric($submitterId))
 		{
-			$op = $this->getState('filter.submitter_id.include', true) ? ' = ' : ' <> ';
+			$op = $this->getState('filter.submitter_id_include', true) ? ' = ' : ' <> ';
 			$query->where('a.created_by' . $op . (int) $submitterId);
 		}
 		elseif (is_array($submitterId))
 		{
 			JArrayHelper::toInteger($submitterId);
-			$op = $this->getState('filter.submitter_id.include', true) ? ' IN ' : ' NOT IN ';
+			$op = $this->getState('filter.submitter_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.created_by' . $op . '(' . implode(',', $submitterId) . ')');
 		}
 
 		// Filter by a single or group of closers.
 		$closerId = $this->getState('filter.closer_id');
+		$closerName = $this->getState('filter.closer_name');
+
+		// If there is no user ID but we have a user name use a separate query to find the user IDs. The separate query
+		// is much faster than joining against the users array and using LIKE to search it.
+		if (empty($closerId) && !empty($closerName))
+		{
+			$closerName = '%' . trim($closerName) . '%';
+
+			$nameQuery = $db->getQuery(true)
+				->select($db->qn('user_id'))
+				->from($db->qn('#__code_users'))
+				->where(
+					'(' . $db->qn('first_name') . ' LIKE ' . $db->q($closerName) . ') OR' .
+					'(' . $db->qn('last_name') . ' LIKE ' . $db->q($closerName) . ')'
+				);
+			$db->setQuery($nameQuery);
+			$closerId = $db->loadColumn(0);
+
+			if (empty($closerId))
+			{
+				$closerId = -1;
+			}
+		}
 
 		if (is_numeric($closerId))
 		{
-			$op = $this->getState('filter.closer_id.include', true) ? ' = ' : ' <> ';
-			$query->where('a.closed_by' . $op . (int) $closerId);
+			$op = $this->getState('filter.closer_id_include', true) ? ' = ' : ' <> ';
+			$query->where('a.close_by' . $op . (int) $closerId);
 		}
 		elseif (is_array($closerId))
 		{
 			JArrayHelper::toInteger($closerId);
-			$op = $this->getState('filter.closer_id.include', true) ? ' IN ' : ' NOT IN ';
-			$query->where('a.closed_by' . $op . '(' . implode(',', $closerId) . ')');
+			$op = $this->getState('filter.closer_id_include', true) ? ' IN ' : ' NOT IN ';
+			$query->where('a.close_by' . $op . '(' . implode(',', $closerId) . ')');
 		}
 
 		/*
 		 * Filter by date range or relative date.
 		 */
+
+		// Get the date filtering type.
+		$dateFiltering = $this->getState('filter.date_filtering', 'off');
 
 		// Get the field to filter the date based on.
 		$dateField = $this->getState('filter.date_field', 'created');
@@ -155,7 +208,12 @@ class CodeModelIssues extends JModelList
 				break;
 
 			case 'closed':
-				$dateField = 'a.closed_date';
+				$dateField = 'a.close_date';
+				break;
+
+			case 'none':
+				$dateField = 'a.created_date';
+				$dateFiltering = 'off';
 				break;
 
 			default:
@@ -163,9 +221,6 @@ class CodeModelIssues extends JModelList
 				$dateField = 'a.created_date';
 				break;
 		}
-
-		// Get the date filtering type.
-		$dateFiltering = $this->getState('filter.date_filtering', 'off');
 
 		switch ($dateFiltering)
 		{
@@ -188,8 +243,15 @@ class CodeModelIssues extends JModelList
 		}
 
 		/*
-		 * TODO: Search Filter
+		 * Search Filter
 		 */
+		$search = $this->getState('filter.search');
+
+		if ($search)
+		{
+			$search = '%' . trim($search) . '%';
+			$query->where($db->qn('a') . '.' . $db->qn('title') . ' LIKE ' . $db->q($search));
+		}
 
 		// Add the list ordering clause.
 		$query->order($this->getState('list.ordering', 'a.created_date') . ' ' . $this->getState('list.direction', 'ASC'));
@@ -218,27 +280,27 @@ class CodeModelIssues extends JModelList
 		//$this->setState('filter.state', 1);
 
 		// Set the optional filter search string text.
-		//$this->setState('filter.search', JRequest::getString('filter-search'));
+		$this->setState('filter.search', $app->input->getString('search'));
 
 		// Set the tracker filter.
 		//$this->setState('filter.tracker_id', 1);
-		//$this->setState('filter.tracker_id.include', 1);
+		//$this->setState('filter.tracker_id_include', 1);
 
 		// Set the status filter.
 		//$this->setState('filter.status_id', 1);
-		//$this->setState('filter.status_id.include', 1);
+		//$this->setState('filter.status_id_include', 1);
 
 		// Set the tag filter.
 		//$this->setState('filter.tag_id', 1);
-		//$this->setState('filter.tag_id.include', 1);
+		//$this->setState('filter.tag_id_include', 1);
 
 		// Set the submitter filter.
 		//$this->setState('filter.submitter_id', 1);
-		//$this->setState('filter.submitter_id.include', 1);
+		//$this->setState('filter.submitter_id_include', 1);
 
 		// Set the closer filter.
 		//$this->setState('filter.closer_id', 1);
-		//$this->setState('filter.closer_id.include', 1);
+		//$this->setState('filter.closer_id_include', 1);
 
 		// Set the date filters.
 		//$this->setState('filter.date_filtering', null);
@@ -268,18 +330,29 @@ class CodeModelIssues extends JModelList
 	 */
 	protected function getStoreId($id = '')
 	{
+		$tagId = $this->getState('filter.tag_id', null);
+
+		if (is_null($tagId))
+		{
+			$tagId = array();
+		}
+		elseif (!is_array($tagId))
+		{
+			$tagId = array($tagId);
+		}
+
 		// Compile the store id.
 		$id .= ':' . $this->getState('filter.state');
 		$id .= ':' . $this->getState('filter.tracker_id');
-		$id .= ':' . $this->getState('filter.tracker_id.include');
+		$id .= ':' . $this->getState('filter.tracker_id_include');
 		$id .= ':' . $this->getState('filter.status_id');
-		$id .= ':' . $this->getState('filter.status_id.include');
-		$id .= ':' . $this->getState('filter.tag_id');
-		$id .= ':' . $this->getState('filter.tag_id.include');
+		$id .= ':' . $this->getState('filter.status_id_include');
+		$id .= ':' . implode(',', $tagId);
+		$id .= ':' . $this->getState('filter.tag_id_include');
 		$id .= ':' . $this->getState('filter.submitter_id');
-		$id .= ':' . $this->getState('filter.submitter_id.include');
+		$id .= ':' . $this->getState('filter.submitter_id_include');
 		$id .= ':' . $this->getState('filter.closer_id');
-		$id .= ':' . $this->getState('filter.closer_id.include');
+		$id .= ':' . $this->getState('filter.closer_id_include');
 		$id .= ':' . $this->getState('filter.date_filtering');
 		$id .= ':' . $this->getState('filter.date_field');
 		$id .= ':' . $this->getState('filter.start_date_range');

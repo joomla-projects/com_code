@@ -8,6 +8,15 @@
  */
 
 defined('_JEXEC') or die;
+
+// Required to get the ordering working
+$orderingJavascript = <<< JS
+	Joomla.orderTable = function() {
+		Joomla.tableOrdering(order, dirn);
+	};
+JS;
+
+JFactory::getApplication()->getDocument()->addScriptDeclaration($orderingJavascript, 'text/javascript');
 ?>
 
 <div id="tracker">
@@ -20,26 +29,42 @@ defined('_JEXEC') or die;
 		<div class="clr"></div>
 	</div>
 
-	<table class="table table-striped table-bordered table-hover">
+	<form action="<?php echo $this->formURL ?>" method="post" name="trackerForm" id="adminForm">
+		<input type="hidden" name="filter_order" value="<?php echo $this->getModel()->getState('list.ordering', 'issue_id') ?>">
+		<input type="hidden" name="filter_order_Dir" value="<?php echo $this->getModel()->getState('list.direction', 'DESC') ?>">
+		<input type="hidden" name="task" value="tracker">
+
+	<?php echo $this->loadTemplate('filters'); ?>
+
+	<table class="table table-striped table-bordered table-hover" id="sortTable">
 		<thead>
 			<tr>
+				<th>
+					<?php echo JHtml::_('grid.sort', JText::_('ID'), 'issue_id', $this->order_Dir, $this->order, 'tracker'); ?>
+				</th>
 				<th width="50%" class="list-title">
-					<?php echo JText::_('Title'); ?>
+					<?php echo JHtml::_('grid.sort', JText::_('Title'), 'title', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th>
-					<?php echo JText::_('Priority'); ?>
+					<?php echo JHtml::_('grid.sort', JText::_('Priority'), 'priority', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th>
-					<?php echo JText::_('Created'); ?>
+					<?php echo JHtml::_('grid.sort', JText::_('Created'), 'created_date', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th>
-					<?php echo JText::_('Modified'); ?>
+					<?php echo JHtml::_('grid.sort', JText::_('Modified'), 'modified_date', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php foreach ($this->items as $i => $issue) : ?>
 			<tr class="<?php echo 'row', ($i % 2); ?>" title="<?php echo $this->escape($issue->title); ?>">
+				<td>
+					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&tracker_alias=' . $this->item->alias . '&issue_id=' . $issue->issue_id); ?>"
+					   title="View issue <?php echo $issue->issue_id; ?> report.">
+						<?php echo $issue->issue_id; ?>
+					</a>
+				</td>
 				<td width="50%">
 					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&tracker_alias=' . $this->item->alias . '&issue_id=' . $issue->issue_id); ?>"
 					   title="View issue <?php echo $issue->issue_id; ?> report.">
@@ -47,7 +72,9 @@ defined('_JEXEC') or die;
 					</a>
 				</td>
 				<td>
-					<?php echo $issue->priority; ?>
+					<span class="priority-<?php echo (int) $issue->priority ?>">
+					<?php echo $this->priorities[$issue->priority]; ?>
+					</span>
 				</td>
 				<td>
 					<?php echo JHtml::_('date', $issue->created_date, 'j M Y, G:s'); ?>
@@ -63,6 +90,8 @@ defined('_JEXEC') or die;
 		<?php endforeach; ?>
 		</tbody>
 	</table>
+
+	</form>
 
 	<?php if (!empty($this->items)) : ?>
 		<?php if (($this->params->def('show_pagination', 2) == 1  || ($this->params->get('show_pagination') == 2)) && ($this->page->pagesTotal > 1)) : ?>
