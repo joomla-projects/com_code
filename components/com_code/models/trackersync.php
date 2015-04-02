@@ -220,7 +220,7 @@ class CodeModelTrackerSync extends JModelLegacy
 
 			foreach ($trackers as $tracker)
 			{
-				$currentTrackers = array(8103, 8549, 11410);
+				$currentTrackers = array(32);
 
 				if (in_array($tracker->tracker_id, $currentTrackers))
 				{
@@ -233,6 +233,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		}
 		catch (RuntimeException $e)
 		{
+			var_dump($e);die;
 			JLog::add('An error occurred during the sync: ' . $e->getMessage(), JLog::INFO);
 
 			$this->sendEmail();
@@ -354,13 +355,13 @@ class CodeModelTrackerSync extends JModelLegacy
 			$item  = $items[$i];
 
 			// Exclude items closed > 1 year
-			$closeDate = new DateTime($item->close_date);
+			//$closeDate = new DateTime($item->close_date);
 
-			if (isset($item->close_date) && $closeDate < $cutoffDate)
+			/*if (isset($item->close_date) && $closeDate < $cutoffDate)
 			{
 				$skippedCount++;
 			}
-			else
+			else*/
 			{
 				$this->syncTrackerItem($item, $tracker->tracker_id, $table->tracker_id);
 
@@ -443,6 +444,12 @@ class CodeModelTrackerSync extends JModelLegacy
 	 */
 	private function syncTrackerItem($item, $legacyTrackerId, $trackerId)
 	{
+		// Skip items giving us headaches
+		if (in_array($item->tracker_item_id, array(8306, 10568, 10818)))
+		{
+			return true;
+		}
+
 		// Get the database object
 		$db = $this->getDbo();
 
@@ -489,10 +496,10 @@ class CodeModelTrackerSync extends JModelLegacy
 		}
 
 		// Add each user ID that committed a code change to the list.
-		/* foreach ($item->scm_commits as $commit)
+		foreach ($item->scm_commits as $commit)
 		{
 			$usersToLookUp[] = $commit->user_id;
-		}*/
+		}
 
 		// Add each user ID that is assigned to the list.
 		foreach ($item->assignees as $assignee)
@@ -599,13 +606,13 @@ class CodeModelTrackerSync extends JModelLegacy
 		}
 
 		// Synchronize the commits associated with the tracker item.
-		/* if (is_array($item->scm_commits))
+		if (is_array($item->scm_commits))
 		{
 			if (!$this->syncTrackerItemCommits($item->scm_commits, $users, $table->issue_id, $table->tracker_id, $table->jc_issue_id, $table->jc_tracker_id))
 			{
 				return false;
 			}
-		}*/
+		}
 
 		// Synchronize the extra fields for the tracker item.
 		if (is_array($item->extra_field_data))
@@ -1079,24 +1086,15 @@ class CodeModelTrackerSync extends JModelLegacy
 			// Get a user table object.
 			$table = $this->getTable('User', 'CodeTable');
 
-			// Load any existing data by email address.
-			$table->loadByEmail($user->email);
+			// Load any existing data by JC user ID
+			$table->loadByLegacyId($user->user_id);
 
 			// Populate the appropriate fields from the server data object.
 			$data = array(
 				'jc_user_id'   => $user->user_id,
-				'username'     => $user->unix_name,
-				'email'        => $user->email,
-				'registerDate' => $user->create_date,
 				'first_name'   => $user->firstname,
 				'last_name'    => $user->lastname
 			);
-
-			// Do a little state conversion.
-			if ($user->status == 2)
-			{
-				$data['block'] = 1;
-			}
 
 			// Bind the data to the user object.
 			$table->bind($data);
@@ -1111,7 +1109,7 @@ class CodeModelTrackerSync extends JModelLegacy
 
 			$this->processingTotals['users']++;
 
-			$users[$table->jc_user_id] = (int) $table->id;
+			$users[$table->jc_user_id] = (int) $table->user_id;
 		}
 
 		return $users;
