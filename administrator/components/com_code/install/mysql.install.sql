@@ -79,24 +79,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_commits` (
   UNIQUE KEY `jc_commit_id` (`jc_commit_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_files` (
-  `file_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `issue_id` int(10) unsigned NOT NULL,
-  `tracker_id` int(10) unsigned NOT NULL,
-  `created_date` datetime NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `description` varchar(512) NOT NULL,
-  `size` int(11) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  `jc_file_id` int(10) DEFAULT NULL,
-  `jc_issue_id` int(10) DEFAULT NULL,
-  `jc_tracker_id` int(10) DEFAULT NULL,
-  `jc_created_by` int(10) DEFAULT NULL,
-  PRIMARY KEY (`file_id`),
-  UNIQUE KEY `idx_issue_files_legacy` (`jc_file_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_responses` (
   `response_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `issue_id` int(10) unsigned NOT NULL,

@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS `#__code_projects`;
-
 DROP TABLE IF EXISTS `#__code_tags`;
 
 DROP TABLE IF EXISTS `#__code_trackers`;
@@ -9,8 +7,6 @@ DROP TABLE IF EXISTS `#__code_tracker_issues`;
 DROP TABLE IF EXISTS `#__code_tracker_issue_changes`;
 
 DROP TABLE IF EXISTS `#__code_tracker_issue_commits`;
-
-DROP TABLE IF EXISTS `#__code_tracker_issue_files`;
 
 DROP TABLE IF EXISTS `#__code_tracker_issue_responses`;
 
