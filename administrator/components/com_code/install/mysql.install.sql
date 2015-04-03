@@ -26,7 +26,6 @@ CREATE TABLE IF NOT EXISTS `#__code_trackers` (
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issues` (
   `issue_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tracker_id` int(10) unsigned NOT NULL,
-  `build_id` int(10) unsigned DEFAULT NULL,
   `state` int(11) NOT NULL,
   `status` int(10) unsigned NOT NULL,
   `status_name` varchar(255) NOT NULL,
@@ -38,7 +37,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issues` (
   `close_date` datetime NOT NULL,
   `close_by` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `alias` varchar(255) NOT NULL,
   `description` mediumtext,
   `jc_issue_id` int(10) unsigned NOT NULL,
   `jc_tracker_id` int(10) unsigned NOT NULL,

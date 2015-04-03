@@ -51,16 +51,7 @@ class Code extends JApplicationCli
 		// Set the error reporting level
 		$error_reporting = (int) JFactory::getConfig()->get('error_reporting');
 
-		// Configure error reporting
-		if ($error_reporting == 0)
-		{
-			error_reporting(0);
-		}
-		elseif ($error_reporting > 0)
-		{
-			// Verbose error reporting.
-			error_reporting($error_reporting);
-		}
+		error_reporting($error_reporting);
 	}
 
 	/**
@@ -76,24 +67,44 @@ class Code extends JApplicationCli
 
 			$command = strtolower(array_shift($args));
 
-			// Get the ID of the tracker to sync (unused)
-			$trackerId = $this->input->get('tracker', null);
+			// Define the component path.
+			defined('JPATH_COMPONENT') or define('JPATH_COMPONENT', realpath(JPATH_BASE . '/components/com_code'));
+
+			// Set the include paths for com_code models and tables.
+			JModelLegacy::addIncludePath(realpath(JPATH_BASE . '/components/com_code/models'));
+			JTable::addIncludePath(realpath(JPATH_BASE . '/administrator/components/com_code/tables'));
+
+			// Get the tracker sync model.
+			/** @var CodeModelTrackerSync $model */
+			$model = JModelLegacy::getInstance('TrackerSync', 'CodeModel');
 
 			switch ($command)
 			{
 				case 'sync' :
-					// Define the component path.
-					defined('JPATH_COMPONENT') or define('JPATH_COMPONENT', realpath(JPATH_BASE . '/components/com_code'));
-
-					// Set the include paths for com_code models and tables.
-					JModelLegacy::addIncludePath(realpath(JPATH_BASE . '/components/com_code/models'));
-					JTable::addIncludePath(realpath(JPATH_BASE . '/administrator/components/com_code/tables'));
-
-					// Get the tracker sync model.
-					$model = JModelLegacy::getInstance('TrackerSync', 'CodeModel');
-
 					// Run the syncronization routine.
 					$result = $model->$command();
+
+					if ($result === false)
+					{
+						$this->out('The command did not complete successfully, please check the log for details.');
+					}
+
+					break;
+
+				case 'syncIssue' :
+					// Get the item IDs to sync
+					$trackerId = $this->input->getInt('tracker');
+					$issueId   = $this->input->getInt('issue');
+
+					if (!$trackerId || !$issueId)
+					{
+						$this->out('Missing required data to perform command.');
+
+						return;
+					}
+
+					// Run the syncronization routine.
+					$result = $model->syncIssue($issueId, $trackerId);
 
 					if ($result === false)
 					{
