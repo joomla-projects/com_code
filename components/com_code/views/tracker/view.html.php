@@ -45,8 +45,7 @@ class CodeViewTracker extends JViewLegacy
 		$itemid = $id ? '&Itemid=' . (int) $id : '';
 
 		$this->formURL = JRoute::_(
-			'index.php?option=com_code&view=tracker&tracker_id=' . $this->item->tracker_id .
-			'&tracker_alias=' . $this->item->alias . $itemid
+			'index.php?option=com_code&view=tracker&tracker_id=' . $this->item->jc_tracker_id . $itemid
 		);
 
 		// Ordering

@@ -23,15 +23,18 @@ class CodeViewIssue extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$this->state    = $this->get('State');
-		$this->item     = $this->get('Item');
-		$this->tags     = $this->get('Tags');
-		$this->comments = $this->get('Comments');
+		/** @var CodeModelIssue $model */
+		$model = $this->getModel('Issue');
+
+		$this->state    = $model->getState();
+		$this->item     = $model->getItem();
+		$this->tags     = $model->getTags($this->item->issue_id);
+		$this->comments = $model->getComments($this->item->issue_id);
 		$this->user     = JFactory::getUser();
 		$this->params   = JFactory::getApplication()->getParams('com_code');
 
 		// Check for errors.
-		if (count($errors = $this->get('Errors')))
+		if (count($errors = $model->getErrors()))
 		{
 			JError::raiseError(500, implode("\n", $errors));
 

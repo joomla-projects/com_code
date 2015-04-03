@@ -58,7 +58,7 @@ class CodeModelTracker extends JModelItem
 				$query->from('#__code_trackers AS a');
 
 				// Get only the row by primary key.
-				$query->where('a.tracker_id = ' . (int) $pk);
+				$query->where('a.jc_tracker_id = ' . (int) $pk);
 
 				// Filter by published state.
 				$published = $this->getState('filter.published');
@@ -176,7 +176,7 @@ class CodeModelTracker extends JModelItem
 	{
 		$app = JFactory::getApplication('site');
 
-		// Set the tracker id from the request.
+		// Set the JoomlaCode tracker ID from the request.
 		$pk = $app->input->getInt('tracker_id');
 		$this->setState('tracker.id', $pk);
 

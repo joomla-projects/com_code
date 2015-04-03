@@ -49,7 +49,7 @@ class CodeModelIssue extends JModelLegacy
 			$db->getQuery(true)
 				->select('*')
 				->from($db->quoteName('#__code_tracker_issues'))
-				->where($db->quoteName('issue_id') . ' = ' . (int) $issueId)
+				->where($db->quoteName('jc_issue_id') . ' = ' . (int) $issueId)
 		);
 
 		try
