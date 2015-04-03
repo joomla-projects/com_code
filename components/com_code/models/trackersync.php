@@ -172,6 +172,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		}
 		catch (RuntimeException $e)
 		{
+			JLog::add('Could not record snapshot data: ' . $e->getMessage());
 		}
 	}
 
