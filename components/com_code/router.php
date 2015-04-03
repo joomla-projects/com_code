@@ -61,9 +61,7 @@ class CodeRouter extends JComponentRouterBase
 		switch ($view)
 		{
 			case 'issue':
-				$segments[] = 'tracker-' . $query['tracker_id'];
 				$segments[] = 'issue-' . $query['issue_id'];
-				unset($query['tracker_id']);
 				unset($query['issue_id']);
 
 				break;
@@ -105,66 +103,63 @@ class CodeRouter extends JComponentRouterBase
 			return $vars;
 		}
 
-		// Get the project from the first segment.
-		$firstSegment = array_shift($segments);
-		list ($view, $jcTrackerId) = explode('-', $firstSegment);
+		// Get the item from the segment
+		$segment = array_shift($segments);
+		list ($view, $jcItemId) = explode('-', $segment);
 
-		// Make sure the view is 'tracker', anything else and we can't work with it
-		if ($view != 'tracker')
-		{
-			JError::raiseError(404, 'Resource not found.');
-		}
-
-		// Search the database for the appropriate tracker.
 		$db = JFactory::getDbo();
-		$db->setQuery(
-			$db->getQuery(true)
-				->select('tracker_id')
-				->from('#__code_trackers')
-				->where('jc_tracker_id = ' . (int) $jcTrackerId)
-		, 0, 1);
-		$trackerId = (int) $db->loadResult();
 
-		// If the tracker isn't found throw a 404.
-		if (!$trackerId)
+		$vars['view'] = $view;
+
+		// Move forward based on view
+		switch ($view)
 		{
-			JError::raiseError(404, 'Tracker not found.');
+			case 'tracker':
+				// Search the database for the appropriate tracker.
+				$db->setQuery(
+					$db->getQuery(true)
+						->select('tracker_id')
+						->from('#__code_trackers')
+						->where('jc_tracker_id = ' . (int) $jcItemId)
+				, 0, 1);
+				$trackerId = (int) $db->loadResult();
+
+				// If the tracker isn't found throw a 404.
+				if (!$trackerId)
+				{
+					JError::raiseError(404, 'Tracker not found.');
+				}
+
+				// We're on a valid tracker, finish up the processing
+				$vars['tracker_id'] = $jcItemId;
+
+				break;
+
+			case 'issue';
+				// Search the database for the appropriate issue.
+				$db->setQuery(
+					$db->getQuery(true)
+						->select('issue_id')
+						->from('#__code_tracker_issues')
+						->where('jc_issue_id = ' . (int) $jcItemId)
+				, 0, 1);
+				$issueId = (int) $db->loadResult();
+
+				// If the issue isn't found throw a 404.
+				if (!$issueId)
+				{
+					JError::raiseError(404, 'Issue not found.');
+				}
+
+				// We're on a valid issue, finish up the processing
+				$vars['issue_id'] = $jcItemId;
+
+				break;
+
+			default:
+				// Unsupported resource
+				JError::raiseError(404, 'Resource not found.');
 		}
-
-		// We're on a valid tracker, add the var and keep processing
-		$vars['tracker_id'] = $jcTrackerId;
-
-		// If segments is empty then we are on a tracker view
-		if (empty($segments))
-		{
-			$vars['view'] = $view;
-
-			return $vars;
-		}
-
-		// Split up the last segment now
-		$lastSegment = array_shift($segments);
-		list ($view, $jcIssueId) = explode('-', $lastSegment);
-
-		// Search the database for the appropriate issue.
-		$db->setQuery(
-			$db->getQuery(true)
-				->select('issue_id')
-				->from('#__code_tracker_issues')
-				->where('jc_tracker_id = ' . (int) $jcTrackerId)
-				->where('jc_issue_id = ' . (int) $jcIssueId)
-		, 0, 1);
-		$issueId = (int) $db->loadResult();
-
-		// If the issue isn't found throw a 404.
-		if (!$issueId)
-		{
-			JError::raiseError(404, 'Issue not found.');
-		}
-
-		// We're on a valid issue, finish up the processing
-		$vars['view']     = $view;
-		$vars['issue_id'] = $jcIssueId;
 
 		return $vars;
 	}

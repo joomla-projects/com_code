@@ -60,13 +60,13 @@ JFactory::getApplication()->getDocument()->addScriptDeclaration($orderingJavascr
 		<?php foreach ($this->items as $i => $issue) : ?>
 			<tr class="<?php echo 'row', ($i % 2); ?>" title="<?php echo $this->escape($issue->title); ?>">
 				<td>
-					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&tracker_id=' . $this->item->jc_tracker_id . '&issue_id=' . $issue->jc_issue_id); ?>"
+					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&issue_id=' . $issue->jc_issue_id); ?>"
 					   title="View issue <?php echo $issue->jc_issue_id; ?> report.">
 						<?php echo $issue->jc_issue_id; ?>
 					</a>
 				</td>
 				<td width="50%">
-					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&tracker_id=' . $this->item->jc_tracker_id . '&issue_id=' . $issue->jc_issue_id); ?>"
+					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&issue_id=' . $issue->jc_issue_id); ?>"
 					   title="View issue <?php echo $issue->jc_issue_id; ?> report.">
 						<?php echo $issue->title; ?>
 					</a>
