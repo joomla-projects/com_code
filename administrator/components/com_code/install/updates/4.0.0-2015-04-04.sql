@@ -6,3 +6,5 @@ ALTER TABLE `#__code_tracker_issues` DROP `jc_tracker_id`;
 ALTER TABLE `#__code_tracker_issue_responses` DROP `jc_tracker_id`;
 
 ALTER TABLE `#__code_tracker_issue_changes` DROP `jc_tracker_id`;
+
+ALTER TABLE `#__code_trackers` DROP `open_item_count`;

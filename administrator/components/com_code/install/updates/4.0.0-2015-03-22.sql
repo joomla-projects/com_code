@@ -2,8 +2,9 @@ ALTER TABLE `#__code_tracker_issue_tag_map` ADD `jc_issue_id` INT(10) UNSIGNED D
 UPDATE `#__code_tracker_issue_tag_map` AS a LEFT JOIN `#__code_tracker_issues` AS b ON b.issue_id = a.issue_id SET a.jc_issue_id = b.jc_issue_id;
 
 ALTER TABLE `#__code_trackers` CHANGE `tracker_id` `tracker_id` int(10) unsigned NOT NULL;
-UPDATE `#__code_trackers` SET `tracker_id` = `jc_tracker_id`, `project_id` = `jc_project_id`;
+UPDATE `#__code_trackers` SET `tracker_id` = `jc_tracker_id`;
 ALTER TABLE `#__code_trackers` CHANGE `tracker_id` `tracker_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
+ALTER TABLE `#__code_trackers` DROP `jc_tracker_id`;
 
 UPDATE `#__code_tracker_issues` SET `jc_close_by` = 0 WHERE `jc_close_by` IS NULL;
 

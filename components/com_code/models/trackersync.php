@@ -318,8 +318,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		}
 
 		// Populate the appropriate fields from the server data object.
-		$data['item_count']      = $tracker->item_total;
-		$data['open_item_count'] = $tracker->open_count;
+		$data['item_count'] = $tracker->item_total;
 
 		// Bind the data to the tracker object.
 		$table->bind($data);
@@ -442,8 +441,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		}
 
 		// Populate the appropriate fields from the server data object.
-		$data['item_count']      = $tracker->item_total;
-		$data['open_item_count'] = $tracker->open_count;
+		$data['item_count'] = $tracker->item_total;
 
 		// Bind the data to the tracker object.
 		$table->bind($data);

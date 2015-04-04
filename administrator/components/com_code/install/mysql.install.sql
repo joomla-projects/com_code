@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS `#__code_trackers` (
   `options` text NOT NULL,
   `metadata` text NOT NULL,
   `item_count` int(11) NOT NULL,
-  `open_item_count` int(11) NOT NULL,
   `created_date` datetime NOT NULL,
   `created_by` int(11) NOT NULL,
   `modified_date` datetime NOT NULL,
