@@ -221,7 +221,7 @@ class CodeModelTrackerSync extends JModelLegacy
 
 			foreach ($trackers as $tracker)
 			{
-				$currentTrackers = array(10539);
+				$currentTrackers = array(5782);
 
 				if (in_array($tracker->tracker_id, $currentTrackers))
 				{
@@ -1141,10 +1141,9 @@ class CodeModelTrackerSync extends JModelLegacy
 
 			// Populate the appropriate fields from the server data object.
 			$data = array(
-				'tracker_id'    => $tracker->tracker_id,
+				'tracker_id'    => $legacyTrackerId,
 				'state_id'      => $value->status_id,
 				'title'         => $value->element_name,
-				'jc_tracker_id' => $legacyTrackerId,
 				'jc_status_id'  => $value->element_id
 			);
 

@@ -113,8 +113,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_status` (
   `tracker_id` int(10) unsigned NOT NULL,
   `state_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `instructions` text,
-  `jc_tracker_id` int(10) DEFAULT NULL,
   `jc_status_id` int(10) DEFAULT NULL,
   PRIMARY KEY (`status_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;

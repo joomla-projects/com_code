@@ -159,18 +159,16 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_status_temp` (
   `tracker_id` int(10) unsigned NOT NULL,
   `state_id` int(11) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
-  `instructions` text,
-  `jc_tracker_id` int(10) DEFAULT NULL,
   `jc_status_id` int(10) DEFAULT NULL,
   PRIMARY KEY (`status_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__code_tracker_status_temp`(`status_id`, `tracker_id`, `state_id`, `title`, `instructions`, `jc_tracker_id`, `jc_status_id`)
-  SELECT `jc_status_id`, `jc_tracker_id`, `state_id`, `title`, `instructions`, `jc_tracker_id`, `jc_status_id` FROM `#__code_tracker_status`;
+INSERT INTO `#__code_tracker_status_temp`(`status_id`, `tracker_id`, `state_id`, `title`, `jc_status_id`)
+  SELECT `jc_status_id`, `tracker_id`, `state_id`, `title`, `jc_status_id` FROM `#__code_tracker_status`;
 
 DROP TABLE `#__code_tracker_status`;
-RENAME TABLE  `#__code_tracker_status_temp` TO  `#__code_tracker_status` ;
-ALTER TABLE  `#__code_tracker_status` CHANGE  `status_id`  `status_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT;
+RENAME TABLE `#__code_tracker_status_temp` TO `#__code_tracker_status` ;
+ALTER TABLE `#__code_tracker_status` CHANGE `status_id` `status_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 CREATE TABLE IF NOT EXISTS `#__code_users_temp` (
   `user_id` int(11) NOT NULL,
