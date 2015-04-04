@@ -35,8 +35,6 @@ DROP TABLE `#__code_tracker_issues`;
 RENAME TABLE `#__code_tracker_issues_temp` TO `#__code_tracker_issues`;
 ALTER TABLE `#__code_tracker_issues` CHANGE `issue_id` `issue_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 
-UPDATE `#__code_tracker_issue_assignments` SET `issue_id`=`jc_issue_id`, `user_id`=`jc_user_id`;
-
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_changes_temp` (
   `change_id` int(10) unsigned NOT NULL,
   `issue_id` int(10) unsigned NOT NULL,
