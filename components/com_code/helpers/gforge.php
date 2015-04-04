@@ -205,13 +205,14 @@ class GForge
 	/**
 	 * Method to get the project trackers by project name or id.
 	 *
-	 * @param   mixed  $project  Either the project name or numeric id for the project to get a list of tracker data objects.
+	 * @param   mixed    $project   Either the project name or numeric id for the project to get a list of tracker data objects.
+	 * @param   boolean  $isPublic  Flag to return public or private trackers
 	 *
 	 * @return  object  Tracker data array on success.
 	 *
 	 * @throws  RuntimeException
 	 */
-	public function getProjectTrackers($project)
+	public function getProjectTrackers($project, $isPublic = true)
 	{
 		// If a project name was given go find the project id based on the name.
 		if (!is_numeric($project))
@@ -236,7 +237,7 @@ class GForge
 		try
 		{
 			// Attempt to get the project tracker array by the project id.
-			return $this->client->getTrackers($this->sessionhash, $projectId, true, -1);
+			return $this->client->getTrackers($this->sessionhash, $projectId, $isPublic, -1);
 		}
 		catch (SoapFault $e)
 		{

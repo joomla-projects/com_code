@@ -124,7 +124,7 @@ class CodeModelTrackerSync extends JModelLegacy
 
 		$db->setQuery(
 			$db->getQuery(true)
-				->select('s.*')
+				->select('*')
 				->from($db->quoteName('#__code_tracker_snapshots'))
 				->where($db->quoteName('tracker_id') . ' = ' . (int) $tracker_id)
 				->where($db->quoteName('snapshot_day') . ' = ' . $db->quote($date->format('Y-m-d')))
@@ -209,7 +209,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			$this->gforgeLegacy->login($username, $password);
 
 			// Get the tracker data from the SOAP interface.
-			$trackers = $this->gforge->getProjectTrackers($project);
+			$trackers = $this->gforge->getProjectTrackers($project, false);
 
 			if (empty($trackers))
 			{
