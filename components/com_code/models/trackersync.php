@@ -1051,9 +1051,11 @@ class CodeModelTrackerSync extends JModelLegacy
 
 			// Populate the appropriate fields from the server data object.
 			$data = array(
-				'jc_user_id'   => $user->user_id,
-				'first_name'   => $user->firstname,
-				'last_name'    => $user->lastname
+				'jc_user_id' => $user->user_id,
+				'first_name' => $user->firstname,
+				'last_name'  => $user->lastname,
+				'username'   => $user->unix_name,
+				'email'      => $user->email
 			);
 
 			// Bind the data to the user object.

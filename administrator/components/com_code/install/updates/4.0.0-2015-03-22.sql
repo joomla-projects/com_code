@@ -136,25 +136,13 @@ CREATE TABLE IF NOT EXISTS `#__code_users_temp` (
   `user_id` int(11) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
-  `address` varchar(512) NOT NULL,
-  `address2` varchar(255) NOT NULL,
-  `city` varchar(255) NOT NULL,
-  `region` varchar(255) NOT NULL,
-  `country` varchar(5) NOT NULL,
-  `postal_code` varchar(25) NOT NULL,
-  `longitude` float NOT NULL,
-  `latitude` float NOT NULL,
-  `phone` varchar(255) NOT NULL,
-  `agreed_tos` int(1) unsigned NOT NULL,
-  `jca_document_id` varchar(255) NOT NULL,
-  `signed_jca` int(1) unsigned NOT NULL,
   `jc_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `idx_legacy_user_id` (`jc_user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__code_users_temp`(`user_id`, `first_name`, `last_name`, `address`, `address2`, `city`, `region`, `country`, `postal_code`, `longitude`, `latitude`, `phone`, `agreed_tos`, `jca_document_id`, `signed_jca`, `jc_user_id`)
-  SELECT `jc_user_id`, `first_name`, `last_name`, `address`, `address2`, `city`, `region`, `country`, `postal_code`, `longitude`, `latitude`, `phone`, `agreed_tos`, `jca_document_id`, `signed_jca`, `jc_user_id` FROM `#__code_users`;
+INSERT INTO `#__code_users_temp`(`user_id`, `first_name`, `last_name`, `jc_user_id`)
+  SELECT `jc_user_id`, `first_name`, `last_name`, `jc_user_id` FROM `#__code_users`;
 
 DROP TABLE `#__code_users`;
 RENAME TABLE `#__code_users_temp` TO `#__code_users`;

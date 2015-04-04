@@ -30,29 +30,4 @@ class CodeTableUser extends CodeTable
 	{
 		parent::__construct('#__code_users', 'user_id', $db);
 	}
-
-	/**
-	 * Method to bind an associative array or object to the JTable instance.
-	 *
-	 * @param   mixed  $source  An associative array or object to bind to the JTable instance.
-	 * @param   mixed  $ignore  An optional array or space separated list of properties to ignore while binding.
-	 *
-	 * @return  boolean  True on success.
-	 */
-	public function bind($source, $ignore = '')
-	{
-		// Special casees for the agreement flags.
-		if (empty($source['agreed_tos']))
-		{
-			$source['agreed_tos'] = 0;
-		}
-
-		if (empty($source['signed_jca']))
-		{
-			$source['signed_jca'] = 0;
-		}
-
-		// Execute the parent bind method.
-		return parent::bind($source, $ignore);
-	}
 }
