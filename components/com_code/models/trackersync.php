@@ -582,7 +582,6 @@ class CodeModelTrackerSync extends JModelLegacy
 			'title'          => $item->summary,
 			'description'    => $item->details,
 			'jc_issue_id'    => $item->tracker_item_id,
-			'jc_tracker_id'  => $legacyTrackerId,
 			'jc_created_by'  => $item->submitted_by,
 			'jc_modified_by' => $item->last_modified_by
 		);
@@ -613,7 +612,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		// Synchronize the messages associated with the tracker item.
 		if (is_array($item->messages))
 		{
-			if (!$this->syncTrackerItemMessages($item->messages, $users, $table->issue_id, $table->tracker_id, $table->jc_issue_id, $table->jc_tracker_id))
+			if (!$this->syncTrackerItemMessages($item->messages, $users, $table->issue_id, $table->tracker_id, $table->jc_issue_id))
 			{
 				return false;
 			}
@@ -622,7 +621,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		// Synchronize the changes associated with the tracker item.
 		if (is_array($changes))
 		{
-			if (!$this->syncTrackerItemChanges($changes, $users, $table->issue_id, $table->tracker_id, $table->jc_issue_id, $table->jc_tracker_id))
+			if (!$this->syncTrackerItemChanges($changes, $users, $table->issue_id, $table->tracker_id, $table->jc_issue_id))
 			{
 				return false;
 			}
@@ -631,7 +630,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		// Synchronize the commits associated with the tracker item.
 		if (is_array($item->scm_commits))
 		{
-			if (!$this->syncTrackerItemCommits($item->scm_commits, $users, $table->issue_id, $table->tracker_id, $table->jc_issue_id, $table->jc_tracker_id))
+			if (!$this->syncTrackerItemCommits($item->scm_commits, $users, $table->issue_id, $table->tracker_id, $table->jc_issue_id))
 			{
 				return false;
 			}
@@ -764,11 +763,10 @@ class CodeModelTrackerSync extends JModelLegacy
 	 * @param   string   $issueId          Issue ID
 	 * @param   integer  $trackerId        Tracker ID
 	 * @param   integer  $legacyIssueId    Legacy issue ID
-	 * @param   integer  $legacyTrackerId  Legacy tracker ID
 	 *
 	 * @return  boolean  True on success
 	 */
-	private function syncTrackerItemCommits($commits, $users, $issueId, $trackerId, $legacyIssueId, $legacyTrackerId)
+	private function syncTrackerItemCommits($commits, $users, $issueId, $trackerId, $legacyIssueId)
 	{
 		// Synchronize each commit.
 		foreach ($commits as $commit)
@@ -789,13 +787,13 @@ class CodeModelTrackerSync extends JModelLegacy
 			// Populate the appropriate fields from the server data object.
 			$data = array(
 				'issue_id'      => $issueId,
-				'tracker_id'    => $legacyTrackerId,
+				'tracker_id'    => $trackerId,
 				'created_date'  => $commit->commit_date,
 				'created_by'    => $users[$commit->user_id],
 				'message'       => $commit->message_log,
 				'jc_commit_id'  => $commit->scm_commit_id,
 				'jc_issue_id'   => $legacyIssueId,
-				'jc_tracker_id' => $legacyTrackerId,
+				'jc_tracker_id' => $trackerId,
 				'jc_created_by' => $commit->user_id
 			);
 
@@ -820,11 +818,10 @@ class CodeModelTrackerSync extends JModelLegacy
 	 * @param   string   $issueId          Issue ID
 	 * @param   integer  $trackerId        Tracker ID
 	 * @param   integer  $legacyIssueId    Legacy issue ID
-	 * @param   integer  $legacyTrackerId  Legacy tracker ID
 	 *
 	 * @return  boolean  True on success
 	 */
-	private function syncTrackerItemChanges($changes, $users, $issueId, $trackerId, $legacyIssueId, $legacyTrackerId)
+	private function syncTrackerItemChanges($changes, $users, $issueId, $trackerId, $legacyIssueId)
 	{
 		// Synchronize each change.
 		foreach ($changes as $change)
@@ -851,13 +848,13 @@ class CodeModelTrackerSync extends JModelLegacy
 			// Populate the appropriate fields from the server data object.
 			$data = array(
 				'issue_id'      => $issueId,
-				'tracker_id'    => $legacyTrackerId,
+				'tracker_id'    => $trackerId,
 				'change_date'   => $change->change_date,
 				'change_by'     => $users[$change->user_id],
 				'data'          => serialize($change),
 				'jc_change_id'  => $change->audit_trail_id,
 				'jc_issue_id'   => $legacyIssueId,
-				'jc_tracker_id' => $legacyTrackerId,
+				'jc_tracker_id' => $trackerId,
 				'jc_change_by'  => $change->user_id
 			);
 
@@ -884,11 +881,10 @@ class CodeModelTrackerSync extends JModelLegacy
 	 * @param   string   $issueId          Issue ID
 	 * @param   integer  $trackerId        Tracker ID
 	 * @param   integer  $legacyIssueId    Legacy issue ID
-	 * @param   integer  $legacyTrackerId  Legacy tracker ID
 	 *
 	 * @return  boolean  True on success
 	 */
-	private function syncTrackerItemMessages($messages, $users, $issueId, $trackerId, $legacyIssueId, $legacyTrackerId)
+	private function syncTrackerItemMessages($messages, $users, $issueId, $trackerId, $legacyIssueId)
 	{
 		// Synchronize each message.
 		foreach ($messages as $message)
@@ -909,13 +905,13 @@ class CodeModelTrackerSync extends JModelLegacy
 			// Populate the appropriate fields from the server data object.
 			$data = array(
 				'issue_id'       => $issueId,
-				'tracker_id'     => $legacyTrackerId,
+				'tracker_id'     => $trackerId,
 				'created_date'   => $message->adddate,
 				'created_by'     => $users[$message->submitted_by],
 				'body'           => $message->body,
 				'jc_response_id' => $message->tracker_item_message_id,
 				'jc_issue_id'    => $legacyIssueId,
-				'jc_tracker_id'  => $legacyTrackerId,
+				'jc_tracker_id'  => $trackerId,
 				'jc_created_by'  => $message->submitted_by
 			);
 

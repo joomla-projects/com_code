@@ -39,7 +39,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issues` (
   `title` varchar(255) NOT NULL,
   `description` mediumtext,
   `jc_issue_id` int(10) unsigned NOT NULL,
-  `jc_tracker_id` int(10) unsigned NOT NULL,
   `jc_created_by` int(11) NOT NULL,
   `jc_modified_by` int(11) NOT NULL,
   `jc_close_by` int(11) NOT NULL,

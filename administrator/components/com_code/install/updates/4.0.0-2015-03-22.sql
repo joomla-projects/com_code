@@ -14,8 +14,6 @@ UPDATE `#__code_tracker_issues` SET `jc_close_by` = 0 WHERE `jc_close_by` IS NUL
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issues_temp` (
   `issue_id` int(10) unsigned NOT NULL,
   `tracker_id` int(10) unsigned NOT NULL,
-  `project_id` int(10) unsigned NOT NULL,
-  `build_id` int(10) unsigned DEFAULT NULL,
   `state` int(11) NOT NULL,
   `status` int(10) unsigned NOT NULL,
   `status_name` varchar(255) NOT NULL,
@@ -27,11 +25,8 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issues_temp` (
   `close_date` datetime NOT NULL,
   `close_by` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `alias` varchar(255) NOT NULL,
   `description` mediumtext,
   `jc_issue_id` int(10) unsigned NOT NULL,
-  `jc_tracker_id` int(10) unsigned NOT NULL,
-  `jc_project_id` int(10) unsigned NOT NULL,
   `jc_created_by` int(11) NOT NULL,
   `jc_modified_by` int(11) NOT NULL,
   `jc_close_by` int(11) NOT NULL,
@@ -39,12 +34,12 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issues_temp` (
   UNIQUE KEY `idx_tracker_issues_legacy` (`jc_issue_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__code_tracker_issues_temp`(`issue_id`, `tracker_id`, `project_id`, `build_id`, `state`, `status`, `status_name`, `priority`, `created_date`, `created_by`, `modified_date`, `modified_by`, `close_date`, `close_by`, `title`, `alias`, `description`, `jc_issue_id`, `jc_tracker_id`, `jc_project_id`, `jc_created_by`, `jc_modified_by`, `jc_close_by`)
-  SELECT `jc_issue_id`, `jc_tracker_id`, `jc_project_id`, `build_id`, `state`, `status`, `status_name`, `priority`, `created_date`, `jc_created_by`, `modified_date`, `jc_modified_by`, `close_date`, `jc_close_by`, `title`, `alias`, `description`, `jc_issue_id`, `jc_tracker_id`, `jc_project_id`, `jc_created_by`, `jc_modified_by`, `jc_close_by` FROM `#__code_tracker_issues`;
+INSERT INTO `#__code_tracker_issues_temp`(`issue_id`, `tracker_id`, `state`, `status`, `status_name`, `priority`, `created_date`, `created_by`, `modified_date`, `modified_by`, `close_date`, `close_by`, `title`, `description`, `jc_issue_id`, `jc_created_by`, `jc_modified_by`, `jc_close_by`)
+  SELECT `jc_issue_id`, `tracker_id`, `state`, `status`, `status_name`, `priority`, `created_date`, `jc_created_by`, `modified_date`, `jc_modified_by`, `close_date`, `jc_close_by`, `title`, `description`, `jc_issue_id`, `jc_created_by`, `jc_modified_by`, `jc_close_by` FROM `#__code_tracker_issues`;
 
 DROP TABLE `#__code_tracker_issues`;
-RENAME TABLE `#__code_tracker_issues_temp` TO  `#__code_tracker_issues`;
-ALTER TABLE  `#__code_tracker_issues` CHANGE  `issue_id`  `issue_id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT;
+RENAME TABLE `#__code_tracker_issues_temp` TO `#__code_tracker_issues`;
+ALTER TABLE `#__code_tracker_issues` CHANGE `issue_id` `issue_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 
 UPDATE `#__code_tracker_issue_assignments` SET `issue_id`=`jc_issue_id`, `user_id`=`jc_user_id`;
 
