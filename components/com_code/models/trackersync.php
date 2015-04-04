@@ -299,6 +299,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		$this->processingTotals = array('issues' => 0, 'changes' => 0, 'messages' => 0, 'users' => 0);
 
 		// Get a tracker table object.
+		/** @var CodeTableTracker $table */
 		$table = $this->getTable('Tracker', 'CodeTable');
 
 		// Load any existing data by legacy id.
@@ -422,6 +423,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		$this->populateTrackerFields($tracker->tracker_id);
 
 		// Get a tracker table object.
+		/** @var CodeTableTracker $table */
 		$table = $this->getTable('Tracker', 'CodeTable');
 
 		// Load any existing data by legacy id.
@@ -561,6 +563,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		 */
 
 		// Get a tracker issue table object.
+		/** @var CodeTableTrackerIssue $table */
 		$table = $this->getTable('TrackerIssue', 'CodeTable');
 
 		// Load any existing data by legacy id.
@@ -771,6 +774,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		foreach ($commits as $commit)
 		{
 			// Get a tracker issue commit table object.
+			/** @var CodeTableTrackerIssueCommit $table */
 			$table = $this->getTable('TrackerIssueCommit', 'CodeTable');
 
 			// Load any existing data by legacy id.
@@ -832,6 +836,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			}
 
 			// Get a tracker issue change table object.
+			/** @var CodeTableTrackerIssueChange $table */
 			$table = $this->getTable('TrackerIssueChange', 'CodeTable');
 
 			// Load any existing data by legacy id.
@@ -889,6 +894,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		foreach ($messages as $message)
 		{
 			// Get a tracker issue response table object.
+			/** @var CodeTableTrackerIssueResponse $table */
 			$table = $this->getTable('TrackerIssueResponse', 'CodeTable');
 
 			// Load any existing data by legacy id.
@@ -1046,6 +1052,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		foreach ($got as $user)
 		{
 			// Get a user table object.
+			/** @var CodeTableUser $table */
 			$table = $this->getTable('User', 'CodeTable');
 
 			// Load any existing data by JC user ID
@@ -1118,6 +1125,7 @@ class CodeModelTrackerSync extends JModelLegacy
 	private function populateTrackerStatus($field, $legacyTrackerId)
 	{
 		// Get a tracker table object.
+		/** @var CodeTableTracker $table */
 		$tracker = $this->getTable('Tracker', 'CodeTable');
 		$tracker->loadByLegacyId($legacyTrackerId);
 
@@ -1126,6 +1134,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		foreach ($values as $value)
 		{
 			// Get a tracker status table object.
+			/** @var CodeTableTrackerStatus $table */
 			$table = $this->getTable('TrackerStatus', 'CodeTable');
 
 			// Load any existing data by legacy id.
