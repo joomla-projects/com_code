@@ -9,6 +9,8 @@ ALTER TABLE `#__code_tracker_issue_changes` DROP `jc_tracker_id`;
 
 ALTER TABLE `#__code_trackers` DROP `open_item_count`;
 
+ALTER TABLE `#__code_tracker_issue_tag_map` DROP `tag`;
+
 ALTER TABLE `#__code_users` DROP `address`;
 ALTER TABLE `#__code_users` DROP `address2`;
 ALTER TABLE `#__code_users` DROP `city`;

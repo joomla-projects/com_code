@@ -68,11 +68,16 @@ class CodeModelIssue extends JModelLegacy
 
 		$db = $this->getDbo();
 
+		$subQuery = $db->getQuery(true)
+			->select('tag_id')
+			->from('#__code_tracker_issue_tag_map')
+			->where('issue_id = ' . $issueId);
+
 		$db->setQuery(
 		   $db->getQuery(true)
-				->select('*')
-				->from($db->quoteName('#__code_tracker_issue_tag_map'))
-				->where($db->quoteName('issue_id') . ' = ' . (int) $issueId)
+				->select('tag')
+				->from('#__code_tags')
+				->where('tag_id IN (' . (string) $subQuery . ')')
 				->order('tag ASC')
 		);
 

@@ -741,11 +741,11 @@ class CodeModelTrackerSync extends JModelLegacy
 		// Add the necessary tag maps.
 		$query = $db->getQuery(true)
 			->insert($db->quoteName('#__code_tracker_issue_tag_map'))
-			->columns(array($db->quoteName('issue_id'), $db->quoteName('tag_id'), $db->quoteName('tag')));
+			->columns(array($db->quoteName('issue_id'), $db->quoteName('tag_id')));
 
 		foreach ($add as $tag)
 		{
-			$query->values((int) $issueId . ', ' . (int) $tag . ', ' . $db->quote($tags[$tag]));
+			$query->values((int) $issueId . ', ' . (int) $tag);
 		}
 
 		$db->setQuery($query)->execute();

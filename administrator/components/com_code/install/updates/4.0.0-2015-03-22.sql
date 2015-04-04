@@ -106,15 +106,14 @@ ALTER TABLE `#__code_tracker_issue_responses` CHANGE `response_id` `response_id`
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_tag_map_temp` (
   `issue_id` int(10) unsigned DEFAULT NULL,
   `tag_id` int(10) unsigned DEFAULT NULL,
-  `tag` varchar(255) DEFAULT NULL,
-  KEY `issue_id` (`issue_id`)
+  PRIMARY KEY (`issue_id`, `tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__code_tracker_issue_tag_map_temp` (`issue_id`, `tag_id`, `tag`)
-  SELECT `jc_issue_id`, `tag_id`, `tag` FROM `#__code_tracker_issue_tag_map`;
+INSERT INTO `#__code_tracker_issue_tag_map_temp` (`issue_id`, `tag_id`)
+  SELECT `jc_issue_id`, `tag_id` FROM `#__code_tracker_issue_tag_map`;
 
 DROP TABLE `#__code_tracker_issue_tag_map`;
-RENAME TABLE `#__code_tracker_issue_tag_map_temp` TO  `#__code_tracker_issue_tag_map`;
+RENAME TABLE `#__code_tracker_issue_tag_map_temp` TO `#__code_tracker_issue_tag_map`;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_status_temp` (
   `status_id` int(10) unsigned NOT NULL,

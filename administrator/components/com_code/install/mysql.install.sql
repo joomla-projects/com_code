@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `#__code_tags` (
   `tag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tag` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`tag_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_trackers` (
   `tracker_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `#__code_trackers` (
   `modified_by` int(11) NOT NULL,
   `jc_tracker_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`tracker_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issues` (
   `issue_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issues` (
   `jc_close_by` int(11) NOT NULL,
   PRIMARY KEY (`issue_id`),
   UNIQUE KEY `idx_tracker_issues_legacy` (`jc_issue_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_changes` (
   `change_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_changes` (
   `jc_change_by` int(10) DEFAULT NULL,
   PRIMARY KEY (`change_id`),
   UNIQUE KEY `jc_change_id` (`jc_change_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_commits` (
   `commit_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_commits` (
   `jc_created_by` int(10) DEFAULT NULL,
   PRIMARY KEY (`commit_id`),
   UNIQUE KEY `jc_commit_id` (`jc_commit_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_responses` (
   `response_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -87,14 +87,13 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_responses` (
   `jc_created_by` int(10) DEFAULT NULL,
   PRIMARY KEY (`response_id`),
   UNIQUE KEY `idx_tracker_responses_legacy` (`jc_response_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_tag_map` (
   `issue_id` int(10) unsigned DEFAULT NULL,
   `tag_id` int(10) unsigned DEFAULT NULL,
-  `tag` varchar(255) DEFAULT NULL,
   `jc_issue_id` int(10) unsigned DEFAULT NULL,
-  KEY `issue_id` (`issue_id`)
+  PRIMARY KEY (`issue_id`, `tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_snapshots` (
@@ -112,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_status` (
   `title` varchar(255) NOT NULL,
   `jc_status_id` int(10) DEFAULT NULL,
   PRIMARY KEY (`status_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -123,4 +122,4 @@ CREATE TABLE IF NOT EXISTS `#__code_users` (
   `jc_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `idx_legacy_user_id` (`jc_user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
