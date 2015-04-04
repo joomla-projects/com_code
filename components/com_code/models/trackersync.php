@@ -793,7 +793,6 @@ class CodeModelTrackerSync extends JModelLegacy
 				'message'       => $commit->message_log,
 				'jc_commit_id'  => $commit->scm_commit_id,
 				'jc_issue_id'   => $legacyIssueId,
-				'jc_tracker_id' => $trackerId,
 				'jc_created_by' => $commit->user_id
 			);
 
@@ -854,7 +853,6 @@ class CodeModelTrackerSync extends JModelLegacy
 				'data'          => serialize($change),
 				'jc_change_id'  => $change->audit_trail_id,
 				'jc_issue_id'   => $legacyIssueId,
-				'jc_tracker_id' => $trackerId,
 				'jc_change_by'  => $change->user_id
 			);
 
@@ -911,7 +909,6 @@ class CodeModelTrackerSync extends JModelLegacy
 				'body'           => $message->body,
 				'jc_response_id' => $message->tracker_item_message_id,
 				'jc_issue_id'    => $legacyIssueId,
-				'jc_tracker_id'  => $trackerId,
 				'jc_created_by'  => $message->submitted_by
 			);
 

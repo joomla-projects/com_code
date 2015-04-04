@@ -85,7 +85,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_responses` (
   `body` text NOT NULL,
   `jc_response_id` int(10) DEFAULT NULL,
   `jc_issue_id` int(10) DEFAULT NULL,
-  `jc_tracker_id` int(10) DEFAULT NULL,
   `jc_created_by` int(10) DEFAULT NULL,
   PRIMARY KEY (`response_id`),
   UNIQUE KEY `idx_tracker_responses_legacy` (`jc_response_id`)
