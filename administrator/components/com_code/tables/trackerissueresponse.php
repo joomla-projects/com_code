@@ -9,11 +9,18 @@
 
 defined('_JEXEC') or die;
 
+require_once __DIR__ . '/table.php';
+
 /**
  * Code tracker issue message table object.
  */
-class CodeTableTrackerIssueResponse extends JTable
+class CodeTableTrackerIssueResponse extends CodeTable
 {
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $_legacyLookup = 'jc_response_id';
+
 	/**
 	 * Class constructor.
 	 *
@@ -22,35 +29,5 @@ class CodeTableTrackerIssueResponse extends JTable
 	public function __construct($db)
 	{
 		parent::__construct('#__code_tracker_issue_responses', 'response_id', $db);
-	}
-
-	/**
-	 * Method to load a data object by its legacy ID
-	 *
-	 * @param   integer  $legacyId  The tracker ID to load
-	 *
-	 * @return  boolean  True on success
-	 */
-	public function loadByLegacyId($legacyId)
-	{
-		// Load the database object
-		$db = $this->getDbo();
-
-		// Look up the response ID based on the legacy ID.
-		$db->setQuery(
-			$db->getQuery(true)
-				->select($this->_tbl_key)
-				->from($this->_tbl)
-				->where('jc_response_id = ' . (int) $legacyId)
-		);
-
-		$issueId = (int) $db->loadResult();
-
-		if ($issueId)
-		{
-			return $this->load($issueId);
-		}
-
-		return false;
 	}
 }

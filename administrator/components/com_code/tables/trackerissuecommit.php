@@ -9,11 +9,18 @@
 
 defined('_JEXEC') or die;
 
+require_once __DIR__ . '/table.php';
+
 /**
  * Code tracker issue commit table object.
  */
-class CodeTableTrackerIssueCommit extends JTable
+class CodeTableTrackerIssueCommit extends CodeTable
 {
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $_legacyLookup = 'jc_commit_id';
+
 	/**
 	 * Class constructor.
 	 *
@@ -22,35 +29,5 @@ class CodeTableTrackerIssueCommit extends JTable
 	public function __construct($db)
 	{
 		parent::__construct('#__code_tracker_issue_commits', 'commit_id', $db);
-	}
-
-	/**
-	 * Method to load a data object by its legacy ID
-	 *
-	 * @param   integer  $legacyId  The tracker ID to load
-	 *
-	 * @return  boolean  True on success
-	 */
-	public function loadByLegacyId($legacyId)
-	{
-		// Load the database object
-		$db = $this->getDbo();
-
-		// Look up the commit ID based on the legacy ID.
-		$db->setQuery(
-			$db->getQuery(true)
-				->select($this->_tbl_key)
-				->from($this->_tbl)
-				->where('jc_commit_id = ' . (int) $legacyId)
-		);
-
-		$issueId = (int) $db->loadResult();
-
-		if ($issueId)
-		{
-			return $this->load($issueId);
-		}
-
-		return false;
 	}
 }

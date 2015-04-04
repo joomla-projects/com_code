@@ -10,45 +10,41 @@
 defined('_JEXEC') or die;
 
 /**
- * Code tracker issue message table object.
+ * Code component base table object.
  */
-class CodeTableTrackerIssueFile extends JTable
+class CodeTable extends JTable
 {
 	/**
-	 * Class constructor.
+	 * Column name for the legacy lookup
 	 *
-	 * @param	JDatabaseDriver  $db  A database connector object.
+	 * @var  string
 	 */
-	public function __construct($db)
-	{
-		parent::__construct('#__code_tracker_issue_files', 'file_id', $db);
-	}
+	protected $_legacyLookup;
 
 	/**
 	 * Method to load a data object by its legacy ID
 	 *
-	 * @param   integer  $legacyId  The tracker ID to load
+	 * @param   integer  $legacyId  The user ID to load
 	 *
 	 * @return  boolean  True on success
 	 */
 	public function loadByLegacyId($legacyId)
 	{
-		// Load the database object
 		$db = $this->getDbo();
 
-		// Look up the file ID based on the legacy ID.
+		// Look up the user id based on the legacy id.
 		$db->setQuery(
 			$db->getQuery(true)
 				->select($this->_tbl_key)
 				->from($this->_tbl)
-				->where('jc_file_id = ' . (int) $legacyId)
+				->where($this->_legacyLookup . ' = ' . (int) $legacyId)
 		);
 
-		$issueId = (int) $db->loadResult();
+		$itemId = (int) $db->loadResult();
 
-		if ($issueId)
+		if ($itemId)
 		{
-			return $this->load($issueId);
+			return $this->load($itemId);
 		}
 
 		return false;

@@ -9,11 +9,18 @@
 
 defined('_JEXEC') or die;
 
+require_once __DIR__ . '/table.php';
+
 /**
  * Code tracker user table object.
  */
-class CodeTableUser extends JTable
+class CodeTableUser extends CodeTable
 {
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $_legacyLookup = 'jc_user_id';
+
 	/**
 	 * Constructor.
 	 *
@@ -47,34 +54,5 @@ class CodeTableUser extends JTable
 
 		// Execute the parent bind method.
 		return parent::bind($source, $ignore);
-	}
-
-	/**
-	 * Method to load a data object by its legacy ID
-	 *
-	 * @param   integer  $legacyId  The user ID to load
-	 *
-	 * @return  boolean  True on success
-	 */
-	public function loadByLegacyId($legacyId)
-	{
-		$db = $this->getDbo();
-
-		// Look up the user id based on the legacy id.
-		$db->setQuery(
-			$db->getQuery(true)
-				->select($this->_tbl_key)
-				->from($this->_tbl)
-				->where('jc_user_id = ' . (int) $legacyId)
-		);
-
-		$userId = (int) $db->loadResult();
-
-		if ($userId)
-		{
-			return $this->load($userId);
-		}
-
-		return false;
 	}
 }
