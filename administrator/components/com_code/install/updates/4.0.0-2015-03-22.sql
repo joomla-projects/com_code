@@ -1,6 +1,3 @@
-ALTER TABLE  `#__code_tracker_snapshots` ADD `jc_tracker_id` int(10) unsigned NOT NULL;
-UPDATE `#__code_tracker_snapshots` AS a LEFT JOIN `#__code_trackers` AS b ON b.`tracker_id` = a.`tracker_id` SET a.`jc_tracker_id`= b.`jc_tracker_id`;
-
 ALTER TABLE  `#__code_tracker_issue_tag_map` ADD `jc_issue_id` int(10) unsigned DEFAULT NULL;
 UPDATE `#__code_tracker_issue_tag_map` AS a LEFT JOIN `#__code_tracker_issues` AS b ON b.`issue_id` = a.`issue_id` SET a.`jc_issue_id`= b.`jc_issue_id`;
 

@@ -105,7 +105,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_snapshots` (
   `snapshot_day` varchar(10) NOT NULL,
   `modified_date` datetime NOT NULL,
   `status_counts` varchar(512) NOT NULL,
-  `jc_tracker_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`tracker_id`,`snapshot_day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
