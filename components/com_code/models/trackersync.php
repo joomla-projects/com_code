@@ -35,13 +35,6 @@ class CodeModelTrackerSync extends JModelLegacy
 	protected $gforgeLegacy;
 
 	/**
-	 * Associative array of tracker issue status values.
-	 *
-	 * @var  array
-	 */
-	protected $status = array();
-
-	/**
 	 * Associative array of tracker fields.
 	 *
 	 * @var  array
@@ -63,118 +56,11 @@ class CodeModelTrackerSync extends JModelLegacy
 	protected $processingTotals = array();
 
 	/**
-	 * Array of trackers to snapshot
-	 *
-	 * @var  array
-	 */
-	protected $syncTrackers = array();
-
-	/**
 	 * Date object with the time the script started
 	 *
 	 * @var  JDate
 	 */
 	protected $startTime;
-
-	/**
-	 * Gets counts of issues in tracker by status code and store in #__code_tracker_snapshots table by date
-	 *
-	 * @return  void
-	 */
-	public function doStatusSnapshot()
-	{
-		// First get snapshot
-		$cutoffDate = new DateTime;
-		$cutoffDate->sub(new DateInterval('P2Y'));
-
-		$today = new DateTime;
-		$db    = $this->getDbo();
-
-		foreach ($this->syncTrackers as $tracker_id)
-		{
-			$db->setQuery(
-				$db->getQuery(true)
-					->select('status_name, COUNT(*) as num_issues')
-					->from($db->quoteName('#__code_tracker_issues'))
-					->where($db->quoteName('tracker_id') . ' = ' . (int) $tracker_id)
-					->where('DATE(modified_date) > ' . $db->quote($cutoffDate->format('Y-m-d')))
-					->where('DATE(close_date) = ' . $db->quote('0000-00-00'))
-					->group('status_name')
-			);
-
-			$dbArray    = $db->loadObjectList();
-			$jsonString = json_encode($dbArray);
-			$this->writeSnapshot($tracker_id, $today, $jsonString);
-		}
-	}
-
-	/**
-	 * Writes a status snapshot
-	 *
-	 * @param   integer   $tracker_id  Tracker ID to write the snapshot for
-	 * @param   DateTime  $date        DateTime object
-	 * @param   string    $jsonString  JSON data
-	 *
-	 * @return  void
-	 */
-	public function writeSnapshot($tracker_id, $date, $jsonString)
-	{
-		// Update or insert row to table
-		$db = $this->getDbo();
-
-		$db->setQuery(
-			$db->getQuery(true)
-				->select('*')
-				->from($db->quoteName('#__code_tracker_snapshots'))
-				->where($db->quoteName('tracker_id') . ' = ' . (int) $tracker_id)
-				->where($db->quoteName('snapshot_day') . ' = ' . $db->quote($date->format('Y-m-d')))
-		);
-
-		try
-		{
-			$result = $db->loadObject();
-		}
-		catch (RuntimeException $e)
-		{
-			JLog::add('Could not fetch snapshot data: ' . $e->getMessage());
-
-			return;
-		}
-
-		if ($result)
-		{
-			// Update row with new timestamp and json string
-			$db->setQuery(
-				$db->getQuery(true)
-					->update($db->quoteName('#__code_tracker_snapshots'))
-					->set($db->quoteName('modified_date') . ' = ' . $db->quote($date->format('Y-m-d H:i:s')))
-					->set($db->quoteName('status_counts') . ' = ' . $db->quote($jsonString))
-					->where($db->quoteName('tracker_id') . ' = ' . (int) $tracker_id)
-					->where($db->quoteName('snapshot_day') . ' = ' . $db->quote($date->format('Y-m-d')))
-			);
-		}
-		else
-		{
-			// Insert a new row
-			$db->setQuery(
-				$db->getQuery(true)
-					->insert($db->quoteName('#__code_tracker_snapshots'))
-					->set($db->quoteName('modified_date') . ' = ' . $db->quote($date->format('Y-m-d H:i:s')))
-					->set($db->quoteName('status_counts') . ' = ' . $db->quote($jsonString))
-					->set($db->quoteName('tracker_id') . ' = ' . (int) $tracker_id)
-					->set($db->quoteName('snapshot_day') . ' = ' . $db->quote($date->format('Y-m-d')))
-			);
-		}
-
-		try
-		{
-			$db->execute();
-		}
-		catch (RuntimeException $e)
-		{
-			JLog::add('Could not record snapshot data: ' . $e->getMessage());
-		}
-	}
 
 	/**
 	 * Synchronize the data from Joomlacode
@@ -229,8 +115,6 @@ class CodeModelTrackerSync extends JModelLegacy
 					$this->syncTracker($tracker);
 				}
 			}
-
-			$this->doStatusSnapshot();
 		}
 		catch (RuntimeException $e)
 		{
@@ -370,8 +254,6 @@ class CodeModelTrackerSync extends JModelLegacy
 		{
 			JLog::add('Errored Items: ' . explode(', ', $erroredItems));
 		}
-
-		$this->syncTrackers[] = $table->jc_tracker_id;
 
 		return true;
 	}
@@ -570,7 +452,6 @@ class CodeModelTrackerSync extends JModelLegacy
 		// Populate the appropriate fields from the server data object.
 		$data = array(
 			'tracker_id'     => $legacyTrackerId,
-			'state'          => $item->status_id,
 			'priority'       => $item->priority,
 			'created_date'   => $item->open_date,
 			'created_by'     => $users[$item->submitted_by],
@@ -680,14 +561,13 @@ class CodeModelTrackerSync extends JModelLegacy
 			elseif ($this->fields[$value->tracker_extra_field_id]['alias'] == 'status')
 			{
 				// Make sure we have a status for it.
-				if (isset($this->fieldValues[$value->field_data]) && isset($this->status[$this->fieldValues[$value->field_data]['value_id']]))
+				if (isset($this->fieldValues[$value->field_data]) && isset($this->fieldValues[$value->field_data]['value_id']))
 				{
 					// Set the status value/name for the issue.
 					$db->setQuery(
 						$db->getQuery(true)
 							->update($db->quoteName('#__code_tracker_issues'))
-							->set($db->quoteName('status') . ' = ' . (int) $this->status[$this->fieldValues[$value->field_data]['value_id']])
-							->set($db->quoteName('status_name') . ' = ' . $db->quote($this->fieldValues[$value->field_data]['name']))
+							->set($db->quoteName('status') . ' = ' . (int) $this->fieldValues[$value->field_data]['value_id'])
 							->where($db->quoteName('issue_id') . ' = ' . (int) $issueId)
 					)->execute();
 				}
@@ -1137,8 +1017,6 @@ class CodeModelTrackerSync extends JModelLegacy
 			// Skip over rows that exist and haven't changed.
 			if ($table->status_id && ($table->title == $value->element_name) && ($table->state_id == $value->status_id))
 			{
-				$this->status[(int) $value->element_id] = (int) $table->status_id;
-
 				continue;
 			}
 
@@ -1158,8 +1036,6 @@ class CodeModelTrackerSync extends JModelLegacy
 			{
 				throw new RuntimeException($table->getError());
 			}
-
-			$this->status[(int) $value->element_id] = (int) $table->status_id;
 		}
 
 		return true;

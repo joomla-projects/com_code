@@ -25,9 +25,7 @@ CREATE TABLE IF NOT EXISTS `#__code_trackers` (
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issues` (
   `issue_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tracker_id` int(10) unsigned NOT NULL,
-  `state` int(11) NOT NULL,
   `status` int(10) unsigned NOT NULL,
-  `status_name` varchar(255) NOT NULL,
   `priority` int(11) NOT NULL,
   `created_date` datetime NOT NULL,
   `created_by` int(11) NOT NULL,
@@ -93,14 +91,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_tag_map` (
   `issue_id` int(10) unsigned DEFAULT NULL,
   `tag_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`issue_id`, `tag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `#__code_tracker_snapshots` (
-  `tracker_id` int(10) unsigned NOT NULL,
-  `snapshot_day` varchar(10) NOT NULL,
-  `modified_date` datetime NOT NULL,
-  `status_counts` varchar(512) NOT NULL,
-  PRIMARY KEY (`tracker_id`,`snapshot_day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_status` (

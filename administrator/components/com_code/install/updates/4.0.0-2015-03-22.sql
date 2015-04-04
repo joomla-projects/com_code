@@ -8,9 +8,7 @@ UPDATE `#__code_tracker_issues` SET `jc_close_by` = 0 WHERE `jc_close_by` IS NUL
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issues_temp` (
   `issue_id` int(10) unsigned NOT NULL,
   `tracker_id` int(10) unsigned NOT NULL,
-  `state` int(11) NOT NULL,
   `status` int(10) unsigned NOT NULL,
-  `status_name` varchar(255) NOT NULL,
   `priority` int(11) NOT NULL,
   `created_date` datetime NOT NULL,
   `created_by` int(11) NOT NULL,
@@ -28,8 +26,8 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issues_temp` (
   UNIQUE KEY `idx_tracker_issues_legacy` (`jc_issue_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO `#__code_tracker_issues_temp` (`issue_id`, `tracker_id`, `state`, `status`, `status_name`, `priority`, `created_date`, `created_by`, `modified_date`, `modified_by`, `close_date`, `close_by`, `title`, `description`, `jc_issue_id`, `jc_created_by`, `jc_modified_by`, `jc_close_by`)
-  SELECT `jc_issue_id`, `tracker_id`, `state`, `status`, `status_name`, `priority`, `created_date`, `jc_created_by`, `modified_date`, `jc_modified_by`, `close_date`, `jc_close_by`, `title`, `description`, `jc_issue_id`, `jc_created_by`, `jc_modified_by`, `jc_close_by` FROM `#__code_tracker_issues`;
+INSERT INTO `#__code_tracker_issues_temp` (`issue_id`, `tracker_id`, `status`, `priority`, `created_date`, `created_by`, `modified_date`, `modified_by`, `close_date`, `close_by`, `title`, `description`, `jc_issue_id`, `jc_created_by`, `jc_modified_by`, `jc_close_by`)
+  SELECT `jc_issue_id`, `tracker_id`, `status`, `priority`, `created_date`, `jc_created_by`, `modified_date`, `jc_modified_by`, `close_date`, `jc_close_by`, `title`, `description`, `jc_issue_id`, `jc_created_by`, `jc_modified_by`, `jc_close_by` FROM `#__code_tracker_issues`;
 
 DROP TABLE `#__code_tracker_issues`;
 RENAME TABLE `#__code_tracker_issues_temp` TO `#__code_tracker_issues`;

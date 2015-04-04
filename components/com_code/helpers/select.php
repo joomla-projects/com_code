@@ -46,89 +46,37 @@ class CodeHelperSelect
 	/**
 	 * Returns an array mapping status IDs to status strings
 	 *
+	 * @param   integer  $trackerId  Optional tracker ID to filter the status array by
+	 *
 	 * @return  array
 	 */
-	public static function getStatusRaw()
+	public static function getStatusRaw($trackerId = null)
 	{
-		return array(
-			1 => 'Duplicate Report',
-			2 => 'Not Joomla! Core',
-			3 => 'Fixed in SVN/GitHub',
-			4 => 'Unable to Confirm',
-			5 => 'Open',
-			6 => 'Closed',
-			7 => 'Confirmed',
-			9 => 'Pending',
-			10 => 'Needs Review',
-			11 => 'Information Required',
-			12 => 'Known Issue',
-			13 => 'Ready to commit',
-			14 => 'Not a bug',
-			16 => 'Not accepted',
-			17 => 'Accepted',
-			18 => 'Implemented in trunk',
-			19 => 'Open',
-			20 => 'Closed',
-			21 => 'Duplicate Report',
-			22 => 'Not Joomla! Core',
-			23 => 'Fixed in SVN',
-			24 => 'Unable to Confirm',
-			25 => 'Open',
-			26 => 'Closed',
-			27 => 'Confirmed',
-			28 => 'In Progress',
-			29 => 'Pending',
-			30 => 'Incomplete',
-			31 => 'Information Required',
-			32 => 'Known Issue',
-			33 => 'Ready to commit',
-			34 => 'Not a bug',
-			35 => 'Open',
-			51 => 'Pending',
-			55 => 'Expected Behavior',
-			56 => 'Closed-No Reply',
-			59 => 'Referred to Framework / Platform',
-			61 => 'Confirmed',
-			62 => 'Pending',
-			66 => 'Fixed in SVN/GitHub',
-			67 => 'Information Required',
-			68 => 'Needs Review',
-			70 => 'Known Issue',
-			71 => 'Not a bug',
-			72 => 'Duplicate Report',
-			73 => 'Not Joomla! Core',
-			74 => 'Unable to Confirm',
-			76 => 'Expected Behavior',
-			77 => 'Closed-No Reply',
-			78 => 'Closed',
-			82 => 'Information Required',
-			83 => 'Open',
-			85 => 'Pending',
-			87 => 'Ready to commit',
-			88 => 'In Progress',
-			89 => 'Fixed in SVN/GitHub',
-			90 => 'Information Required',
-			91 => 'Needs Review',
-			93 => 'Known Issue',
-			94 => 'Not a bug',
-			95 => 'Duplicate Report',
-			96 => 'Not Joomla! Core',
-			97 => 'Unable to Confirm',
-			99 => 'Expected Behavior',
-			101 => 'Closed',
-		);
+		$db = JFactory::getDbo();
+
+		$query = $db->getQuery(true)
+			->select('*')
+			->from('#__code_tracker_status');
+
+		if ($trackerId)
+		{
+			$query->where('tracker_id = ' . (int) $trackerId);
+		}
+
+		return $db->setQuery($query)->loadAssocList('jc_status_id', 'title');
 	}
 
 	/**
 	 * Returns the statuses as JHtml select options
 	 *
-	 * @param   string  $defaultOptionKey  The translation key for the default selection option
+	 * @param   integer  $trackerId         Optional tracker ID to filter the status array by
+	 * @param   string   $defaultOptionKey  The translation key for the default selection option
 	 *
 	 * @return  array
 	 */
-	public static function getStatusOptions($defaultOptionKey = null)
+	public static function getStatusOptions($trackerId = null, $defaultOptionKey = null)
 	{
-		$array = self::getStatusRaw();
+		$array = self::getStatusRaw($trackerId);
 		return self::arrayToOptions($array, $defaultOptionKey);
 	}
 

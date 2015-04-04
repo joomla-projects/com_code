@@ -52,7 +52,7 @@ $model = $this->getModel();
 					'onchange' => 'document.forms.trackerForm.submit();',
 					'class' => 'input-small'
 				), 'value', 'text', $model->getState('issue.status_id_include')) ?>
-				<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getStatusOptions(), 'filter_status_id', array(
+				<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getStatusOptions($this->item->jc_tracker_id), 'filter_status_id', array(
 					'onchange' => 'document.forms.trackerForm.submit();'
 				), 'value', 'text', $model->getState('issue.status_id')) ?>
 			</div>

@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Tracker Model for Joomla Code
  */
@@ -49,16 +51,20 @@ class CodeModelIssues extends JModelList
 		$query->select($query->concatenate(array('mu.first_name', $db->quote(' '), 'mu.last_name')) . ' AS modified_user_name');
 		$query->join('LEFT', '#__code_users AS mu on mu.user_id = a.modified_by');
 
+		// Join on the status table.
+		$query->select('s.title AS status_name, s.state_id AS state');
+		$query->join('LEFT', '#__code_tracker_status AS s on s.jc_status_id = a.status');
+
 		// Filter by state.
 		$stateFilter = $this->getState('filter.state');
 
 		if (is_numeric($stateFilter))
 		{
-			$query->where('a.state = ' . (int) $stateFilter);
+			$query->where('s.state_id = ' . (int) $stateFilter);
 		}
 		elseif (is_array($stateFilter))
 		{
-			JArrayHelper::toInteger($stateFilter);
+			$stateFilter = ArrayHelper::toInteger($stateFilter);
 			$query->where('a.state IN (' . implode(',', $stateFilter) . ')');
 		}
 
@@ -72,7 +78,7 @@ class CodeModelIssues extends JModelList
 		}
 		elseif (is_array($trackerId))
 		{
-			JArrayHelper::toInteger($trackerId);
+			$trackerId = ArrayHelper::toInteger($trackerId);
 			$op = $this->getState('filter.tracker_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.tracker_id' . $op . '(' . implode(',', $trackerId) . ')');
 		}
@@ -87,7 +93,7 @@ class CodeModelIssues extends JModelList
 		}
 		elseif (is_array($status))
 		{
-			JArrayHelper::toInteger($status);
+			$status = ArrayHelper::toInteger($status);
 			$op = $this->getState('filter.status_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.status' . $op . '(' . implode(',', $status) . ')');
 		}
@@ -106,7 +112,7 @@ class CodeModelIssues extends JModelList
 		{
 			if (!in_array(-1, $tagId))
 			{
-				JArrayHelper::toInteger($tagId);
+				$tagId = ArrayHelper::toInteger($tagId);
 				$tagId = array_map(array($db, 'q'), $tagId);
 				$op = $this->getState('filter.tag_id_include', true) ? ' IN ' : ' NOT IN ';
 				$query->where('tags.tag_id' . $op . '(' . implode(',', $tagId) . ')');
@@ -148,7 +154,7 @@ class CodeModelIssues extends JModelList
 		}
 		elseif (is_array($submitterId))
 		{
-			JArrayHelper::toInteger($submitterId);
+			$submitterId = ArrayHelper::toInteger($submitterId);
 			$op = $this->getState('filter.submitter_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.created_by' . $op . '(' . implode(',', $submitterId) . ')');
 		}
@@ -186,7 +192,7 @@ class CodeModelIssues extends JModelList
 		}
 		elseif (is_array($closerId))
 		{
-			JArrayHelper::toInteger($closerId);
+			$closerId = ArrayHelper::toInteger($closerId);
 			$op = $this->getState('filter.closer_id_include', true) ? ' IN ' : ' NOT IN ';
 			$query->where('a.close_by' . $op . '(' . implode(',', $closerId) . ')');
 		}

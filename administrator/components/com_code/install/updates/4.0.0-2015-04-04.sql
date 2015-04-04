@@ -2,6 +2,8 @@ ALTER TABLE `#__code_tracker_status` DROP `instructions`;
 ALTER TABLE `#__code_tracker_status` DROP `jc_tracker_id`;
 
 ALTER TABLE `#__code_tracker_issues` DROP `jc_tracker_id`;
+ALTER TABLE `#__code_tracker_issues` DROP `state`;
+ALTER TABLE `#__code_tracker_issues` DROP `status_name`;
 
 ALTER TABLE `#__code_tracker_issue_responses` DROP `jc_tracker_id`;
 
@@ -26,3 +28,5 @@ ALTER TABLE `#__code_users` DROP `signed_jca`;
 
 ALTER TABLE `#__code_users` ADD `username` varchar(150) NOT NULL DEFAULT '' AFTER `last_name`;
 ALTER TABLE `#__code_users` ADD `email` varchar(100) NOT NULL DEFAULT '' AFTER `username`;
+
+DROP TABLE `#__code_tracker_snapshots`;

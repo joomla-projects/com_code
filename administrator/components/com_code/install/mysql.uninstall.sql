@@ -12,8 +12,6 @@ DROP TABLE IF EXISTS `#__code_tracker_issue_responses`;
 
 DROP TABLE IF EXISTS `#__code_tracker_issue_tag_map`;
 
-DROP TABLE IF EXISTS `#__code_tracker_snapshots`;
-
 DROP TABLE IF EXISTS `#__code_tracker_status`;
 
 DROP TABLE IF EXISTS `#__code_users`;

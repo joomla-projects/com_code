@@ -23,9 +23,9 @@ class CodeModelIssue extends JModelLegacy
 		$db->setQuery(
 			$db->getQuery(true)
 				->select('a.*, cu.first_name, cu.last_name')
-				->from($db->quoteName('#__code_tracker_issue_responses') . ' AS a')
+				->from('#__code_tracker_issue_responses AS a')
 				->join('LEFT', '#__code_users AS cu ON cu.user_id = a.created_by')
-				->where($db->quoteName('a.issue_id') . ' = ' . (int) $issueId)
+				->where('a.issue_id = ' . (int) $issueId)
 				->order('a.created_date ASC')
 		);
 
@@ -47,8 +47,9 @@ class CodeModelIssue extends JModelLegacy
 
 		$db->setQuery(
 			$db->getQuery(true)
-				->select('*')
-				->from($db->quoteName('#__code_tracker_issues'))
+				->select('a.*, s.state_id AS state, s.title AS status_name')
+				->from('#__code_tracker_issues AS a')
+				->join('LEFT', '#__code_tracker_status AS s on s.jc_status_id = a.status')
 				->where($db->quoteName('jc_issue_id') . ' = ' . (int) $issueId)
 		);
 
