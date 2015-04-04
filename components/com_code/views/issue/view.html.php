@@ -28,7 +28,7 @@ class CodeViewIssue extends JViewLegacy
 
 		$this->state    = $model->getState();
 		$this->item     = $model->getItem();
-		$this->tags     = $model->getTags($this->item->issue_id);
+		$this->tags     = $model->getTags();
 		$this->comments = $model->getComments($this->item->issue_id);
 		$this->user     = JFactory::getUser();
 		$this->params   = JFactory::getApplication()->getParams('com_code');

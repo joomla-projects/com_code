@@ -99,7 +99,7 @@ class CodeModelIssues extends JModelList
 		{
 			$op = $this->getState('filter.tag_id_include', true) ? ' = ' : ' <> ';
 			$query->where('tags.tag_id' . $op . (int) $tagId);
-			$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.issue_id');
+			$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.jc_issue_id');
 			$query->group('a.issue_id');
 		}
 		elseif (is_array($tagId))
@@ -110,7 +110,7 @@ class CodeModelIssues extends JModelList
 				$tagId = array_map(array($db, 'q'), $tagId);
 				$op = $this->getState('filter.tag_id_include', true) ? ' IN ' : ' NOT IN ';
 				$query->where('tags.tag_id' . $op . '(' . implode(',', $tagId) . ')');
-				$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.issue_id');
+				$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.jc_issue_id');
 				$query->group('a.issue_id');
 			}
 		}

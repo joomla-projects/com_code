@@ -1,6 +1,3 @@
-ALTER TABLE `#__code_tracker_issue_tag_map` ADD `jc_issue_id` INT(10) UNSIGNED DEFAULT NULL;
-UPDATE `#__code_tracker_issue_tag_map` AS a LEFT JOIN `#__code_tracker_issues` AS b ON b.issue_id = a.issue_id SET a.jc_issue_id = b.jc_issue_id;
-
 ALTER TABLE `#__code_trackers` CHANGE `tracker_id` `tracker_id` int(10) unsigned NOT NULL;
 UPDATE `#__code_trackers` SET `tracker_id` = `jc_tracker_id`;
 ALTER TABLE `#__code_trackers` CHANGE `tracker_id` `tracker_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
@@ -102,18 +99,6 @@ INSERT INTO `#__code_tracker_issue_responses_temp` (`response_id`, `issue_id`, `
 DROP TABLE `#__code_tracker_issue_responses`;
 RENAME TABLE `#__code_tracker_issue_responses_temp` TO `#__code_tracker_issue_responses`;
 ALTER TABLE `#__code_tracker_issue_responses` CHANGE `response_id` `response_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
-
-CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_tag_map_temp` (
-  `issue_id` int(10) unsigned DEFAULT NULL,
-  `tag_id` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`issue_id`, `tag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `#__code_tracker_issue_tag_map_temp` (`issue_id`, `tag_id`)
-  SELECT `jc_issue_id`, `tag_id` FROM `#__code_tracker_issue_tag_map`;
-
-DROP TABLE `#__code_tracker_issue_tag_map`;
-RENAME TABLE `#__code_tracker_issue_tag_map_temp` TO `#__code_tracker_issue_tag_map`;
 
 CREATE TABLE IF NOT EXISTS `#__code_tracker_status_temp` (
   `status_id` int(10) unsigned NOT NULL,

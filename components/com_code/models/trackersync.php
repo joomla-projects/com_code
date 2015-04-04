@@ -637,7 +637,7 @@ class CodeModelTrackerSync extends JModelLegacy
 		// Synchronize the extra fields for the tracker item.
 		if (is_array($item->extra_field_data))
 		{
-			if (!$this->syncTrackerItemExtraFields($item->extra_field_data, $table->issue_id))
+			if (!$this->syncTrackerItemExtraFields($item->extra_field_data, $table->issue_id, $table->jc_issue_id))
 			{
 				return false;
 			}
@@ -651,10 +651,11 @@ class CodeModelTrackerSync extends JModelLegacy
 	 *
 	 * @param   array    $fieldValues  Array of field data
 	 * @param   integer  $issueId      Issue ID
+	 * @param   integer  $jcIssueId    JoomlaCode Issue ID
 	 *
 	 * @return  boolean  True on success
 	 */
-	private function syncTrackerItemExtraFields($fieldValues, $issueId)
+	private function syncTrackerItemExtraFields($fieldValues, $issueId, $jcIssueId)
 	{
 		// Some GForge tracker fields we don't care about as far as tags are concerned.
 		$ignore = array(
@@ -717,7 +718,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			$db->getQuery(true)
 				->select($db->quoteName('tag_id'))
 				->from($db->quoteName('#__code_tracker_issue_tag_map'))
-				->where($db->quoteName('issue_id') . ' = ' . (int) $issueId)
+				->where($db->quoteName('issue_id') . ' = ' . (int) $jcIssueId)
 		);
 
 		$existing = (array) $db->loadColumn();
@@ -733,7 +734,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			$db->setQuery(
 				$db->getQuery(true)
 					->delete($db->quoteName('#__code_tracker_issue_tag_map'))
-					->where($db->quoteName('issue_id') . ' = ' . (int) $issueId)
+					->where($db->quoteName('issue_id') . ' = ' . (int) $jcIssueId)
 					->where($db->quoteName('tag_id') . ' IN (' . implode(', ', $del) . ')')
 			)->execute();
 		}
@@ -745,7 +746,7 @@ class CodeModelTrackerSync extends JModelLegacy
 
 		foreach ($add as $tag)
 		{
-			$query->values((int) $issueId . ', ' . (int) $tag);
+			$query->values((int) $jcIssueId . ', ' . (int) $tag);
 		}
 
 		$db->setQuery($query)->execute();
@@ -929,7 +930,7 @@ class CodeModelTrackerSync extends JModelLegacy
 	 * Method to make sure a set of tag values are syncronized with the local system.  This
 	 * method will return an associative array of tag_id => tag values.
 	 *
-	 * @param   array $values An array of tag values to make sure exist in the local system.
+	 * @param   array  $values  An array of tag values to make sure exist in the local system.
 	 *
 	 * @return  array  An array of tag_id => tag values.
 	 *

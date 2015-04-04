@@ -40,7 +40,7 @@ JFactory::getApplication()->getDocument()->addScriptDeclaration($orderingJavascr
 		<thead>
 			<tr>
 				<th>
-					<?php echo JHtml::_('grid.sort', JText::_('ID'), 'issue_id', $this->order_Dir, $this->order, 'tracker'); ?>
+					<?php echo JHtml::_('grid.sort', JText::_('ID'), 'jc_issue_id', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th width="50%" class="list-title">
 					<?php echo JHtml::_('grid.sort', JText::_('Title'), 'title', $this->order_Dir, $this->order, 'tracker'); ?>
