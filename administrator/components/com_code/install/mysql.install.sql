@@ -92,7 +92,6 @@ CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_responses` (
 CREATE TABLE IF NOT EXISTS `#__code_tracker_issue_tag_map` (
   `issue_id` int(10) unsigned DEFAULT NULL,
   `tag_id` int(10) unsigned DEFAULT NULL,
-  `jc_issue_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`issue_id`, `tag_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
