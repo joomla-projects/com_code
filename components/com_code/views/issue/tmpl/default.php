@@ -40,7 +40,7 @@ JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 				<?php foreach ($this->comments as $comment) : ?>
 					<div class="issue-comment well">
 						<span class="comment-owner">
-							<?php echo JText::sprintf('COM_CODE_ISSUE_POSTED_DETAILS', JHtml::_('date', $comment->created_date, 'j M Y, G:s'), $comment->first_name, $comment->last_name); ?>
+							<?php echo JText::sprintf('COM_CODE_ISSUE_POSTED_DETAILS', JHtml::_('date', $comment->created_date, 'j M Y, G:s'), $comment->commenter_name); ?>
 						</span>
 						<div class="issue-comment-details">
 							<?php echo nl2br($comment->body); ?>
@@ -56,7 +56,7 @@ JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 			<?php foreach ($this->commits as $commit) : ?>
 				<div class="issue-commits">
 					<span class="commit-owner">
-						Commit made on <?php echo JHtml::_('date', $commit->created_date, 'j M Y, G:s'); ?> by <?php echo $commit->first_name . ' ' . $commit->last_name; ?>
+						Commit made on <?php echo JHtml::_('date', $commit->created_date, 'j M Y, G:s'); ?> by <?php echo $commit->committer_name; ?>
 					</span>
 					<div class="issue-commit-details">
 						<?php echo nl2br($commit->message); ?>

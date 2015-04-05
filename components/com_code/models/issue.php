@@ -18,16 +18,16 @@ class CodeModelIssue extends JModelLegacy
 	{
 		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;
 
-		$db = $this->getDbo();
+		$db    = $this->getDbo();
+		$query = $db->getQuery(true);
 
-		$db->setQuery(
-			$db->getQuery(true)
-				->select('a.*, cu.first_name, cu.last_name')
-				->from('#__code_tracker_issue_responses AS a')
-				->join('LEFT', '#__code_users AS cu ON cu.user_id = a.created_by')
-				->where('a.issue_id = ' . (int) $issueId)
-				->order('a.created_date ASC')
-		);
+		$query->select('a.*, ' . $query->concatenate(array('cu.first_name', $db->quote(' '), 'cu.last_name')) . ' AS commenter_name')
+			->from('#__code_tracker_issue_responses AS a')
+			->join('LEFT', '#__code_users AS cu ON cu.user_id = a.created_by')
+			->where('a.issue_id = ' . (int) $issueId)
+			->order('a.created_date ASC');
+
+		$db->setQuery($query);
 
 		try
 		{
@@ -43,16 +43,16 @@ class CodeModelIssue extends JModelLegacy
 	{
 		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;
 
-		$db = $this->getDbo();
+		$db    = $this->getDbo();
+		$query = $db->getQuery(true);
 
-		$db->setQuery(
-			$db->getQuery(true)
-				->select('a.*, cu.first_name, cu.last_name')
-				->from('#__code_tracker_issue_commits AS a')
-				->join('LEFT', '#__code_users AS cu ON cu.user_id = a.created_by')
-				->where('a.jc_issue_id = ' . (int) $issueId)
-				->order('a.created_date ASC')
-		);
+		$query->select('a.*, ' . $query->concatenate(array('cu.first_name', $db->quote(' '), 'cu.last_name')) . ' AS committer_name')
+			->from('#__code_tracker_issue_commits AS a')
+			->join('LEFT', '#__code_users AS cu ON cu.user_id = a.created_by')
+			->where('a.jc_issue_id = ' . (int) $issueId)
+			->order('a.created_date ASC');
+
+		$db->setQuery($query);
 
 		try
 		{
