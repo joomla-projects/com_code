@@ -9,7 +9,6 @@
 	<authorUrl>www.joomla.org</authorUrl>
 	<version>4.0.0-dev</version>
 	<description>COM_CODE_XML_DESCRIPTION</description>
-	<menu link="option=com_code">COM_CODE</menu>
 
 	<install>
 		<sql>
@@ -45,6 +44,7 @@
 	</media>
 
 	<administration>
+		<menu link="option=com_code">COM_CODE</menu>
 		<files folder="admin">
 			<folder>helpers</folder>
 			<folder>install</folder>
