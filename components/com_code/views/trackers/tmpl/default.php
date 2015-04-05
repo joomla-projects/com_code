@@ -15,13 +15,13 @@ JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 
 <div id="trackers">
 	<h1>
-		Issue Trackers
+		<?php echo JText::_('COM_CODE_TRACKERS_ISSUE_TRACKERS'); ?>
 	</h1>
 
 	<?php foreach ($this->items as $tracker) : ?>
 		<div class="trackers branch-<?php echo $tracker->tracker_id; ?> well">
 			<h3>
-				<a href="<?php echo JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $tracker->jc_tracker_id); ?>" title="View <?php echo $tracker->title; ?>.">
+				<a href="<?php echo JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $tracker->jc_tracker_id); ?>" title="<?php echo JText::sprintf('COM_CODE_TRACKERS_VIEW_TRACKER', $tracker->title); ?>">
 					<?php echo $tracker->title; ?></a>
 			</h3>
 		</div>
