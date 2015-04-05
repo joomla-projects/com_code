@@ -54,7 +54,7 @@ JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 		<div class="issue-commits">
 			<h4>Commits</h4>
 			<?php foreach ($this->commits as $commit) : ?>
-				<div class="issue-commits">
+				<div class="issue-commit well">
 					<span class="commit-owner">
 						Commit made on <?php echo JHtml::_('date', $commit->created_date, 'j M Y, G:s'); ?> by <?php echo $commit->committer_name; ?>
 					</span>
