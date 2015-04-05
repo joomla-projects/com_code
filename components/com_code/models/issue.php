@@ -14,9 +14,16 @@ defined('_JEXEC') or die;
  */
 class CodeModelIssue extends JModelLegacy
 {
+	/**
+	 * Fetch the comments for a specified issue
+	 *
+	 * @param   integer  $issueId  JoomlaCode Issue ID to search by, uses the issue from the request if one is not specified
+	 *
+	 * @return  stdClass
+	 */
 	public function getComments($issueId = null)
 	{
-		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;
+		$issueId = empty($issueId) ? $this->getState('issue.id') : $issueId;
 
 		$db    = $this->getDbo();
 		$query = $db->getQuery(true);
@@ -24,7 +31,7 @@ class CodeModelIssue extends JModelLegacy
 		$query->select('a.*, ' . $query->concatenate(array('cu.first_name', $db->quote(' '), 'cu.last_name')) . ' AS commenter_name')
 			->from('#__code_tracker_issue_responses AS a')
 			->join('LEFT', '#__code_users AS cu ON cu.user_id = a.created_by')
-			->where('a.issue_id = ' . (int) $issueId)
+			->where('a.jc_issue_id = ' . (int) $issueId)
 			->order('a.created_date ASC');
 
 		$db->setQuery($query);
@@ -35,13 +42,20 @@ class CodeModelIssue extends JModelLegacy
 		}
 		catch (RuntimeException $e)
 		{
-			JError::raiseError(500, 'Unable to access resource: ' . $e->getMessage());
+			$this->setError(JText::sprintf('COM_CODE_ERROR_FETCHING_COMMENTS', $issueId));
 		}
 	}
 
+	/**
+	 * Fetch the commits for a specified issue
+	 *
+	 * @param   integer  $issueId  JoomlaCode Issue ID to search by, uses the issue from the request if one is not specified
+	 *
+	 * @return  stdClass
+	 */
 	public function getCommits($issueId = null)
 	{
-		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;
+		$issueId = empty($issueId) ? $this->getState('issue.id') : $issueId;
 
 		$db    = $this->getDbo();
 		$query = $db->getQuery(true);
@@ -60,13 +74,20 @@ class CodeModelIssue extends JModelLegacy
 		}
 		catch (RuntimeException $e)
 		{
-			JError::raiseError(500, 'Unable to access resource: ' . $e->getMessage());
+			$this->setError(JText::sprintf('COM_CODE_ERROR_FETCHING_COMMITS', $issueId));
 		}
 	}
 
+	/**
+	 * Fetch the specified issue
+	 *
+	 * @param   integer  $issueId  JoomlaCode Issue ID to search by, uses the issue from the request if one is not specified
+	 *
+	 * @return  stdClass
+	 */
 	public function getItem($issueId = null)
 	{
-		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;
+		$issueId = empty($issueId) ? $this->getState('issue.id') : $issueId;
 
 		$db = $this->getDbo();
 
@@ -75,7 +96,7 @@ class CodeModelIssue extends JModelLegacy
 				->select('a.*, s.state_id AS state, s.title AS status_name')
 				->from('#__code_tracker_issues AS a')
 				->join('LEFT', '#__code_tracker_status AS s on s.jc_status_id = a.status')
-				->where($db->quoteName('jc_issue_id') . ' = ' . (int) $issueId)
+				->where('a.jc_issue_id = ' . (int) $issueId)
 		);
 
 		try
@@ -84,13 +105,20 @@ class CodeModelIssue extends JModelLegacy
 		}
 		catch (RuntimeException $e)
 		{
-			JError::raiseError(500, 'Unable to access resource: ' . $e->getMessage());
+			$this->setError(JText::sprintf('COM_CODE_ERROR_FETCHING_ISSUE', $issueId));
 		}
 	}
 
+	/**
+	 * Fetch the tags for a specified issue
+	 *
+	 * @param   integer  $issueId  JoomlaCode Issue ID to search by, uses the issue from the request if one is not specified
+	 *
+	 * @return  stdClass
+	 */
 	public function getTags($issueId = null)
 	{
-		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;
+		$issueId = empty($issueId) ? $this->getState('issue.id') : $issueId;
 
 		$db = $this->getDbo();
 
@@ -113,7 +141,23 @@ class CodeModelIssue extends JModelLegacy
 		}
 		catch (RuntimeException $e)
 		{
-			JError::raiseError(500, 'Unable to access resource: ' . $e->getMessage());
+			$this->setError(JText::sprintf('COM_CODE_ERROR_FETCHING_TAGS', $issueId));
 		}
+	}
+
+	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * @return  void
+	 *
+	 * @note    Calling getState in this method will result in recursion.
+	 */
+	protected function populateState()
+	{
+		$app = JFactory::getApplication();
+
+		// Set the JoomlaCode issue ID from the request.
+		$pk = $app->input->getInt('issue_id');
+		$this->setState('issue.id', $pk);
 	}
 }
