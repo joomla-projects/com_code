@@ -91,4 +91,28 @@ class CodeModelIssue extends JModelLegacy
 			JError::raiseError(500, 'Unable to access resource: ' . $e->getMessage());
 		}
 	}
+
+	public function getTracker($issueId = null)
+	{
+		$issueId = empty($issueId) ? JFactory::getApplication()->input->getInt('issue_id') : $issueId;
+
+		$item = $this->getItem($issueId);
+
+		$db = $this->getDbo();
+		$db->setQuery(
+		   $db->getQuery(true)
+				->select('*')
+				->from($db->quoteName('#__code_trackers'))
+				->where($db->quoteName('jc_tracker_id') . ' = ' . (int) $item->tracker_id)
+		);
+
+		try
+		{
+			return $db->loadObject();
+		}
+		catch (RuntimeException $e)
+		{
+			JError::raiseError(500, 'Unable to access resource: ' . $e->getMessage());
+		}
+	}
 }

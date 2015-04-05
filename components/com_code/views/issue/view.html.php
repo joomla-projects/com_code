@@ -41,6 +41,11 @@ class CodeViewIssue extends JViewLegacy
 			return false;
 		}
 
+		$tracker = $model->getTracker();
+		$pathway = JFactory::getApplication()->getPathway();
+		$pathway->addItem($tracker->title, JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $tracker->tracker_id));
+		$pathway->addItem($this->item->title, JRoute::_('index.php?option=com_code&view=issue&issue_id=' . $this->item->issue_id));
+
 		return parent::display($tpl);
 	}
 }
