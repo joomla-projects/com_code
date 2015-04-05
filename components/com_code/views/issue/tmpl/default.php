@@ -49,4 +49,20 @@ JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 				<?php endforeach; ?>
 		</div>
 	<?php endif; ?>
+
+	<?php if (!empty($this->commits)) : ?>
+		<div class="issue-commits">
+			<h4>Commits</h4>
+			<?php foreach ($this->commits as $commit) : ?>
+				<div class="issue-commits">
+					<span class="commit-owner">
+						Commit made on <?php echo JHtml::_('date', $commit->created_date, 'j M Y, G:s'); ?> by <?php echo $commit->first_name . ' ' . $commit->last_name; ?>
+					</span>
+					<div class="issue-commit-details">
+						<?php echo nl2br($commit->message); ?>
+					</div>
+				</div>
+			<?php endforeach; ?>
+		</div>
+	<?php endif; ?>
 </div>
