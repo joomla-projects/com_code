@@ -40,19 +40,19 @@ JFactory::getApplication()->getDocument()->addScriptDeclaration($orderingJavascr
 		<thead>
 			<tr>
 				<th>
-					<?php echo JHtml::_('grid.sort', JText::_('ID'), 'jc_issue_id', $this->order_Dir, $this->order, 'tracker'); ?>
+					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'jc_issue_id', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th width="50%" class="list-title">
-					<?php echo JHtml::_('grid.sort', JText::_('Title'), 'title', $this->order_Dir, $this->order, 'tracker'); ?>
+					<?php echo JHtml::_('grid.sort', 'JGLOBAL_TITLE', 'title', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th>
-					<?php echo JHtml::_('grid.sort', JText::_('Priority'), 'priority', $this->order_Dir, $this->order, 'tracker'); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_CODE_TRACKER_PRIORITY', 'priority', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th>
-					<?php echo JHtml::_('grid.sort', JText::_('Created'), 'created_date', $this->order_Dir, $this->order, 'tracker'); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_CODE_TRACKER_CREATED', 'created_date', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 				<th>
-					<?php echo JHtml::_('grid.sort', JText::_('Modified'), 'modified_date', $this->order_Dir, $this->order, 'tracker'); ?>
+					<?php echo JHtml::_('grid.sort', 'COM_CODE_TRACKER_MODIFIED', 'modified_date', $this->order_Dir, $this->order, 'tracker'); ?>
 				</th>
 			</tr>
 		</thead>
@@ -61,13 +61,13 @@ JFactory::getApplication()->getDocument()->addScriptDeclaration($orderingJavascr
 			<tr class="<?php echo 'row', ($i % 2); ?>" title="<?php echo $this->escape($issue->title); ?>">
 				<td>
 					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&issue_id=' . $issue->jc_issue_id); ?>"
-					   title="View issue <?php echo $issue->jc_issue_id; ?> report.">
+					   title="<?php echo JText::sprintf('COM_CODE_TRACKER_VIEW_ISSUE_REPORT', $issue->jc_issue_id); ?>">
 						<?php echo $issue->jc_issue_id; ?>
 					</a>
 				</td>
 				<td width="50%">
 					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&issue_id=' . $issue->jc_issue_id); ?>"
-					   title="View issue <?php echo $issue->jc_issue_id; ?> report.">
+					   title="<?php echo JText::sprintf('COM_CODE_TRACKER_VIEW_ISSUE_REPORT', $issue->jc_issue_id); ?>">
 						<?php echo $issue->title; ?>
 					</a>
 				</td>
@@ -77,14 +77,10 @@ JFactory::getApplication()->getDocument()->addScriptDeclaration($orderingJavascr
 					</span>
 				</td>
 				<td>
-					<?php echo JHtml::_('date', $issue->created_date, 'j M Y, G:s'); ?>
-					<br />
-					by <?php echo $issue->created_user_name; ?>
+					<?php echo JText::sprintf('COM_CODE_TRACKER_EDITED_BY', JHtml::_('date', $issue->created_date, 'j M Y, G:s'), $issue->created_user_name); ?>
 				</td>
 				<td>
-					<?php echo JHtml::_('date', $issue->modified_date, 'j M Y, G:s'); ?>
-					<br />
-					by <?php echo $issue->modified_user_name; ?>
+					<?php echo JText::sprintf('COM_CODE_TRACKER_EDITED_BY', JHtml::_('date', $issue->modified_date, 'j M Y, G:s'), $issue->modified_user_name); ?>
 				</td>
 			</tr>
 		<?php endforeach; ?>

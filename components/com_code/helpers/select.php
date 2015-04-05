@@ -22,11 +22,11 @@ class CodeHelperSelect
 	public static function getPrioritiesRaw()
 	{
 		return array(
-			'1' => JText::_('High'),
-			'2' => JText::_('Medium High'),
-			'3' => JText::_('Medium'),
-			'4' => JText::_('Low'),
-			'5' => JText::_('Very Low'),
+			'1' => JText::_('COM_CODE_TRACKER_HIGH_PRIORITY'),
+			'2' => JText::_('COM_CODE_TRACKER_MEDIUM_HIGH_PRIORITY'),
+			'3' => JText::_('COM_CODE_TRACKER_MEDIUM_PRIORITY'),
+			'4' => JText::_('COM_CODE_TRACKER_LOW_PRIORITY'),
+			'5' => JText::_('COM_CODE_TRACKER_VERY_LOW_PRIORITY'),
 		);
 	}
 
@@ -120,18 +120,18 @@ class CodeHelperSelect
 	public static function getComparatorOptions()
 	{
 		return array(
-			JHtml::_('select.option', '1', JText::_('Is')),
-			JHtml::_('select.option', '0', JText::_('Is Not')),
+			JHtml::_('select.option', '1', JText::_('COM_CODE_TRACKER_IS')),
+			JHtml::_('select.option', '0', JText::_('COM_CODE_TRACKER_IS_NOT')),
 		);
 	}
 
 	public static function getDateOptions()
 	{
 		return array(
-			JHtml::_('select.option', 'none', JText::_('None')),
-			JHtml::_('select.option', 'created', JText::_('Created')),
-			JHtml::_('select.option', 'modified', JText::_('Last Modified')),
-			JHtml::_('select.option', 'closed', JText::_('Closed')),
+			JHtml::_('select.option', 'none', JText::_('COM_CODE_TRACKER_NONE')),
+			JHtml::_('select.option', 'created', JText::_('COM_CODE_TRACKER_CREATED')),
+			JHtml::_('select.option', 'modified', JText::_('COM_CODE_TRACKER_LAST_MODIFIED')),
+			JHtml::_('select.option', 'closed', JText::_('COM_CODE_TRACKER_CLOSED')),
 		);
 	}
 
