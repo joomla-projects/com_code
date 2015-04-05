@@ -18,14 +18,14 @@ JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 </h1>
 
 <div id="issue-content">
-	<h4>Summary</h4>
+	<h4><?php echo JText::_('COM_CODE_ISSUE_SUMMARY'); ?></h4>
 	<div class="issue-description">
 		<?php echo nl2br($this->item->description); ?>
 	</div>
 
 	<?php if (!empty($this->tags)) : ?>
 		<div class="issue-tags">
-			<h4>Filed Under</h4>
+			<h4><?php echo JText::_('COM_CODE_ISSUE_FILED_UNDER'); ?></h4>
 				<ul>
 					<?php foreach ($this->tags as $tag) : ?>
 						<li><?php echo $tag->tag; ?></li>
@@ -36,11 +36,11 @@ JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 
 	<?php if (!empty($this->comments)) : ?>
 		<div class="issue-comments">
-			<h4>Responses</h4>
+			<h4><?php echo JText::_('COM_CODE_ISSUE_RESPONSES'); ?></h4>
 				<?php foreach ($this->comments as $comment) : ?>
 					<div class="issue-comment well">
 						<span class="comment-owner">
-							Posted on <?php echo JHtml::_('date', $comment->created_date, 'j M Y, G:s'); ?> by <?php echo $comment->first_name . ' ' . $comment->last_name; ?>
+							<?php echo JText::sprintf('COM_CODE_ISSUE_POSTED_DETAILS', JHtml::_('date', $comment->created_date, 'j M Y, G:s'), $comment->first_name, $comment->last_name); ?>
 						</span>
 						<div class="issue-comment-details">
 							<?php echo nl2br($comment->body); ?>
