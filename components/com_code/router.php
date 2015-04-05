@@ -73,8 +73,6 @@ class CodeRouter extends JComponentRouterBase
 				break;
 
 			default:
-				$segments[] = 'trackers';
-
 				break;
 		}
 
