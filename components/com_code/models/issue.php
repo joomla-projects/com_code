@@ -145,6 +145,13 @@ class CodeModelIssue extends JModelLegacy
 		}
 	}
 
+	/**
+	 * Fetch the tracker for a specified issue
+	 *
+	 * @param   integer  $issueId  JoomlaCode Issue ID to search by, uses the issue from the request if one is not specified
+	 *
+	 * @return  stdClass
+	 */
 	public function getTracker($issueId = null)
 	{
 		$issueId = empty($issueId) ? $this->getState('issue.id') : $issueId;
@@ -152,11 +159,12 @@ class CodeModelIssue extends JModelLegacy
 		$item = $this->getItem($issueId);
 
 		$db = $this->getDbo();
+
 		$db->setQuery(
-		   $db->getQuery(true)
+			$db->getQuery(true)
 				->select('*')
-				->from($db->quoteName('#__code_trackers'))
-				->where($db->quoteName('jc_tracker_id') . ' = ' . (int) $item->tracker_id)
+				->from('#__code_trackers')
+				->where('jc_tracker_id = ' . (int) $item->tracker_id)
 		);
 
 		try
@@ -165,7 +173,7 @@ class CodeModelIssue extends JModelLegacy
 		}
 		catch (RuntimeException $e)
 		{
-			JError::raiseError(500, 'Unable to access resource: ' . $e->getMessage());
+			$this->setError(JText::sprintf('COM_CODE_ERROR_FETCHING_TRACKER', $issueId));
 		}
 	}
 

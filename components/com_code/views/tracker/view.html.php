@@ -62,9 +62,7 @@ class CodeViewTracker extends JViewLegacy
 
 		$app     = JFactory::getApplication();
 		$pathway = $app->getPathway();
-		$pathway->addItem($this->item->title, JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $this->item->tracker_id));
-
-		$this->page->setAdditionalUrlParam('tracker_alias', $this->item->alias);
+		$pathway->addItem($this->item->title, JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $this->item->jc_tracker_id));
 
 		return parent::display($tpl);
 	}
