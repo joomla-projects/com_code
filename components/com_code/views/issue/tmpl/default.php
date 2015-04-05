@@ -52,11 +52,11 @@ JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 
 	<?php if (!empty($this->commits)) : ?>
 		<div class="issue-commits">
-			<h4>Commits</h4>
+			<h4><?php echo JText::_('COM_CODE_ISSUE_COMMITS'); ?></h4>
 			<?php foreach ($this->commits as $commit) : ?>
 				<div class="issue-commit well">
 					<span class="commit-owner">
-						Commit made on <?php echo JHtml::_('date', $commit->created_date, 'j M Y, G:s'); ?> by <?php echo $commit->committer_name; ?>
+						<?php echo JText::sprintf('COM_CODE_ISSUE_COMMIT_DETAILS', JHtml::_('date', $commit->created_date, 'j M Y, G:s'), $commit->committer_name); ?>
 					</span>
 					<div class="issue-commit-details">
 						<?php echo nl2br($commit->message); ?>
