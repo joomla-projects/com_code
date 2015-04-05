@@ -14,7 +14,7 @@ JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 ?>
 
 <h1>
-	<?php echo $this->item->title; ?>
+	[#<?php echo $this->item->jc_issue_id; ?>] - <?php echo $this->item->title; ?>
 </h1>
 
 <div id="issue-content">
