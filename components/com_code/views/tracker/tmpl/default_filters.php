@@ -45,7 +45,7 @@ $model = $this->getModel();
 
 		<div class="control-group">
 			<label class="control-label" for="filter_status_id">
-				<?php echo JText::_('Status') ?>
+				<?php echo JText::_('COM_CODE_TRACKER_FILTER_STATUS') ?>
 			</label>
 			<div class="controls">
 				<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getComparatorOptions(), 'filter_status_id_include', array(
@@ -60,7 +60,7 @@ $model = $this->getModel();
 
 		<div class="control-group">
 			<label class="control-label" for="filter_tag_id">
-				<?php echo JText::_('Tag') ?>
+				<?php echo JText::_('COM_CODE_TRACKER_FILTER_TAG') ?>
 			</label>
 			<div class="controls">
 				<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getComparatorOptions(), 'filter_tag_id_include', array(
@@ -80,7 +80,7 @@ $model = $this->getModel();
 
 		<div class="control-group">
 			<label class="control-label" for="filter_submitter_name">
-				<?php echo JText::_('Submitter') ?>
+				<?php echo JText::_('COM_CODE_TRACKER_FILTER_SUBMITTER') ?>
 			</label>
 			<div class="controls">
 				<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getComparatorOptions(), 'filter_submitter_id_include', array(
@@ -97,7 +97,7 @@ $model = $this->getModel();
 
 		<div class="control-group">
 			<label class="control-label" for="filter_closer_name">
-				<?php echo JText::_('Closer') ?>
+				<?php echo JText::_('COM_CODE_TRACKER_FILTER_CLOSER') ?>
 			</label>
 			<div class="controls">
 				<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getComparatorOptions(), 'filter_closer_id_include', array(
@@ -114,7 +114,7 @@ $model = $this->getModel();
 
 		<div class="control-group">
 			<label class="control-label" for="filter_date_field">
-				<?php echo JText::_('Date Filter') ?>
+				<?php echo JText::_('COM_CODE_TRACKER_FILTER_DATE') ?>
 			</label>
 			<div class="controls">
 				<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getDateOptions(), 'filter_date_field', array(
