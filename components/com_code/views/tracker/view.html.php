@@ -60,10 +60,88 @@ class CodeViewTracker extends JViewLegacy
 			return false;
 		}
 
-		$app     = JFactory::getApplication();
-		$pathway = $app->getPathway();
-		$pathway->addItem($this->item->title, JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $this->item->jc_tracker_id));
+		// Escape strings for HTML output
+		$this->pageclass_sfx = htmlspecialchars($this->params->get('pageclass_sfx'));
+
+		$this->prepareDocument();
 
 		return parent::display($tpl);
+	}
+
+	/**
+	 * Prepares the document.
+	 *
+	 * @return  void.
+	 */
+	protected function prepareDocument()
+	{
+		$app     = JFactory::getApplication();
+		$menus   = $app->getMenu();
+		$pathway = $app->getPathway();
+		$title   = null;
+
+		// Because the application sets a default page title, we need to get it from the menu item itself
+		$menu = $menus->getActive();
+
+		if ($menu)
+		{
+			$this->params->def('page_heading', $this->params->get('page_title', $menu->title));
+		}
+		else
+		{
+			$this->params->def('page_heading', $this->item->title);
+		}
+
+		$title = $this->params->get('page_title', '');
+
+		$id = (int) @$menu->query['tracker_id'];
+
+		// If the menu item does not concern this tracker
+		if ($menu && ($menu->query['option'] != 'com_code' || $menu->query['view'] != 'tracker' || $id != $this->item->jc_tracker_id))
+		{
+			$title = $this->item->title;
+
+			$pathway->addItem($this->item->title, JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $this->item->jc_tracker_id));
+		}
+
+		// Check for empty title and add site name if param is set
+		if (empty($title))
+		{
+			$title = $app->get('sitename');
+		}
+		elseif ($app->get('sitename_pagetitles', 0) == 1)
+		{
+			$title = JText::sprintf('JPAGETITLE', $app->get('sitename'), $title);
+		}
+		elseif ($app->get('sitename_pagetitles', 0) == 2)
+		{
+			$title = JText::sprintf('JPAGETITLE', $title, $app->get('sitename'));
+		}
+
+		if (empty($title))
+		{
+			$title = $this->item->title;
+		}
+
+		$this->document->setTitle($title);
+
+		if ($this->item->description)
+		{
+			$this->document->setDescription($this->item->description);
+		}
+		elseif (!$this->item->description && $this->params->get('menu-meta_description'))
+		{
+			$this->document->setDescription($this->params->get('menu-meta_description'));
+		}
+
+		if ($this->params->get('menu-meta_keywords'))
+		{
+			$this->document->setMetadata('keywords', $this->params->get('menu-meta_keywords'));
+		}
+
+		if ($this->params->get('robots'))
+		{
+			$this->document->setMetadata('robots', $this->params->get('robots'));
+		}
 	}
 }

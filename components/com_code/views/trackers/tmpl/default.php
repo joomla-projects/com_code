@@ -13,10 +13,20 @@ defined('_JEXEC') or die;
 JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 ?>
 
-<div id="trackers">
-	<h1>
-		<?php echo JText::_('COM_CODE_TRACKERS_ISSUE_TRACKERS'); ?>
-	</h1>
+<div class="trackers<?php echo $this->pageclass_sfx?>">
+	<?php if ($this->params->get('show_page_heading')) : ?>
+	<div class="page-header">
+		<h1>
+			<?php echo $this->escape($this->params->get('page_heading')); ?>
+		</h1>
+	</div>
+	<?php endif;?>
+
+	<div class="page-header">
+		<h2>
+			<?php echo JText::_('COM_CODE_TRACKERS_ISSUE_TRACKERS'); ?>
+		</h2>
+	</div>
 
 	<?php foreach ($this->items as $tracker) : ?>
 		<div class="trackers branch-<?php echo $tracker->tracker_id; ?> well">

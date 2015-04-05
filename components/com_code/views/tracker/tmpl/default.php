@@ -19,10 +19,20 @@ JS;
 JFactory::getApplication()->getDocument()->addScriptDeclaration($orderingJavascript, 'text/javascript');
 ?>
 
-<div id="tracker">
-	<h1>
-		<?php echo $this->item->title; ?>
-	</h1>
+<div class="tracker<?php echo $this->pageclass_sfx?>">
+	<?php if ($this->params->get('show_page_heading')) : ?>
+	<div class="page-header">
+		<h1>
+			<?php echo $this->escape($this->params->get('page_heading')); ?>
+		</h1>
+	</div>
+	<?php endif;?>
+
+	<div class="page-header">
+		<h2>
+			<?php echo $this->item->title; ?>
+		</h2>
+	</div>
 
 	<div class="category-desc">
 		<?php echo JHtml::_('content.prepare', $this->item->description, '', 'com_code.tracker'); ?>
