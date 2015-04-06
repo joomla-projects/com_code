@@ -28,5 +28,11 @@ class CodeHelper extends JHelperContent
 			'index.php?option=com_code&view=about',
 			$vName == 'about'
 		);
+
+		JHtmlSidebar::addEntry(
+			'Trackers',
+			'index.php?option=com_code&view=trackers',
+			$vName == 'trackers'
+		);
 	}
 }
