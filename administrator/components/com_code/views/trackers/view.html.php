@@ -30,6 +30,10 @@ class CodeViewTrackers extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
+		/** @var CodeModelTrackers $model */
+		$model = $this->getModel();
+		$this->trackers = $model->getItems();
+		$this->state    = $model->getState();
 		CodeHelper::addSubmenu('trackers');
 
 		$this->addToolbar();
