@@ -35,4 +35,11 @@ class CodeModelTrackers extends JModelLegacy
 
 		return $items;
 	}
+
+	public function save($data)
+	{
+		$table = $this->getTable('Tracker', 'CodeTable');
+
+		return $table->save($data);
+	}
 }

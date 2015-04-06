@@ -46,6 +46,7 @@
 	<administration>
 		<menu link="option=com_code">COM_CODE</menu>
 		<files folder="admin">
+			<folder>controllers</folder>
 			<folder>helpers</folder>
 			<folder>install</folder>
 			<folder>language</folder>
