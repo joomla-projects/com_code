@@ -24,7 +24,7 @@ class CodeHelper extends JHelperContent
 	public static function addSubmenu($vName)
 	{
 		JHtmlSidebar::addEntry(
-			'About',
+			JText::_('COM_CODE_ABOUT'),
 			'index.php?option=com_code&view=about',
 			$vName == 'about'
 		);
