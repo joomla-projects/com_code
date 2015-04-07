@@ -85,6 +85,7 @@ function saveData()
 			<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 		</div>
 	<?php else : ?>
+		<p><?php echo JText::_('COM_CODE_TRACKERS_HOW_TO_EDIT'); ?></p>
 		<form class="adminForm">
 			<div class="trackers">
 				<?php foreach ($this->trackers as $tracker) : ?>
