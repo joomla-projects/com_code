@@ -47,7 +47,7 @@ class CodeViewAbout extends JViewLegacy
 	{
 		$canDo = CodeHelper::getActions('com_code');
 
-		JToolBarHelper::title(JText::_('Joomla! Code Component - About'), 'code');
+		JToolBarHelper::title(JText::_('COM_CODE_ABOUT_TITLE'), 'code');
 
 		if ($canDo->get('core.admin'))
 		{

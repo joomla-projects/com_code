@@ -52,3 +52,31 @@ span.commit-owner {
     border-radius: 3px;
     font-weight: bold;
 }
+
+/* Tracker-Filters */
+#tracker-filters label.control-label {
+    width: 60px;
+}
+
+#tracker-filters .controls {
+    margin-left: 80px;
+}
+
+@media only screen and (max-width: 480px) {
+    #tracker-filters .controls {
+    margin-left: 0;
+    float: none;
+    text-align: left;
+}
+}
+
+@media only screen and (max-width: 480px) {
+    #tracker-filters label.control-label {
+    float: none;
+    width: auto;
+    padding-top: 0;
+    text-align: left;
+}
+}
+
+
