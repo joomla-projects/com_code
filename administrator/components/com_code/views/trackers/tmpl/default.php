@@ -35,18 +35,25 @@ tinymce.init({
 
 function saveData()
 {
-	var trackerItem = {};
 	jQuery(".tracker").each(function() {
 		// Clear any variables set in the variable
-		trackerItem=[];
-		trackerItem["tracker[id]"] = jQuery(this).data("tracker-id");
-		trackerItem["tracker[title]"] = jQuery(this).find("h3").eq(0).text();
-		trackerItem["tracker[description]"] =  jQuery(this).find(".tracker-description").eq(0).text();
-		console.log(trackerItem);
+		console.log(
+		{
+			"tracker[id]": jQuery(this).data("tracker-id"),
+			"tracker[jc_tracker_id]": jQuery(this).data("tracker-jc-id"),
+			"tracker[title]": jQuery(this).find("h3").eq(0).text(),
+			"tracker[description]": jQuery(this).find(".tracker-description").eq(0).text()
+		}
+		);
 		jQuery.ajax({ 
 			type:"POST",
 			url:'index.php?option=com_code&task=trackers.save&format=json',
-			data: trackerItem,
+			data: {
+				"tracker[id]": jQuery(this).data("tracker-id"),
+				"tracker[jc_tracker_id]": jQuery(this).data("tracker-jc-id"),
+				"tracker[title]": jQuery(this).find("h3").eq(0).text(),
+				"tracker[description]": jQuery(this).find(".tracker-description").eq(0).text()
+			},
 			success:function(response){
 				// TODO: Display a success message to the user
 				console.log(response);
@@ -74,7 +81,7 @@ function saveData()
 		<form class="adminForm">
 			<div class="trackers">
 				<?php foreach ($this->trackers as $tracker) : ?>
-					<div class="tracker" data-tracker-id="<?php echo $tracker->tracker_id; ?>">
+					<div class="tracker" data-tracker-id="<?php echo $tracker->tracker_id; ?>" data-tracker-jc-id="<?php echo $tracker->jc_tracker_id; ?>">
 						<h3 class="editable"><?php echo $tracker->title; ?></h3>
 						<div class="tracker-description editable">
 							<?php echo $tracker->description; ?>

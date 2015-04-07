@@ -16,24 +16,34 @@ class CodeControllerTrackers extends JControllerLegacy
 {
 	public function save()
 	{
-		$model = $this->getModel('Trackers');
-		var_dump($this->input->post->getString('title'));die;
+		$model     = $this->getModel('Trackers');
+		$inputData = $this->input->post->get('tracker', array(), 'array');
+		$filter    = JFilterInput::getInstance();
 
 		$data = array(
-			'jc_tracker_id' => $tracker->tracker_id,
-			'title'         => $tracker->tracker_name,
-			'description'   => $tracker->description
+			'tracker_id'    => $filter->clean($inputData['id'], 'int'),
+			'jc_tracker_id' => $filter->clean($inputData['jc_tracker_id'], 'int'),
+			'title'         => $filter->clean($inputData['title'], 'string'),
+			'description'   => $filter->clean($inputData['description'], 'html')
 		);
 
 		try
 		{
-			$result = $model->save();
+			$result = $model->save($data);
 		}
 		catch (Exception $e)
 		{
-			$result = $e;
+			$result       = false;
+
+			// Enqueue the message for JResponseJson to pick up on if asked.
+			JFactory::getApplication()->enqueueMessage($e->getMessage());
 		}
 
-		echo new JResponseJson($result, null, false, $this->input->get('ignoreMessages', true, 'bool'));
+		$return = array(
+			'result' => $result,
+			'data'   => $data
+		);
+
+		echo new JResponseJson($return, null, false, $this->input->get('ignoreMessages', true, 'bool'));
 	}
 }
