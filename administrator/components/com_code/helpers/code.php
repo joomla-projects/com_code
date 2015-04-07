@@ -30,7 +30,7 @@ class CodeHelper extends JHelperContent
 		);
 
 		JHtmlSidebar::addEntry(
-			'Trackers',
+			JText::_('COM_CODE_TRACKERS'),
 			'index.php?option=com_code&view=trackers',
 			$vName == 'trackers'
 		);
