@@ -11,6 +11,9 @@ defined('_JEXEC') or die;
 
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn  = $this->escape($this->state->get('list.direction'));
+
+// For rendering success and failure messages on ajax submmission
+JHtml::_('behavior.core');
 ?>
 
 <script type="text/javascript" src="<?php echo JUri::root() . '/media/editors/tinymce/'; ?>tinymce.min.js"></script>
@@ -36,15 +39,6 @@ tinymce.init({
 function saveData()
 {
 	jQuery(".tracker").each(function() {
-		// Clear any variables set in the variable
-		console.log(
-		{
-			"tracker[id]": jQuery(this).data("tracker-id"),
-			"tracker[jc_tracker_id]": jQuery(this).data("tracker-jc-id"),
-			"tracker[title]": jQuery(this).find("h3").eq(0).text(),
-			"tracker[description]": jQuery(this).find(".tracker-description").eq(0).text()
-		}
-		);
 		jQuery.ajax({ 
 			type:"POST",
 			url:'index.php?option=com_code&task=trackers.save&format=json',
@@ -55,12 +49,25 @@ function saveData()
 				"tracker[description]": jQuery(this).find(".tracker-description").eq(0).text()
 			},
 			success:function(response){
-				// TODO: Display a success message to the user
-				console.log(response);
+				if (response.success && response.data.result)
+				{
+					Joomla.renderMessages({
+						"success": ["Tracker details saved successfully"]
+					});
+
+					return false;
+				}
+
+				// @todo We should return some more information from the controller about what went wrong 
+				Joomla.renderMessages({
+					"danger": ["There was an error saving the tracker details"]
+				});
 			},
 			error:function(error){
-				// TODO: Display appropriate error message
-				console.log(error);
+				// @todo find a more informative way of display such an AJAX error
+				Joomla.renderMessages({
+					"danger": ["There was an error saving the tracker details"]
+				});
 			}
 		});
 	});
@@ -78,6 +85,7 @@ function saveData()
 			<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 		</div>
 	<?php else : ?>
+		<p><?php echo JText::_('COM_CODE_TRACKERS_HOW_TO_EDIT'); ?></p>
 		<form class="adminForm">
 			<div class="trackers">
 				<?php foreach ($this->trackers as $tracker) : ?>
