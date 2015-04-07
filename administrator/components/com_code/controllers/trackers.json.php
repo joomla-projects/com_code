@@ -17,7 +17,7 @@ class CodeControllerTrackers extends JControllerLegacy
 	public function save()
 	{
 		$model = $this->getModel('Trackers');
-		var_dump($this->input);die;
+		var_dump($this->input->post->getString('title'));die;
 
 		$data = array(
 			'jc_tracker_id' => $tracker->tracker_id,

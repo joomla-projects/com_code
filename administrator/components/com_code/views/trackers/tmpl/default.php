@@ -35,24 +35,25 @@ tinymce.init({
 
 function saveData()
 {
-	var Items = [];
-	var trackerItem = [];
+	var trackerItem = {};
 	jQuery(".tracker").each(function() {
 		// Clear any variables set in the variable
 		trackerItem=[];
-		trackerItem["id"] = jQuery(this).data("tracker-id");
-		trackerItem["title"] = jQuery(this).find("h3").eq(0).text();
-		trackerItem["description"] =  jQuery(this).find(".tracker-description").eq(0).text();
-		Items.push(trackerItem);
+		trackerItem["tracker[id]"] = jQuery(this).data("tracker-id");
+		trackerItem["tracker[title]"] = jQuery(this).find("h3").eq(0).text();
+		trackerItem["tracker[description]"] =  jQuery(this).find(".tracker-description").eq(0).text();
+		console.log(trackerItem);
 		jQuery.ajax({ 
 			type:"POST",
 			url:'index.php?option=com_code&task=trackers.save&format=json',
-			data: Items,
-			success: function(){
-				var messages = {
-					"success": ["Tracker data saved successfully"]
-				};
-				Joomla.renderMessages(messages);
+			data: trackerItem,
+			success:function(response){
+				// TODO: Display a success message to the user
+				console.log(response);
+			},
+			error:function(error){
+				// TODO: Display appropriate error message
+				console.log(error);
 			}
 		});
 	});
