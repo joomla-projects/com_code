@@ -14,6 +14,9 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 
 // For rendering success and failure messages on ajax submmission
 JHtml::_('behavior.core');
+
+JText::script('COM_CODE_TRACKERS_SAVE_SUCCESSFUL');
+JText::script('COM_CODE_TRACKERS_SAVE_ERROR');
 ?>
 
 <script type="text/javascript" src="<?php echo JUri::root() . '/media/editors/tinymce/'; ?>tinymce.min.js"></script>
@@ -52,7 +55,7 @@ function saveData()
 				if (response.success && response.data.result)
 				{
 					Joomla.renderMessages({
-						"success": ["Tracker details saved successfully"]
+						"success": [Joomla.JText._('COM_CODE_TRACKERS_SAVE_SUCCESSFUL')]
 					});
 
 					return false;
@@ -60,13 +63,13 @@ function saveData()
 
 				// @todo We should return some more information from the controller about what went wrong 
 				Joomla.renderMessages({
-					"danger": ["There was an error saving the tracker details"]
+					"danger": [Joomla.JText._('COM_CODE_TRACKERS_SAVE_ERROR')]
 				});
 			},
 			error:function(error){
 				// @todo find a more informative way of display such an AJAX error
 				Joomla.renderMessages({
-					"danger": ["There was an error saving the tracker details"]
+					"danger": [Joomla.JText._('COM_CODE_TRACKERS_SAVE_ERROR')]
 				});
 			}
 		});
