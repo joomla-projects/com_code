@@ -27,10 +27,10 @@ $model = $this->getModel();
 	</div>
 </div>
 <div class="clearfix">
-	<div id="tracker-filters" class="form-horizontal">
+	<div id="tracker-filters" class="form-inline well">
 		
 		<div class="row-fluid">
-			<div class="span5">
+			<div class="span6">
 				<div class="control-group">
 					<label for="filter_search" class="control-label">
 						<?php echo JText::_('JSEARCH_FILTER'); ?>
@@ -45,8 +45,9 @@ $model = $this->getModel();
 						</div>
 					</div>
 				</div>
+			</div>
 				
-			<div class="span7">	
+			<div class="span6">	
 				<div class="control-group">
 					<label class="control-label" for="filter_date_field">
 						<?php echo JText::_('COM_CODE_TRACKER_FILTER_DATE') ?>
@@ -70,7 +71,7 @@ $model = $this->getModel();
 			</div>
 		</div>
 
-		<div class="row-fluid">
+		<div id="filters-advanced" class="row-fluid collapse">
 			<div class="span6">
 				<div class="control-group">
 					<label class="control-label" for="filter_status_id">
@@ -144,6 +145,9 @@ $model = $this->getModel();
 				</div>
 			</div>
 		</div>
-
+		
+		<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#filters-advanced">
+         <i class="icon-cog"></i> Advanced Search</button>
+		
 	</div>
 </div>
