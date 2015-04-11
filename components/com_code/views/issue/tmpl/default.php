@@ -41,7 +41,7 @@ JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 				<div><?php echo JText::sprintf('COM_CODE_ISSUE_OPENED_ON_INFO', JHtml::_('date', $this->item->created_date, 'j M Y, G:s'), $this->item->created_by_name); ?></div>
 				<?php if ($this->item->state == '0') : ?>
 					<h5><?php echo JText::_('COM_CODE_ISSUE_CLOSED_ON'); ?></h5>
-					<div><?php echo JText::sprintf('COM_CODE_ISSUE_CLOSED_ON_INFO', JHtml::_('date', $this->item->close_date, 'j M Y, G:s'), $this->item->close_by_name); ?></div>
+					<div><?php echo JHtml::_('date', $this->item->close_date, 'j M Y, G:s'); ?></div>
 				<?php endif; ?>
 				<h5><?php echo JText::_('COM_CODE_ISSUE_STATUS'); ?></h5>
 				<div><?php echo $this->item->status_name; ?></div>
