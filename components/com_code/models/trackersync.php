@@ -95,7 +95,7 @@ class CodeModelTrackerSync extends JModelLegacy
 			$this->gforgeLegacy->login($username, $password);
 
 			// Get the tracker data from the SOAP interface.
-			$trackers = $this->gforge->getProjectTrackers($project, false);
+			$trackers = $this->gforge->getProjectTrackers($project, true);
 
 			if (empty($trackers))
 			{
@@ -107,7 +107,7 @@ class CodeModelTrackerSync extends JModelLegacy
 
 			foreach ($trackers as $tracker)
 			{
-				$currentTrackers = array(5782);
+				$currentTrackers = array(8103);
 
 				if (in_array($tracker->tracker_id, $currentTrackers))
 				{
@@ -252,7 +252,7 @@ class CodeModelTrackerSync extends JModelLegacy
 
 		if (count($erroredItems))
 		{
-			JLog::add('Errored Items: ' . explode(', ', $erroredItems));
+			JLog::add('Errored Items: ' . implode(', ', $erroredItems));
 		}
 
 		return true;

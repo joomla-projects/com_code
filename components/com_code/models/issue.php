@@ -91,13 +91,19 @@ class CodeModelIssue extends JModelLegacy
 
 		$db = $this->getDbo();
 
-		$db->setQuery(
-			$db->getQuery(true)
-				->select('a.*, s.state_id AS state, s.title AS status_name')
-				->from('#__code_tracker_issues AS a')
-				->join('LEFT', '#__code_tracker_status AS s on s.jc_status_id = a.status')
-				->where('a.jc_issue_id = ' . (int) $issueId)
-		);
+		$query = $db->getQuery(true);
+		$query->select(
+			'a.*, s.state_id AS state, s.title AS status_name, '
+			. $query->concatenate(array('cu.first_name', $db->quote(' '), 'cu.last_name')) . ' AS created_by_name, '
+			. $query->concatenate(array('clu.first_name', $db->quote(' '), 'clu.last_name')) . ' AS close_by_name'
+		)
+			->from('#__code_tracker_issues AS a')
+			->join('LEFT', '#__code_tracker_status AS s on s.jc_status_id = a.status')
+			->join('LEFT', '#__code_users AS cu on cu.user_id = a.created_by')
+			->join('LEFT', '#__code_users AS clu on clu.user_id = a.close_by')
+			->where('a.jc_issue_id = ' . (int) $issueId);
+
+		$db->setQuery($query);
 
 		try
 		{
