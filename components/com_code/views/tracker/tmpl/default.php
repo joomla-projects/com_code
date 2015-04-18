@@ -9,6 +9,9 @@
 
 defined('_JEXEC') or die;
 
+// Load the CSS Stylesheet
+JHtml::_('stylesheet', 'com_code/default.css', array(), true);
+
 // Required to get the ordering working
 $orderingJavascript = <<< JS
 	Joomla.orderTable = function() {
