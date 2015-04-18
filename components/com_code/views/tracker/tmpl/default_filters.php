@@ -146,8 +146,8 @@ $model = $this->getModel();
 			</div>
 		</div>
 		
-		<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#filters-advanced">
-         <i class="icon-cog"></i> Advanced Search</button>
+		<button id="adv-search-button" type="button" class="btn btn-primary" data-toggle="collapse" data-target="#filters-advanced">
+         <i class="icon-plus"></i> Advanced Search</button>
 		
 	</div>
 </div>

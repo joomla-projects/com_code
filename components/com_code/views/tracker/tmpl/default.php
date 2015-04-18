@@ -12,6 +12,16 @@ defined('_JEXEC') or die;
 // Load the CSS Stylesheet
 JHtml::_('stylesheet', 'com_code/default.css', array(), true);
 
+// Toggle advanced search elements
+$toggleAdvSearch = <<< JS
+	jQuery('#adv-search-button').click(function () {
+		jQuery(this).find('i').toggleClass('icon-plus icon-minus');
+		jQuery('#filters-advanced').toggleClass('overflow');
+	});
+JS;
+
+JFactory::getApplication()->getDocument()->addScriptDeclaration($toggleAdvSearch, 'text/javascript');
+
 // Required to get the ordering working
 $orderingJavascript = <<< JS
 	Joomla.orderTable = function() {
