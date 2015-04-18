@@ -53,4 +53,15 @@ span.commit-owner {
     font-weight: bold;
 }
 
+/* Advanced search chosen overflow fixes */
+
+#filters-advanced.overflow {
+	overflow: visible;
+}
+
+#filters-advanced select,
+#filters-advanced button {
+	vertical-align: top;
+}
+
 
