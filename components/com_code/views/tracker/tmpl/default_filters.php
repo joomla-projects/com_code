@@ -70,6 +70,9 @@ $model = $this->getModel();
 				</div>
 			</div>
 		</div>
+		
+		<button id="adv-search-button" type="button" class="btn btn-primary" data-toggle="collapse" data-target="#filters-advanced">
+        <i class="icon-plus"></i> Advanced Search</button>
 
 		<div id="filters-advanced" class="row-fluid collapse">
 			<div class="span6">
@@ -145,9 +148,6 @@ $model = $this->getModel();
 				</div>
 			</div>
 		</div>
-		
-		<button id="adv-search-button" type="button" class="btn btn-primary" data-toggle="collapse" data-target="#filters-advanced">
-         <i class="icon-plus"></i> Advanced Search</button>
 		
 	</div>
 </div>
