@@ -15,13 +15,6 @@ defined('_JEXEC') or die;
 abstract class CodeHelperRoute
 {
 	/**
-	 * Cached menu item lookup array
-	 *
-	 * @var  array
-	 */
-	private static $lookup = [];
-
-	/**
 	 * Get the issue route.
 	 *
 	 * @param   integer $id The ID of the issue.
@@ -30,14 +23,10 @@ abstract class CodeHelperRoute
 	 */
 	public static function getIssueRoute($id)
 	{
-		$needles = [
-			'issue_id' => [(int) $id]
-		];
-
 		// Create the link
 		$link = 'index.php?option=com_code&view=issue&issue_id=' . $id;
 
-		if ($item = self::findItem($needles))
+		if ($item = self::findItem())
 		{
 			$link .= '&Itemid=' . $item;
 		}
@@ -54,14 +43,10 @@ abstract class CodeHelperRoute
 	 */
 	public static function getTrackerRoute($id)
 	{
-		$needles = [
-			'tracker_id' => [(int) $id]
-		];
-
 		// Create the link
 		$link = 'index.php?option=com_code&view=tracker&tracker_id=' . $id;
 
-		if ($item = self::_findItem($needles))
+		if ($item = self::findItem())
 		{
 			$link .= '&Itemid=' . $item;
 		}
@@ -72,75 +57,24 @@ abstract class CodeHelperRoute
 	/**
 	 * Find a menu item ID.
 	 *
-	 * @param   array $needles An array of lookup needles.
-	 *
 	 * @return  mixed  The ID found or null otherwise.
 	 */
-	private static function findItem(array $needles = [])
+	private static function findItem()
 	{
-		$menus    = JFactory::getApplication()->getMenu('site');
-		$language = isset($needles['language']) ? $needles['language'] : '*';
+		static $itemId;
 
-		// Prepare the reverse lookup array.
-		if (!isset(self::$lookup[$language]))
+		if ($itemId)
 		{
-			self::$lookup[$language] = [];
-
-			$component = JComponentHelper::getComponent('com_content');
-
-			$attributes = ['component_id'];
-			$values     = [$component->id];
-
-			if ($language != '*')
-			{
-				$attributes[] = 'language';
-				$values[]     = [$needles['language'], '*'];
-			}
-
-			$items = $menus->getItems($attributes, $values);
-
-			foreach ($items as $item)
-			{
-				if (isset($item->query) && isset($item->query['view']))
-				{
-					$view = $item->query['view'];
-
-					if (!isset(self::$lookup[$language][$view]))
-					{
-						self::$lookup[$language][$view] = [];
-					}
-
-					if (isset($item->query['id']))
-					{
-						/**
-						 * Here it will become a bit tricky
-						 * language != * can override existing entries
-						 * language == * cannot override existing entries
-						 */
-						if (!isset(self::$lookup[$language][$view][$item->query['id']]) || $item->language != '*')
-						{
-							self::$lookup[$language][$view][$item->query['id']] = $item->id;
-						}
-					}
-				}
-			}
+			return $itemId;
 		}
 
-		if ($needles)
+		$menus = JFactory::getApplication()->getMenu('site');
+		$items = $menus->getItems(['component_id'], [JComponentHelper::getComponent('com_code')->id]);
+
+		// There will only be one com_code menu item set up
+		if (count($items))
 		{
-			foreach ($needles as $view => $ids)
-			{
-				if (isset(self::$lookup[$language][$view]))
-				{
-					foreach ($ids as $id)
-					{
-						if (isset(self::$lookup[$language][$view][(int) $id]))
-						{
-							return self::$lookup[$language][$view][(int) $id];
-						}
-					}
-				}
-			}
+			return $itemId = $items[0]->id;
 		}
 
 		// Check if the active menuitem matches the requested language
@@ -151,12 +85,12 @@ abstract class CodeHelperRoute
 			&& ($language == '*' || in_array($active->language, ['*', $language]) || !JLanguageMultilang::isEnabled())
 		)
 		{
-			return $active->id;
+			return $itemId = $active->id;
 		}
 
 		// If not found, return language specific home link
 		$default = $menus->getDefault($language);
 
-		return !empty($default->id) ? $default->id : null;
+		return $itemId = !empty($default->id) ? $default->id : null;
 	}
 }
