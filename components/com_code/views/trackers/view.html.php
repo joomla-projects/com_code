@@ -51,13 +51,10 @@ class CodeViewTrackers extends JViewLegacy
 	 */
 	protected function prepareDocument()
 	{
-		$app     = JFactory::getApplication();
-		$menus   = $app->getMenu();
-		$pathway = $app->getPathway();
-		$title   = null;
+		$app = JFactory::getApplication();
 
 		// Because the application sets a default page title, we need to get it from the menu item itself
-		$menu = $menus->getActive();
+		$menu = $app->getMenu()->getActive();
 
 		if ($menu)
 		{
@@ -83,10 +80,9 @@ class CodeViewTrackers extends JViewLegacy
 		{
 			$title = JText::sprintf('JPAGETITLE', $title, $app->get('sitename'));
 		}
-
-		if (empty($title))
+		else
 		{
-			$title = $this->item->title;
+			$title = 'JoomlaCode Issue Trackers';
 		}
 
 		$this->document->setTitle($title);

@@ -21,13 +21,13 @@ class CodeHelperSelect
 	 */
 	public static function getPrioritiesRaw()
 	{
-		return array(
+		return [
 			'1' => JText::_('COM_CODE_TRACKER_HIGH_PRIORITY'),
 			'2' => JText::_('COM_CODE_TRACKER_MEDIUM_HIGH_PRIORITY'),
 			'3' => JText::_('COM_CODE_TRACKER_MEDIUM_PRIORITY'),
 			'4' => JText::_('COM_CODE_TRACKER_LOW_PRIORITY'),
 			'5' => JText::_('COM_CODE_TRACKER_VERY_LOW_PRIORITY'),
-		);
+		];
 	}
 
 	/**
@@ -39,8 +39,7 @@ class CodeHelperSelect
 	 */
 	public static function getPrioritiesOptions($defaultOptionKey = null)
 	{
-		$array = self::getPrioritiesRaw();
-		return self::arrayToOptions($array, $defaultOptionKey);
+		return static::arrayToOptions(static::getPrioritiesRaw(), $defaultOptionKey);
 	}
 
 	/**
@@ -76,8 +75,7 @@ class CodeHelperSelect
 	 */
 	public static function getStatusOptions($trackerId = null, $defaultOptionKey = null)
 	{
-		$array = self::getStatusRaw($trackerId);
-		return self::arrayToOptions($array, $defaultOptionKey);
+		return static::arrayToOptions(static::getStatusRaw($trackerId), $defaultOptionKey);
 	}
 
 	/**
@@ -96,9 +94,14 @@ class CodeHelperSelect
 		)->loadAssocList('tag_id', 'tag');
 	}
 
+	/**
+	 * Returns the tag filter options
+	 *
+	 * @return  stdClass[]
+	 */
 	public static function getTagOptions()
 	{
-		$array = self::getTagRaw();
+		$array = static::getTagRaw();
 
 		$options = array();
 
@@ -115,24 +118,29 @@ class CodeHelperSelect
 	/**
 	 * Returns the comparison operator options
 	 *
-	 * @return  array
+	 * @return  stdClass[]
 	 */
 	public static function getComparatorOptions()
 	{
-		return array(
+		return [
 			JHtml::_('select.option', '1', JText::_('COM_CODE_TRACKER_IS')),
 			JHtml::_('select.option', '0', JText::_('COM_CODE_TRACKER_IS_NOT')),
-		);
+		];
 	}
 
+	/**
+	 * Returns the date filter options
+	 *
+	 * @return  stdClass[]
+	 */
 	public static function getDateOptions()
 	{
-		return array(
+		return [
 			JHtml::_('select.option', 'none', JText::_('COM_CODE_TRACKER_NONE')),
 			JHtml::_('select.option', 'created', JText::_('COM_CODE_TRACKER_CREATED')),
 			JHtml::_('select.option', 'modified', JText::_('COM_CODE_TRACKER_LAST_MODIFIED')),
 			JHtml::_('select.option', 'closed', JText::_('COM_CODE_TRACKER_CLOSED')),
-		);
+		];
 	}
 
 	/**
@@ -140,11 +148,11 @@ class CodeHelperSelect
 	 *
 	 * @param   string  $defaultOptionKey  The translation key for the default selection option
 	 *
-	 * @return  array
+	 * @return  stdClass[]
 	 */
 	protected static function arrayToOptions($array, $defaultOptionKey = null)
 	{
-		$options = array();
+		$options = [];
 
 		if (empty($defaultOptionKey))
 		{
@@ -160,5 +168,4 @@ class CodeHelperSelect
 
 		return $options;
 	}
-
 }

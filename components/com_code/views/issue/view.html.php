@@ -31,7 +31,7 @@ class CodeViewIssue extends JViewLegacy
 		$this->tags     = $model->getTags();
 		$this->commits  = $model->getCommits();
 		$this->comments = $model->getComments();
-		$this->tracker = $model->getTracker();
+		$this->tracker  = $model->getTracker();
 		$this->user     = JFactory::getUser();
 		$this->params   = JFactory::getApplication()->getParams('com_code');
 
@@ -58,13 +58,10 @@ class CodeViewIssue extends JViewLegacy
 	 */
 	protected function prepareDocument()
 	{
-		$app     = JFactory::getApplication();
-		$menus   = $app->getMenu();
-		$pathway = $app->getPathway();
-		$title   = null;
+		$app = JFactory::getApplication();
 
 		// Because the application sets a default page title, we need to get it from the menu item itself
-		$menu = $menus->getActive();
+		$menu = $app->getMenu()->getActive();
 
 		if ($menu)
 		{
@@ -82,7 +79,8 @@ class CodeViewIssue extends JViewLegacy
 		// If the menu item does not concern this issue
 		if ($menu && ($menu->query['option'] != 'com_code' || $menu->query['view'] != 'issue' || $id != $this->item->jc_issue_id))
 		{
-			$title = '[#' . $this->item->jc_issue_id . '] - ' . $this->item->title;
+			$pathway = $app->getPathway();
+			$title   = '[#' . $this->item->jc_issue_id . '] - ' . $this->item->title;
 
 			$pathway->addItem($this->tracker->title, JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $this->tracker->jc_tracker_id));
 			$pathway->addItem($this->item->title, JRoute::_('index.php?option=com_code&view=issue&issue_id=' . $this->item->jc_issue_id));

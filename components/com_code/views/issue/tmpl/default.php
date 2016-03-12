@@ -10,7 +10,7 @@
 defined('_JEXEC') or die;
 
 // Load the CSS stylesheets
-JHtml::_('stylesheet', 'com_code/default.css', array(), true);
+JHtml::_('stylesheet', 'com_code/default.css', [], true);
 ?>
 
 <div class="issue<?php echo $this->pageclass_sfx?>">

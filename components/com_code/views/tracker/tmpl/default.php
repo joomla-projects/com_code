@@ -9,8 +9,11 @@
 
 defined('_JEXEC') or die;
 
+// Enable Chosen
+JHtml::_('formbehavior.chosen');
+
 // Load the CSS Stylesheet
-JHtml::_('stylesheet', 'com_code/default.css', array(), true);
+JHtml::_('stylesheet', 'com_code/default.css', [], true);
 
 // Toggle advanced search elements
 $toggleAdvSearch = <<< JS
@@ -59,58 +62,58 @@ JFactory::getApplication()->getDocument()->addScriptDeclaration($orderingJavascr
 		<input type="hidden" name="filter_order_Dir" value="<?php echo $this->getModel()->getState('list.direction', 'DESC') ?>">
 		<input type="hidden" name="task" value="tracker">
 
-	<?php echo $this->loadTemplate('filters'); ?>
+		<?php echo $this->loadTemplate('filters'); ?>
 
-	<table class="table table-striped table-bordered table-hover" id="sortTable">
-		<thead>
-			<tr>
-				<th>
-					<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'jc_issue_id', $this->order_Dir, $this->order, 'tracker'); ?>
-				</th>
-				<th width="50%" class="list-title">
-					<?php echo JHtml::_('grid.sort', 'JGLOBAL_TITLE', 'title', $this->order_Dir, $this->order, 'tracker'); ?>
-				</th>
-				<th>
-					<?php echo JHtml::_('grid.sort', 'COM_CODE_TRACKER_PRIORITY', 'priority', $this->order_Dir, $this->order, 'tracker'); ?>
-				</th>
-				<th>
-					<?php echo JHtml::_('grid.sort', 'COM_CODE_TRACKER_CREATED', 'created_date', $this->order_Dir, $this->order, 'tracker'); ?>
-				</th>
-				<th>
-					<?php echo JHtml::_('grid.sort', 'COM_CODE_TRACKER_MODIFIED', 'modified_date', $this->order_Dir, $this->order, 'tracker'); ?>
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-		<?php foreach ($this->items as $i => $issue) : ?>
-			<tr class="<?php echo 'row', ($i % 2); ?>" title="<?php echo $this->escape($issue->title); ?>">
-				<td>
-					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&issue_id=' . $issue->jc_issue_id); ?>"
-					   title="<?php echo JText::sprintf('COM_CODE_TRACKER_VIEW_ISSUE_REPORT', $issue->jc_issue_id); ?>">
-						<?php echo $issue->jc_issue_id; ?>
-					</a>
-				</td>
-				<td width="50%">
-					<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&issue_id=' . $issue->jc_issue_id); ?>"
-					   title="<?php echo JText::sprintf('COM_CODE_TRACKER_VIEW_ISSUE_REPORT', $issue->jc_issue_id); ?>">
-						<?php echo $issue->title; ?>
-					</a>
-				</td>
-				<td>
-					<span class="priority-<?php echo (int) $issue->priority ?>">
-					<?php echo $this->priorities[$issue->priority]; ?>
-					</span>
-				</td>
-				<td>
-					<?php echo JText::sprintf('COM_CODE_TRACKER_EDITED_BY', JHtml::_('date', $issue->created_date, 'j M Y, G:s'), $issue->created_user_name); ?>
-				</td>
-				<td>
-					<?php echo JText::sprintf('COM_CODE_TRACKER_EDITED_BY', JHtml::_('date', $issue->modified_date, 'j M Y, G:s'), $issue->modified_user_name); ?>
-				</td>
-			</tr>
-		<?php endforeach; ?>
-		</tbody>
-	</table>
+		<table class="table table-striped table-bordered table-hover" id="sortTable">
+			<thead>
+				<tr>
+					<th>
+						<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'jc_issue_id', $this->order_Dir, $this->order, 'tracker'); ?>
+					</th>
+					<th width="50%" class="list-title">
+						<?php echo JHtml::_('grid.sort', 'JGLOBAL_TITLE', 'title', $this->order_Dir, $this->order, 'tracker'); ?>
+					</th>
+					<th>
+						<?php echo JHtml::_('grid.sort', 'COM_CODE_TRACKER_PRIORITY', 'priority', $this->order_Dir, $this->order, 'tracker'); ?>
+					</th>
+					<th>
+						<?php echo JHtml::_('grid.sort', 'COM_CODE_TRACKER_CREATED', 'created_date', $this->order_Dir, $this->order, 'tracker'); ?>
+					</th>
+					<th>
+						<?php echo JHtml::_('grid.sort', 'COM_CODE_TRACKER_MODIFIED', 'modified_date', $this->order_Dir, $this->order, 'tracker'); ?>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($this->items as $i => $issue) : ?>
+				<tr class="<?php echo 'row', ($i % 2); ?>" title="<?php echo $this->escape($issue->title); ?>">
+					<td>
+						<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&issue_id=' . $issue->jc_issue_id); ?>"
+						   title="<?php echo JText::sprintf('COM_CODE_TRACKER_VIEW_ISSUE_REPORT', $issue->jc_issue_id); ?>">
+							<?php echo $issue->jc_issue_id; ?>
+						</a>
+					</td>
+					<td width="50%">
+						<a href="<?php echo JRoute::_('index.php?option=com_code&view=issue&issue_id=' . $issue->jc_issue_id); ?>"
+						   title="<?php echo JText::sprintf('COM_CODE_TRACKER_VIEW_ISSUE_REPORT', $issue->jc_issue_id); ?>">
+							<?php echo $issue->title; ?>
+						</a>
+					</td>
+					<td>
+						<span class="priority-<?php echo (int) $issue->priority ?>">
+						<?php echo $this->priorities[$issue->priority]; ?>
+						</span>
+					</td>
+					<td>
+						<?php echo JText::sprintf('COM_CODE_TRACKER_EDITED_BY', JHtml::_('date', $issue->created_date, 'j M Y, G:s'), $issue->created_user_name); ?>
+					</td>
+					<td>
+						<?php echo JText::sprintf('COM_CODE_TRACKER_EDITED_BY', JHtml::_('date', $issue->modified_date, 'j M Y, G:s'), $issue->modified_user_name); ?>
+					</td>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
+		</table>
 
 	</form>
 

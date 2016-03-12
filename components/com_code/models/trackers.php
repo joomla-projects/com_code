@@ -14,25 +14,23 @@ defined('_JEXEC') or die;
  */
 class CodeModelTrackers extends JModelLegacy
 {
+	/**
+	 * Get the list of trackers
+	 *
+	 * @return  array
+	 */
 	public function getItems()
 	{
-		// Initialize variables.
-		$items = array();
-
 		// Get the list of active branches.
-		$this->_db->setQuery(
-			'SELECT a.*' .
-			' FROM #__code_trackers AS a' .
-//			' WHERE a.published = 1' .
-			' ORDER BY a.title ASC'
+		$db = $this->getDbo();
+
+		$db->setQuery(
+			$db->getQuery(true)
+				->select('a.*')
+				->from('#__code_trackers', 'a')
+				->order('a.title ASC')
 		);
-		$items = $this->_db->loadObjectList();
 
-		if ($this->_db->getErrorNum())
-		{
-			JError::raiseError(500, 'Unable to access resource.');
-		}
-
-		return $items;
+		return $db->loadObjectList();
 	}
 }

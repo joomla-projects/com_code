@@ -44,11 +44,11 @@ class CodeModelIssues extends JModelList
 		$query->join('LEFT', '#__code_trackers AS t on t.tracker_id = a.tracker_id');
 
 		// Join on user table for created by information.
-		$query->select($query->concatenate(array('cu.first_name', $db->quote(' '), 'cu.last_name')) . ' AS created_user_name');
+		$query->select($query->concatenate(['cu.first_name', $db->quote(' '), 'cu.last_name']) . ' AS created_user_name');
 		$query->join('LEFT', '#__code_users AS cu on cu.user_id = a.created_by');
 
 		// Join on user table for modified by information.
-		$query->select($query->concatenate(array('mu.first_name', $db->quote(' '), 'mu.last_name')) . ' AS modified_user_name');
+		$query->select($query->concatenate(['mu.first_name', $db->quote(' '), 'mu.last_name']) . ' AS modified_user_name');
 		$query->join('LEFT', '#__code_users AS mu on mu.user_id = a.modified_by');
 
 		// Join on the status table.
@@ -64,8 +64,7 @@ class CodeModelIssues extends JModelList
 		}
 		elseif (is_array($stateFilter))
 		{
-			$stateFilter = ArrayHelper::toInteger($stateFilter);
-			$query->where('a.state IN (' . implode(',', $stateFilter) . ')');
+			$query->where('a.state IN (' . implode(',', ArrayHelper::toInteger($stateFilter)) . ')');
 		}
 
 		// Filter by a single or group of trackers.
@@ -78,9 +77,8 @@ class CodeModelIssues extends JModelList
 		}
 		elseif (is_array($trackerId))
 		{
-			$trackerId = ArrayHelper::toInteger($trackerId);
 			$op = $this->getState('filter.tracker_id_include', true) ? ' IN ' : ' NOT IN ';
-			$query->where('a.tracker_id' . $op . '(' . implode(',', $trackerId) . ')');
+			$query->where('a.tracker_id' . $op . '(' . implode(',', ArrayHelper::toInteger($trackerId)) . ')');
 		}
 
 		// Filter by a single or group of status.
@@ -93,9 +91,8 @@ class CodeModelIssues extends JModelList
 		}
 		elseif (is_array($status))
 		{
-			$status = ArrayHelper::toInteger($status);
 			$op = $this->getState('filter.status_id_include', true) ? ' IN ' : ' NOT IN ';
-			$query->where('a.status' . $op . '(' . implode(',', $status) . ')');
+			$query->where('a.status' . $op . '(' . implode(',', ArrayHelper::toInteger($status)) . ')');
 		}
 
 		// Filter by a single or group of tags.
@@ -112,17 +109,15 @@ class CodeModelIssues extends JModelList
 		{
 			if (!in_array(-1, $tagId))
 			{
-				$tagId = ArrayHelper::toInteger($tagId);
-				$tagId = array_map(array($db, 'q'), $tagId);
 				$op = $this->getState('filter.tag_id_include', true) ? ' IN ' : ' NOT IN ';
-				$query->where('tags.tag_id' . $op . '(' . implode(',', $tagId) . ')');
+				$query->where('tags.tag_id' . $op . '(' . implode(',', array_map([$db, 'q'], ArrayHelper::toInteger($tagId))) . ')');
 				$query->join('LEFT', '#__code_tracker_issue_tag_map AS tags on tags.issue_id = a.jc_issue_id');
 				$query->group('a.issue_id');
 			}
 		}
 
 		// Filter by a single or group of submitters.
-		$submitterId = $this->getState('filter.submitter_id');
+		$submitterId   = $this->getState('filter.submitter_id');
 		$submitterName = $this->getState('filter.submitter_name');
 
 		// If there is no user ID but we have a user name use a separate query to find the user IDs. The separate query
@@ -154,13 +149,12 @@ class CodeModelIssues extends JModelList
 		}
 		elseif (is_array($submitterId))
 		{
-			$submitterId = ArrayHelper::toInteger($submitterId);
 			$op = $this->getState('filter.submitter_id_include', true) ? ' IN ' : ' NOT IN ';
-			$query->where('a.created_by' . $op . '(' . implode(',', $submitterId) . ')');
+			$query->where('a.created_by' . $op . '(' . implode(',', ArrayHelper::toInteger($submitterId)) . ')');
 		}
 
 		// Filter by a single or group of closers.
-		$closerId = $this->getState('filter.closer_id');
+		$closerId   = $this->getState('filter.closer_id');
 		$closerName = $this->getState('filter.closer_name');
 
 		// If there is no user ID but we have a user name use a separate query to find the user IDs. The separate query
@@ -192,9 +186,8 @@ class CodeModelIssues extends JModelList
 		}
 		elseif (is_array($closerId))
 		{
-			$closerId = ArrayHelper::toInteger($closerId);
 			$op = $this->getState('filter.closer_id_include', true) ? ' IN ' : ' NOT IN ';
-			$query->where('a.close_by' . $op . '(' . implode(',', $closerId) . ')');
+			$query->where('a.close_by' . $op . '(' . implode(',', ArrayHelper::toInteger($closerId)) . ')');
 		}
 
 		/*
@@ -218,7 +211,7 @@ class CodeModelIssues extends JModelList
 				break;
 
 			case 'none':
-				$dateField = 'a.created_date';
+				$dateField     = 'a.created_date';
 				$dateFiltering = 'off';
 				break;
 
@@ -316,11 +309,20 @@ class CodeModelIssues extends JModelList
 		//$this->setState('filter.relative_date', null);
 
 		// Load the list options from the request.
-		$listId = $pk . ':' . $app->input->getInt('Itemid', 0);
-		$this->setState('list.start', $app->input->getInt('limitstart', 0));
-		$this->setState('list.ordering', $app->getUserStateFromRequest('com_code.issues.' . $listId . '.filter_order', 'filter_order', 'a.modified_date', 'string'));
-		$this->setState('list.direction', $app->getUserStateFromRequest('com_code.issues.' . $listId . '.filter_order_Dir', 'filter_order_Dir', 'DESC', 'cmd'));
-		$this->setState('list.limit', $app->getUserStateFromRequest('com_code.issues.' . $listId . '.limit', 'limit', $app->get('list_limit'), 'int'));
+		$listId = $pk . ':' . $app->input->getUint('Itemid', 0);
+		$this->setState('list.start', $app->input->getUint('limitstart', 0));
+		$this->setState(
+			'list.ordering',
+			$app->getUserStateFromRequest('com_code.issues.' . $listId . '.filter_order', 'filter_order', 'a.modified_date', 'string')
+		);
+		$this->setState(
+			'list.direction',
+			$app->getUserStateFromRequest('com_code.issues.' . $listId . '.filter_order_Dir', 'filter_order_Dir', 'DESC', 'cmd')
+		);
+		$this->setState(
+			'list.limit',
+			$app->getUserStateFromRequest('com_code.issues.' . $listId . '.limit', 'limit', $app->get('list_limit'), 'uint')
+		);
 	}
 
 	/**
@@ -340,11 +342,11 @@ class CodeModelIssues extends JModelList
 
 		if (is_null($tagId))
 		{
-			$tagId = array();
+			$tagId = [];
 		}
 		elseif (!is_array($tagId))
 		{
-			$tagId = array($tagId);
+			$tagId = [$tagId];
 		}
 
 		// Compile the store id.

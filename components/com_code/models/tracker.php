@@ -19,12 +19,22 @@ class CodeModelTracker extends JModelItem
 	/**
 	 * Model context string.
 	 *
-	 * @var    string
-	 * @since  1.0
+	 * @var  string
 	 */
 	protected $_context = 'com_code.tracker';
 
+	/**
+	 * A list of issues for this tracker.
+	 *
+	 * @var  array|boolean
+	 */
 	protected $issues;
+
+	/**
+	 * The pagination object.
+	 *
+	 * @var  JPagination
+	 */
 	protected $pagination;
 
 	/**
@@ -42,7 +52,7 @@ class CodeModelTracker extends JModelItem
 		// Initialize the memory storage array.
 		if ($this->_item === null)
 		{
-			$this->_item = array();
+			$this->_item = [];
 		}
 
 		if (!isset($this->_item[$pk]))
@@ -63,6 +73,7 @@ class CodeModelTracker extends JModelItem
 				// Filter by published state.
 				$published = $this->getState('filter.published');
 				$archived  = $this->getState('filter.archived');
+
 				if (is_numeric($published))
 				{
 					$query->where('(a.state = ' . (int) $published . ' OR a.state =' . (int) $archived . ')');
@@ -119,7 +130,7 @@ class CodeModelTracker extends JModelItem
 		if ($this->issues === null)
 		{
 			/** @var CodeModelIssues $model */
-			$model = JModelLegacy::getInstance('Issues', 'CodeModel', array('ignore_request' => true));
+			$model = JModelLegacy::getInstance('Issues', 'CodeModel', ['ignore_request' => true]);
 
 			$model->setState('options', $this->getState('options'));
 			$model->setState('filter.tracker_id', $pk);
@@ -160,6 +171,11 @@ class CodeModelTracker extends JModelItem
 		return $this->issues;
 	}
 
+	/**
+	 * Method to get a JPagination object for the data set.
+	 *
+	 * @return  JPagination
+	 */
 	public function getPagination()
 	{
 		$this->getItems();
@@ -198,25 +214,55 @@ class CodeModelTracker extends JModelItem
 		// Set the issue filters
 		$this->setState('issue.state', $app->getUserStateFromRequest($issueStatePrefix . 'state', 'filter_state', null, 'int'));
 
-		$this->setState('issue.status_id', $app->getUserStateFromRequest($issueStatePrefix . 'status_id', 'filter_status_id', null, 'int'));
-		$this->setState('issue.status_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'status_id_include', 'filter_status_id_include', '=', 'int'));
+		$this->setState('issue.status_id', $app->getUserStateFromRequest($issueStatePrefix . 'status_id', 'filter_status_id', null, 'uint'));
+
+		$this->setState(
+			'issue.status_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'status_id_include', 'filter_status_id_include', '=', 'uint')
+		);
 
 		$this->setState('issue.tag_id', $app->getUserStateFromRequest($issueStatePrefix . 'tag_id', 'filter_tag_id', null, 'array'));
-		$this->setState('issue.tag_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'tag_id_include', 'filter_tag_id_include', '=', 'int'));
 
-		$this->setState('issue.submitter_name', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_name', 'filter_submitter_name', null, 'string'));
-		$this->setState('issue.submitter_id', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_id', 'filter_submitter_id', null, 'int'));
-		$this->setState('issue.submitter_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_id_include', 'filter_submitter_id_include', null, 'int'));
+		$this->setState(
+			'issue.tag_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'tag_id_include', 'filter_tag_id_include', '=', 'uint')
+		);
+
+		$this->setState(
+			'issue.submitter_name', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_name', 'filter_submitter_name', null, 'string')
+		);
+
+		$this->setState('issue.submitter_id', $app->getUserStateFromRequest($issueStatePrefix . 'submitter_id', 'filter_submitter_id', null, 'uint'));
+
+		$this->setState(
+			'issue.submitter_id_include',
+			$app->getUserStateFromRequest($issueStatePrefix . 'submitter_id_include', 'filter_submitter_id_include', null, 'uint')
+		);
 
 		$this->setState('issue.closer_name', $app->getUserStateFromRequest($issueStatePrefix . 'closer_name', 'filter_closer_name', null, 'string'));
-		$this->setState('issue.closer_id', $app->getUserStateFromRequest($issueStatePrefix . 'closer_id', 'filter_closer_id', null, 'int'));
-		$this->setState('issue.closer_id_include', $app->getUserStateFromRequest($issueStatePrefix . 'closer_id_include', 'filter_closer_id_include', null, 'int'));
+		$this->setState('issue.closer_id', $app->getUserStateFromRequest($issueStatePrefix . 'closer_id', 'filter_closer_id', null, 'uint'));
+
+		$this->setState(
+			'issue.closer_id_include',
+			$app->getUserStateFromRequest($issueStatePrefix . 'closer_id_include', 'filter_closer_id_include', null, 'uint')
+		);
 
 		$this->setState('issue.date_field', $app->getUserStateFromRequest($issueStatePrefix . 'date_field', 'filter_date_field', null, 'cmd'));
-		$this->setState('issue.date_filtering', $app->getUserStateFromRequest($issueStatePrefix . 'date_filtering', 'filter_date_filtering', null, 'cmd'));
-		$this->setState('issue.start_date_range', $app->getUserStateFromRequest($issueStatePrefix . 'start_date_range', 'filter_start_date_range', null, 'string'));
-		$this->setState('issue.end_date_range', $app->getUserStateFromRequest($issueStatePrefix . 'end_date_range', 'filter_end_date_range', null, 'string'));
-		$this->setState('issue.relative_date', $app->getUserStateFromRequest($issueStatePrefix . 'relative_date', 'filter_relative_date', null, 'int'));
+
+		$this->setState(
+			'issue.date_filtering', $app->getUserStateFromRequest($issueStatePrefix . 'date_filtering', 'filter_date_filtering', null, 'cmd')
+		);
+
+		$this->setState(
+			'issue.start_date_range',
+			$app->getUserStateFromRequest($issueStatePrefix . 'start_date_range', 'filter_start_date_range', null, 'string')
+		);
+
+		$this->setState(
+			'issue.end_date_range', $app->getUserStateFromRequest($issueStatePrefix . 'end_date_range', 'filter_end_date_range', null, 'string')
+		);
+
+		$this->setState(
+			'issue.relative_date', $app->getUserStateFromRequest($issueStatePrefix . 'relative_date', 'filter_relative_date', null, 'int')
+		);
 
 		// Set the tracker filter.
 		//$this->setState('filter.tracker_id', 1);
@@ -243,9 +289,19 @@ class CodeModelTracker extends JModelItem
 
 		// Load the list options from the request.
 		$this->setState('list.start', $app->input->getInt('limitstart', 0));
-		$this->setState('list.ordering', $app->getUserStateFromRequest('com_code.tracker.' . $listId . '.filter_order', 'filter_order', 'a.modified_date', 'string'));
-		$this->setState('list.direction', $app->getUserStateFromRequest('com_code.tracker.' . $listId . '.filter_order_Dir', 'filter_order_Dir', 'DESC', 'cmd'));
-		$this->setState('list.limit', $app->getUserStateFromRequest('com_code.tracker.' . $listId . '.limit', 'limit', $app->get('list_limit'), 'int'));
+
+		$this->setState(
+			'list.ordering',
+			$app->getUserStateFromRequest('com_code.tracker.' . $listId . '.filter_order', 'filter_order', 'a.modified_date', 'string')
+		);
+
+		$this->setState(
+			'list.direction', $app->getUserStateFromRequest('com_code.tracker.' . $listId . '.filter_order_Dir', 'filter_order_Dir', 'DESC', 'cmd')
+		);
+
+		$this->setState(
+			'list.limit', $app->getUserStateFromRequest('com_code.tracker.' . $listId . '.limit', 'limit', $app->get('list_limit'), 'uint')
+		);
 	}
 
 	/**

@@ -28,17 +28,17 @@ class CodeRouter extends JComponentRouterBase
 	public function build(&$query)
 	{
 		// Initialize variables.
-		$segments = array();
+		$segments = [];
 
 		// We need a menu item.  Either the one specified in the query, or the current active one if none specified
 		if (empty($query['Itemid']))
 		{
-			$menuItem = $this->menu->getActive();
+			$menuItem      = $this->menu->getActive();
 			$menuItemGiven = false;
 		}
 		else
 		{
-			$menuItem = $this->menu->getItem($query['Itemid']);
+			$menuItem      = $this->menu->getItem($query['Itemid']);
 			$menuItemGiven = true;
 		}
 
@@ -91,7 +91,7 @@ class CodeRouter extends JComponentRouterBase
 	public function parse(&$segments)
 	{
 		// Initialize variables.
-		$vars = array();
+		$vars = [];
 
 		// If no segments exist then we are at the tracker list
 		if (empty($segments))
@@ -119,13 +119,14 @@ class CodeRouter extends JComponentRouterBase
 						->select('tracker_id')
 						->from('#__code_trackers')
 						->where('jc_tracker_id = ' . (int) $jcItemId)
-				, 0, 1);
+					, 0, 1
+				);
 				$trackerId = (int) $db->loadResult();
 
 				// If the tracker isn't found throw a 404.
 				if (!$trackerId)
 				{
-					JError::raiseError(404, 'Tracker not found.');
+					throw new InvalidArgumentException('Tracker not found.', 404);
 				}
 
 				// We're on a valid tracker, finish up the processing
@@ -140,13 +141,14 @@ class CodeRouter extends JComponentRouterBase
 						->select('issue_id')
 						->from('#__code_tracker_issues')
 						->where('jc_issue_id = ' . (int) $jcItemId)
-				, 0, 1);
+					, 0, 1
+				);
 				$issueId = (int) $db->loadResult();
 
 				// If the issue isn't found throw a 404.
 				if (!$issueId)
 				{
-					JError::raiseError(404, 'Issue not found.');
+					throw new InvalidArgumentException('Issue not found.', 404);
 				}
 
 				// We're on a valid issue, finish up the processing
@@ -156,7 +158,7 @@ class CodeRouter extends JComponentRouterBase
 
 			default:
 				// Unsupported resource
-				JError::raiseError(404, 'Resource not found.');
+				throw new InvalidArgumentException('Resource not found.', 404);
 		}
 
 		return $vars;

@@ -28,7 +28,6 @@ $model = $this->getModel();
 </div>
 <div class="clearfix">
 	<div id="tracker-filters" class="form-inline well">
-		
 		<div class="row-fluid">
 			<div class="span6">
 				<div class="control-group">
@@ -38,41 +37,47 @@ $model = $this->getModel();
 					<div class="controls">
 						<div class="input-append">
 							<input type="text" name="search" id="filter_search" value="<?php echo $this->escape($model->getState('filter.search')) ?>"/>
-							<button type="submit" class="btn hasTooltip"
-									title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
+							<button type="submit" class="btn hasTooltip" title="<?php echo JHtml::_('tooltipText', 'JSEARCH_FILTER_SUBMIT'); ?>">
 								<i class="icon-search"></i>
 							</button>
 						</div>
 					</div>
 				</div>
 			</div>
-				
-			<div class="span6">	
+
+			<div class="span6">
 				<div class="control-group">
 					<label class="control-label" for="filter_date_field">
-						<?php echo JText::_('COM_CODE_TRACKER_FILTER_DATE') ?>
+						<?php echo JText::_('COM_CODE_TRACKER_FILTER_DATE'); ?>
 					</label>
 					<div class="controls">
-						<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getDateOptions(), 'filter_date_field', array(
-							'onchange' => 'document.forms.trackerForm.submit();',
-							'class' => 'input-small'
-						), 'value', 'text', $model->getState('issue.date_field')) ?>
+						<?php echo JHtml::_(
+							'select.genericlist',
+							CodeHelperSelect::getDateOptions(),
+							'filter_date_field',
+							[
+								'onchange' => 'document.forms.trackerForm.submit();',
+								'class'    => 'input-small'
+							],
+							'value',
+							'text',
+							$model->getState('issue.date_field')
+						); ?>
 						<input type="hidden" name="filter_date_filtering" value="range" />
 
-						<?php echo JHtml::_('calendar', $model->getState('issue.start_date_range'), 'filter_start_date_range', 'filter_start_date_range', '%Y-%m-%d', array('class' => 'input-small')); ?>
-						<?php echo JHtml::_('calendar', $model->getState('issue.end_date_range'), 'filter_end_date_range', 'filter_end_date_range', '%Y-%m-%d', array('class' => 'input-small')); ?>
+						<?php echo JHtml::_('calendar', $model->getState('issue.start_date_range'), 'filter_start_date_range', 'filter_start_date_range', '%Y-%m-%d', ['class' => 'input-small']); ?>
+						<?php echo JHtml::_('calendar', $model->getState('issue.end_date_range'), 'filter_end_date_range', 'filter_end_date_range', '%Y-%m-%d', ['class' => 'input-small']); ?>
 
-						<button type="submit" class="btn hasTooltip"
-								title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
+						<button type="submit" class="btn hasTooltip" title="<?php echo JHtml::_('tooltipText', 'JSEARCH_FILTER_SUBMIT'); ?>">
 							<i class="icon-search"></i>
 						</button>
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
 		<button id="adv-search-button" type="button" class="btn btn-primary" data-toggle="collapse" data-target="#filters-advanced">
-        <i class="icon-plus"></i> Advanced Search</button>
+        <i class="icon-plus"></i> <?php echo JText::_('COM_CODE_TRACKER_FILTER_ADVANCED_SEARCH'); ?></button>
 
 		<div id="filters-advanced" class="row-fluid collapse">
 			<div class="span6">
@@ -81,13 +86,27 @@ $model = $this->getModel();
 						<?php echo JText::_('COM_CODE_TRACKER_FILTER_STATUS') ?>
 					</label>
 					<div class="controls">
-						<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getComparatorOptions(), 'filter_status_id_include', array(
-							'onchange' => 'document.forms.trackerForm.submit();',
-							'class' => 'input-small'
-						), 'value', 'text', $model->getState('issue.status_id_include')) ?>
-						<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getStatusOptions($this->item->jc_tracker_id), 'filter_status_id', array(
-							'onchange' => 'document.forms.trackerForm.submit();'
-						), 'value', 'text', $model->getState('issue.status_id')) ?>
+						<?php echo JHtml::_(
+							'select.genericlist',
+							CodeHelperSelect::getComparatorOptions(),
+							'filter_status_id_include',
+							[
+								'onchange' => 'document.forms.trackerForm.submit();',
+								'class'    => 'input-small'
+							],
+							'value',
+							'text',
+							$model->getState('issue.status_id_include')
+						); ?>
+						<?php echo JHtml::_(
+							'select.genericlist',
+							CodeHelperSelect::getStatusOptions($this->item->jc_tracker_id),
+							'filter_status_id',
+							['onchange' => 'document.forms.trackerForm.submit();'],
+							'value',
+							'text',
+							$model->getState('issue.status_id')
+						); ?>
 					</div>
 				</div>
 
@@ -96,16 +115,31 @@ $model = $this->getModel();
 						<?php echo JText::_('COM_CODE_TRACKER_FILTER_TAG') ?>
 					</label>
 					<div class="controls">
-						<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getComparatorOptions(), 'filter_tag_id_include', array(
-							'onchange' => 'document.forms.trackerForm.submit();',
-							'class' => 'input-small'
-						), 'value', 'text', $model->getState('issue.tag_id_include')) ?>
-						<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getTagOptions(), 'filter_tag_id[]', array(
-							'multiple' => 'multiple',
-							'class' => 'advancedSelect'
-						), 'value', 'text', $model->getState('issue.tag_id')) ?>
-						<button type="submit" class="btn hasTooltip"
-								title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
+						<?php echo JHtml::_(
+							'select.genericlist',
+							CodeHelperSelect::getComparatorOptions(),
+							'filter_tag_id_include',
+							[
+								'onchange' => 'document.forms.trackerForm.submit();',
+								'class'    => 'input-small'
+							],
+							'value',
+							'text',
+							$model->getState('issue.tag_id_include')
+						); ?>
+						<?php echo JHtml::_(
+							'select.genericlist',
+							CodeHelperSelect::getTagOptions(),
+							'filter_tag_id[]',
+							[
+								'multiple' => 'multiple',
+								'class'    => 'advancedSelect'
+							],
+							'value',
+							'text',
+							$model->getState('issue.tag_id')
+						); ?>
+						<button type="submit" class="btn hasTooltip" title="<?php echo JHtml::_('tooltipText', 'JSEARCH_FILTER_SUBMIT'); ?>">
 							<i class="icon-search"></i>
 						</button>
 					</div>
@@ -118,13 +152,20 @@ $model = $this->getModel();
 						<?php echo JText::_('COM_CODE_TRACKER_FILTER_SUBMITTER') ?>
 					</label>
 					<div class="controls">
-						<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getComparatorOptions(), 'filter_submitter_id_include', array(
-							'onchange' => 'document.forms.trackerForm.submit();',
-							'class' => 'input-small'
-						), 'value', 'text', $model->getState('issue.submitter_id_include')) ?>
+						<?php echo JHtml::_(
+							'select.genericlist',
+							CodeHelperSelect::getComparatorOptions(),
+							'filter_submitter_id_include',
+							[
+								'onchange' => 'document.forms.trackerForm.submit();',
+								'class'    => 'input-small'
+							],
+							'value',
+							'text',
+							$model->getState('issue.submitter_id_include')
+						); ?>
 						<input type="text" name="filter_submitter_name" id="filter_submitter_name" value="<?php echo $this->escape($model->getState('issue.submitter_name')) ?>"/>
-						<button type="submit" class="btn hasTooltip"
-								title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
+						<button type="submit" class="btn hasTooltip" title="<?php echo JHtml::_('tooltipText', 'JSEARCH_FILTER_SUBMIT'); ?>">
 							<i class="icon-search"></i>
 						</button>
 					</div>
@@ -135,19 +176,25 @@ $model = $this->getModel();
 						<?php echo JText::_('COM_CODE_TRACKER_FILTER_CLOSER') ?>
 					</label>
 					<div class="controls">
-						<?php echo JHtml::_('select.genericlist', CodeHelperSelect::getComparatorOptions(), 'filter_closer_id_include', array(
-							'onchange' => 'document.forms.trackerForm.submit();',
-							'class' => 'input-small'
-						), 'value', 'text', $model->getState('issue.closer_id_include')) ?>
+						<?php echo JHtml::_(
+							'select.genericlist',
+							CodeHelperSelect::getComparatorOptions(),
+							'filter_closer_id_include',
+							[
+								'onchange' => 'document.forms.trackerForm.submit();',
+								'class'    => 'input-small'
+							],
+							'value',
+							'text',
+							$model->getState('issue.closer_id_include')
+						); ?>
 						<input type="text" name="filter_closer_name" id="filter_closer_name" value="<?php echo $this->escape($model->getState('issue.closer_name')) ?>"/>
-						<button type="submit" class="btn hasTooltip"
-								title="<?php echo JHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
+						<button type="submit" class="btn hasTooltip" title="<?php echo JHtml::_('tooltipText', 'JSEARCH_FILTER_SUBMIT'); ?>">
 							<i class="icon-search"></i>
 						</button>
 					</div>
 				</div>
 			</div>
 		</div>
-		
 	</div>
 </div>

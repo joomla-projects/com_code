@@ -28,7 +28,7 @@ class CodeModelIssue extends JModelLegacy
 		$db    = $this->getDbo();
 		$query = $db->getQuery(true);
 
-		$query->select('a.*, ' . $query->concatenate(array('cu.first_name', $db->quote(' '), 'cu.last_name')) . ' AS commenter_name')
+		$query->select('a.*, ' . $query->concatenate(['cu.first_name', $db->quote(' '), 'cu.last_name']) . ' AS commenter_name')
 			->from('#__code_tracker_issue_responses AS a')
 			->join('LEFT', '#__code_users AS cu ON cu.user_id = a.created_by')
 			->where('a.jc_issue_id = ' . (int) $issueId)
@@ -60,7 +60,7 @@ class CodeModelIssue extends JModelLegacy
 		$db    = $this->getDbo();
 		$query = $db->getQuery(true);
 
-		$query->select('a.*, ' . $query->concatenate(array('cu.first_name', $db->quote(' '), 'cu.last_name')) . ' AS committer_name')
+		$query->select('a.*, ' . $query->concatenate(['cu.first_name', $db->quote(' '), 'cu.last_name']) . ' AS committer_name')
 			->from('#__code_tracker_issue_commits AS a')
 			->join('LEFT', '#__code_users AS cu ON cu.user_id = a.created_by')
 			->where('a.jc_issue_id = ' . (int) $issueId)
@@ -94,7 +94,7 @@ class CodeModelIssue extends JModelLegacy
 		$query = $db->getQuery(true);
 		$query->select(
 			'a.*, s.state_id AS state, s.title AS status_name, '
-			. $query->concatenate(array('cu.first_name', $db->quote(' '), 'cu.last_name')) . ' AS created_by_name'
+			. $query->concatenate(['cu.first_name', $db->quote(' '), 'cu.last_name']) . ' AS created_by_name'
 		)
 			->from('#__code_tracker_issues AS a')
 			->join('LEFT', '#__code_tracker_status AS s on s.jc_status_id = a.status')
@@ -132,7 +132,7 @@ class CodeModelIssue extends JModelLegacy
 			->where('issue_id = ' . $issueId);
 
 		$db->setQuery(
-		   $db->getQuery(true)
+			$db->getQuery(true)
 				->select('tag')
 				->from('#__code_tags')
 				->where('tag_id IN (' . (string) $subQuery . ')')
@@ -190,10 +190,7 @@ class CodeModelIssue extends JModelLegacy
 	 */
 	protected function populateState()
 	{
-		$app = JFactory::getApplication();
-
 		// Set the JoomlaCode issue ID from the request.
-		$pk = $app->input->getInt('issue_id');
-		$this->setState('issue.id', $pk);
+		$this->setState('issue.id', JFactory::getApplication()->input->getUint('issue_id'));
 	}
 }

@@ -26,9 +26,6 @@ class CodeViewTracker extends JViewLegacy
 		// Load the necessary helper class
 		$this->loadHelper('Select');
 
-		// Enable Chosen
-		JHtml::_('formbehavior.chosen');
-
 		// Populate basic variables
 		$this->state  = $this->get('State');
 		$this->item   = $this->get('Item');
@@ -41,7 +38,7 @@ class CodeViewTracker extends JViewLegacy
 		$this->priorities = CodeHelperSelect::getPrioritiesRaw();
 
 		// URL to submit the form to
-		$id = JFactory::getApplication()->input->getInt('Itemid', 0);
+		$id     = JFactory::getApplication()->input->getUint('Itemid', 0);
 		$itemid = $id ? '&Itemid=' . (int) $id : '';
 
 		$this->formURL = JRoute::_(
@@ -49,7 +46,7 @@ class CodeViewTracker extends JViewLegacy
 		);
 
 		// Ordering
-		$this->order = $this->getModel()->getState('list.ordering', 'issue_id');
+		$this->order     = $this->getModel()->getState('list.ordering', 'issue_id');
 		$this->order_Dir = $this->getModel()->getState('list.direction', 'desc');
 
 		// Check for errors.
@@ -75,13 +72,10 @@ class CodeViewTracker extends JViewLegacy
 	 */
 	protected function prepareDocument()
 	{
-		$app     = JFactory::getApplication();
-		$menus   = $app->getMenu();
-		$pathway = $app->getPathway();
-		$title   = null;
+		$app = JFactory::getApplication();
 
 		// Because the application sets a default page title, we need to get it from the menu item itself
-		$menu = $menus->getActive();
+		$menu = $app->getMenu()->getActive();
 
 		if ($menu)
 		{
@@ -101,7 +95,7 @@ class CodeViewTracker extends JViewLegacy
 		{
 			$title = $this->item->title;
 
-			$pathway->addItem($this->item->title, JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $this->item->jc_tracker_id));
+			$app->getPathway()->addItem($this->item->title, JRoute::_('index.php?option=com_code&view=tracker&tracker_id=' . $this->item->jc_tracker_id));
 		}
 
 		// Check for empty title and add site name if param is set
