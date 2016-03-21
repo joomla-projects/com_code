@@ -27,7 +27,7 @@ class CodeModelTrackers extends JModelLegacy
 		$db->setQuery(
 			$db->getQuery(true)
 				->select('a.*')
-				->from('#__code_trackers', 'a')
+				->from('#__code_trackers AS a')
 				->order('a.title ASC')
 		);
 
