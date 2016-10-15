@@ -105,10 +105,10 @@ JFactory::getApplication()->getDocument()->addScriptDeclaration($orderingJavascr
 						</span>
 					</td>
 					<td>
-						<?php echo JText::sprintf('COM_CODE_TRACKER_EDITED_BY', JHtml::_('date', $issue->created_date, 'j M Y, G:s'), $issue->created_user_name); ?>
+						<?php echo JText::sprintf('COM_CODE_TRACKER_EDITED_BY', JHtml::_('date', $issue->created_date, 'j M Y, G:i'), $issue->created_user_name); ?>
 					</td>
 					<td>
-						<?php echo JText::sprintf('COM_CODE_TRACKER_EDITED_BY', JHtml::_('date', $issue->modified_date, 'j M Y, G:s'), $issue->modified_user_name); ?>
+						<?php echo JText::sprintf('COM_CODE_TRACKER_EDITED_BY', JHtml::_('date', $issue->modified_date, 'j M Y, G:i'), $issue->modified_user_name); ?>
 					</td>
 				</tr>
 			<?php endforeach; ?>

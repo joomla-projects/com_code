@@ -38,10 +38,10 @@ JHtml::_('stylesheet', 'com_code/default.css', [], true);
 			</div>
 			<div class="span3 well">
 				<h5><?php echo JText::_('COM_CODE_ISSUE_OPENED_ON'); ?></h5>
-				<div><?php echo JText::sprintf('COM_CODE_ISSUE_OPENED_ON_INFO', JHtml::_('date', $this->item->created_date, 'j M Y, G:s'), $this->item->created_by_name); ?></div>
+				<div><?php echo JText::sprintf('COM_CODE_ISSUE_OPENED_ON_INFO', JHtml::_('date', $this->item->created_date, 'j M Y, G:i'), $this->item->created_by_name); ?></div>
 				<?php if ($this->item->state == '0') : ?>
 					<h5><?php echo JText::_('COM_CODE_ISSUE_CLOSED_ON'); ?></h5>
-					<div><?php echo JHtml::_('date', $this->item->close_date, 'j M Y, G:s'); ?></div>
+					<div><?php echo JHtml::_('date', $this->item->close_date, 'j M Y, G:i'); ?></div>
 				<?php endif; ?>
 				<h5><?php echo JText::_('COM_CODE_ISSUE_STATUS'); ?></h5>
 				<div><?php echo $this->item->status_name; ?></div>
@@ -65,7 +65,7 @@ JHtml::_('stylesheet', 'com_code/default.css', [], true);
 					<?php foreach ($this->comments as $comment) : ?>
 						<div class="issue-comment well">
 							<span class="comment-owner">
-								<?php echo JText::sprintf('COM_CODE_ISSUE_POSTED_DETAILS', JHtml::_('date', $comment->created_date, 'j M Y, G:s'), $comment->commenter_name); ?>
+								<?php echo JText::sprintf('COM_CODE_ISSUE_POSTED_DETAILS', JHtml::_('date', $comment->created_date, 'j M Y, G:i'), $comment->commenter_name); ?>
 							</span>
 							<div class="issue-comment-details">
 								<?php echo nl2br($comment->body); ?>
@@ -81,7 +81,7 @@ JHtml::_('stylesheet', 'com_code/default.css', [], true);
 				<?php foreach ($this->commits as $commit) : ?>
 					<div class="issue-commit well">
 						<span class="commit-owner">
-							<?php echo JText::sprintf('COM_CODE_ISSUE_COMMIT_DETAILS', JHtml::_('date', $commit->created_date, 'j M Y, G:s'), $commit->committer_name); ?>
+							<?php echo JText::sprintf('COM_CODE_ISSUE_COMMIT_DETAILS', JHtml::_('date', $commit->created_date, 'j M Y, G:i'), $commit->committer_name); ?>
 						</span>
 						<div class="issue-commit-details">
 							<?php echo nl2br($commit->message); ?>
