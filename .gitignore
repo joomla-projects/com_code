@@ -5,13 +5,22 @@
 .DS_Store
 .idea
 
-# Top level files and folders to ignore, based on dev/public_html and non-production folders in CMS GitHub
+# Ignore everything by default then whitelist paths
+/administrator/*
+!/administrator/components
+/administrator/components/*
+!/administrator/components/com_code
 /bin
 /build
 /cache
 /cgi-bin
+/cli/*
+!/cli/sql
+!/cli/code.php
 /cms-coverage
 /cms-packages
+/components/*
+!/components/com_code
 /images
 /includes
 /language
@@ -20,8 +29,14 @@
 /log
 /logs
 /manual
+/media/*
+!/media/com_code
 /modules
-/plugins
+/nightlies
+/plugins/*
+!/plugins/finder
+/plugins/finder/*
+!/plugins/finder/tracker_issues
 /pulls
 /standards
 /templates
